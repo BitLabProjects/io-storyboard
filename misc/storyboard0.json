@@ -1,0 +1,42 @@
+{
+  "timelines": [
+    {
+      "name": "timeline0",
+      "outputId": "1",
+      "outputType": "0",
+      "entries": [
+        {
+          "value": "100",
+          "duration": "500"
+        },
+        {
+          "value": "20",
+          "duration": "250"
+        },
+        {
+          "value": "50",
+          "duration": "100"
+        }
+      ]
+    },
+    {
+      "name": "timeline1",
+      "outputId": "2",
+      "outputType": "1",
+      "entries": [
+        {
+          "value": "1",
+          "duration": "125"
+        },
+        {
+          "value": "0",
+          "duration": "1000"
+        },
+        {
+          "value": "1",
+          "duration": "250"
+        }
+      ]
+    }
+  ]
+}
