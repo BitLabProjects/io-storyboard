@@ -5,7 +5,7 @@ enum EOutputType {
 
 class CTimelineEntry {
 
-  private static NextKey:number = 0;  
+  private static NextKey: number = 0;
   public readonly Key: number;
 
   constructor(
@@ -20,6 +20,10 @@ class CTimelineEntry {
 }
 
 class CTimeline {
+
+  private static NextKey: number = 0;
+  public readonly Key: number;
+
   public Entries: CTimelineEntry[];
 
   constructor(
@@ -28,11 +32,12 @@ class CTimeline {
     public OutputType: EOutputType
   ) {
     this.Entries = [];
+    this.Key = CTimeline.NextKey;
+    CTimeline.NextKey += 1;
   }
 
-  public AddEntry(value: number, duration: number) {
-    this.mAddEntryWithoutRecalc(value, duration);
-    this.mRecalcEntries();
+  public AddEntry(time: number, value: number, duration: number) {
+    this.Entries.push(new CTimelineEntry(time, value, duration));
   }
 
   public RemoveEntry(key: number) {
@@ -40,34 +45,20 @@ class CTimeline {
     if (indexToRemove > -1) {
       this.Entries.splice(indexToRemove, 1);
     }
-    this.mRecalcEntries();
   }
 
-  // recalc entries time
-  private mRecalcEntries() {
-    // clone array
-    const oldEntries = this.Entries.slice();
-    // empty original array
-    this.Entries.splice(0);
-    // re-add entries
-    for (const e of oldEntries) {
-      this.mAddEntryWithoutRecalc(e.Value, e.Duration);
-    }
-  }
-
-  private mAddEntryWithoutRecalc(value: number, duration: number) {
-    const nextTime = this.mGetNextStartTime();
-    this.Entries.push(new CTimelineEntry(nextTime, value, duration));
-  }
-
-  // calc start time based on entry position
-  private mGetNextStartTime(): number {
-    let nextTime = 0;
+  public CheckEntriesOrder(): boolean {
     if (this.Entries.length > 0) {
-      const lastEntry = this.Entries[this.Entries.length - 1];
-      nextTime = lastEntry.Time + lastEntry.Duration;
+      let lastTime = this.Entries[0].Time;
+      for (const e of this.Entries) {
+        if (e.Time > lastTime) {
+          lastTime = e.Time;
+        } else {
+          return false;
+        }
+      }
     }
-    return nextTime;
+    return true;
   }
 
 }

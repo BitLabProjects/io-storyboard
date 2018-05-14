@@ -1,7 +1,7 @@
 import BStoryboard from "./BStoryboard";
 import { CTimeline, EOutputType } from "./CTimeline";
 
-class CStoryboard {
+class CStoryboard {  
 
   public static CreateFromJson(jsonStr: string): CStoryboard {
     // TODO: const jsonObj = JSON.parse(jsonStr);
@@ -12,7 +12,7 @@ class CStoryboard {
         const newTimeline = new CTimeline(tl.name, +tl.outputId, +tl.outputType);
         for (const tle of tl.entries) {
           if (tle.value) {
-            newTimeline.AddEntry(+tle.value, +tle.duration);
+            newTimeline.AddEntry(+tle.time, +tle.value, +tle.duration);
           }
         }
         newStoryboard.Timelines.push(newTimeline);
@@ -29,6 +29,13 @@ class CStoryboard {
 
   public AddTimeline() {
     this.Timelines.push(new CTimeline("new timeline", 99, EOutputType.Analog));
+  }
+
+  public RemoveTimeline(key: number) {
+    const indexToRemove = this.Timelines.findIndex((tl, index, a) => tl.Key === key);
+    if (indexToRemove > -1) {
+      this.Timelines.splice(indexToRemove, 1);
+    }    
   }
 
   public ExportToJson(): string {

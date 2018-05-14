@@ -23,20 +23,24 @@ class UStoryboard extends React.Component<any, UStoryboardState> {
   }
 
   public render() {
+    const that = this;
+
     const timelines = this.state.storyboard.Timelines.map((tl) => {
       return (
-        <ExpansionPanel key={tl.OutputId}>
+        <ExpansionPanel key={tl.Key}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography>{tl.Name}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <UTimeline timeline={tl} />
+            <UTimeline
+              timeline={tl}
+              onUpdate={this.onUpdate.bind(that)}
+              onRemove={this.removeTimeline.bind(that)} />
           </ExpansionPanelDetails>
         </ExpansionPanel>
       );
     });
 
-    const that = this;
     return (
       <div style={{ marginLeft: "25px", marginRight: "25px" }}>
         {timelines}
@@ -56,10 +60,17 @@ class UStoryboard extends React.Component<any, UStoryboardState> {
   }
 
   private addTimeline() {
-    this.setState((prevState) => {
-      prevState.storyboard.AddTimeline();
-      return prevState;
-    });
+    this.state.storyboard.AddTimeline();
+    this.forceUpdate();
+  }
+
+  private removeTimeline(key: number) {
+    this.state.storyboard.RemoveTimeline(key);
+    this.forceUpdate();
+  }
+
+  private onUpdate() {
+    this.forceUpdate();
   }
 
   private exportStoryboard() {

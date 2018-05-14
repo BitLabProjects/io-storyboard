@@ -8,7 +8,7 @@ import RemoveIcon from '@material-ui/icons/Remove';
 
 class CTimelineEntryProps {
   public entry: CTimelineEntry;
-  public removeEntry: (key: number) => void;
+  public removeEntry: (key: number) => void;  
 }
 class UTimelineEntryState {
   public entry: CTimelineEntry;
@@ -28,11 +28,12 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
           <TextField
             id="time"
             label="Start time"
-            placeholder="Start time"            
+            placeholder="Start time"
             value={this.state.entry.Time}
             onChange={this.onFieldChanged('time')}
+            type="number"
             margin="normal"
-          />
+          />          
           <TextField
             id="value"
             label="Value"
@@ -41,7 +42,7 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
             onChange={this.onFieldChanged('value')}
             type="number"
             margin="normal"
-          />
+            />
           <TextField
             id="duration"
             label="Ramp duration"
@@ -51,9 +52,9 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
             type="number"
             margin="normal"
           />
-        </span>
+        </span>        
         <span>
-          <Button style={{ margin: "25px" }}
+          <Button style={{ margin: "10px" }}
             color="secondary"
             variant="fab"
             onClick={this.removeEntry.bind(that)}>
@@ -67,15 +68,13 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
   private onFieldChanged(fieldName: string) {
     return ((e: any) => {
       const newValue = e.target.value;
-      this.setState((prevState) => {
-        switch (fieldName) {
-          // operator '+' convert any object to number          
-          case 'time': prevState.entry.Time = +newValue; break;
-          case 'value': prevState.entry.Value = +newValue; break;
-          case 'duration': prevState.entry.Duration = +newValue; break;
-        }
-        return prevState;
-      });
+      switch (fieldName) {
+        // operator '+' convert any object to number          
+        case 'time': this.state.entry.Time = +newValue; break;
+        case 'value': this.state.entry.Value = +newValue; break;
+        case 'duration': this.state.entry.Duration = +newValue; break;
+      }
+      this.forceUpdate();
     });
   }
 
