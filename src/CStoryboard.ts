@@ -38,6 +38,7 @@ class CStoryboard {
     }    
   }
 
+  /* tslint:disable */
   public ExportToJson(): string {
     const timelinesObj = [];
     for (const tl of this.Timelines) {
@@ -45,15 +46,19 @@ class CStoryboard {
       for (const tle of tl.Entries) {
         entriesObj.push({ "time": tle.Time, "value": tle.Value, "duration": tle.Duration });
       }
+      //Additional reduntant entry with count of array entries in exported json
       timelinesObj.push({
-        "entries": entriesObj,
         "name": tl.Name,
         "outputId": tl.OutputId,
-        "outputType": tl.OutputType
+        "outputType": tl.OutputType,
+        "entriesCount": entriesObj.length,
+        "entries": entriesObj
       });
     }
-    return JSON.stringify({ "timelines": timelinesObj });
+    return JSON.stringify({ "timelinesCount": timelinesObj.length, 
+                            "timelines": timelinesObj });
   }
+  /* tslint:enable */
 
 }
 
