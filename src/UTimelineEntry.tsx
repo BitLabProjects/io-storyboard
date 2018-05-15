@@ -2,13 +2,16 @@ import Button from "material-ui/Button";
 
 import TextField from "material-ui/TextField";
 import * as React from "react";
-import { CTimelineEntry } from "./CTimeline";
+import { CTimelineEntry, EOutputType } from "./CTimeline";
 
 import RemoveIcon from '@material-ui/icons/Remove';
+import Switch from "material-ui/Switch";
+import BStyles from "./BStyles";
 
 class CTimelineEntryProps {
   public entry: CTimelineEntry;
-  public removeEntry: (key: number) => void;  
+  public outputType: EOutputType;
+  public removeEntry: (key: number) => void;
 }
 class UTimelineEntryState {
   public entry: CTimelineEntry;
@@ -24,17 +27,18 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
     const that = this;
     return (
       <div>
-        <span>
-          <TextField
-            id="time"
-            label="Start time"
-            placeholder="Start time"
-            value={this.state.entry.Time}
-            onChange={this.onFieldChanged('time')}
-            type="number"
-            margin="normal"
-          />          
-          <TextField
+        <TextField
+          id="time"
+          label="Start time"
+          placeholder="Start time"
+          value={this.state.entry.Time}
+          onChange={this.onFieldChanged('time')}
+          type="number"
+          margin="normal"
+          style={BStyles.TextFieldStyle}
+        />
+        {this.props.outputType === EOutputType.Analog ?
+          (<TextField
             id="value"
             label="Value"
             placeholder="Value"
@@ -42,7 +46,16 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
             onChange={this.onFieldChanged('value')}
             type="number"
             margin="normal"
-            />
+            style={BStyles.TextFieldStyle}
+          />) :
+          (<Switch
+            checked={this.state.entry.Value > 0}
+            color="primary"
+            onChange={this.onFieldChanged('digitalValue')}
+            value="digitalValue"
+          />
+          )}
+        {this.props.outputType === EOutputType.Analog && (
           <TextField
             id="duration"
             label="Ramp duration"
@@ -51,27 +64,27 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
             onChange={this.onFieldChanged('duration')}
             type="number"
             margin="normal"
+            style={BStyles.TextFieldStyle}
           />
-        </span>        
-        <span>
-          <Button style={{ margin: "10px" }}
-            color="secondary"
-            variant="fab"
-            onClick={this.removeEntry.bind(that)}>
-            <RemoveIcon />
-          </Button>
-        </span>
+        )}
+        <Button style={{ margin: "10px" }}
+          color="secondary"
+          variant="fab"
+          onClick={this.removeEntry.bind(that)}>
+          <RemoveIcon />
+        </Button>
       </div>
     );
   }
 
   private onFieldChanged(fieldName: string) {
-    return ((e: any) => {
+    return ((e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
       switch (fieldName) {
         // operator '+' convert any object to number          
         case 'time': this.state.entry.Time = +newValue; break;
         case 'value': this.state.entry.Value = +newValue; break;
+        case 'digitalValue': e.target.checked ? this.state.entry.Value = 100 : this.state.entry.Value = 0; break;
         case 'duration': this.state.entry.Duration = +newValue; break;
       }
       this.forceUpdate();

@@ -1,12 +1,13 @@
 import Button from "material-ui/Button";
 import * as React from "react";
-import { CTimeline } from "./CTimeline";
+import { CTimeline, EOutputType } from "./CTimeline";
 import UTimelineEntry from "./UTimelineEntry";
 
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 
-import { Paper, TextField } from "material-ui";
+import { MenuItem, Paper, TextField } from "material-ui";
+import BStyles from "./BStyles";
 
 class CTimelineProps {
   public timeline: CTimeline
@@ -29,10 +30,11 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
   public render() {
     const entries = this.state.timeline.Entries.map((entry) => {
       return (
-        <Paper key={entry.Key} style={{ margin: "10px", padding: "15px" }} >
+        <Paper key={entry.Key} style={{ margin: "5px", padding: "15px" }} >
           <UTimelineEntry
             entry={entry}
-            removeEntry={this.removeEntry.bind(this.thisInstance)} />
+            removeEntry={this.removeEntry.bind(this.thisInstance)}
+            outputType={this.state.timeline.OutputType} />
         </Paper>
       );
     });
@@ -46,7 +48,7 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
           value={this.state.timeline.Name}
           onChange={this.onFieldChanged('name')}
           margin="normal"
-        />
+          style={BStyles.TextFieldStyle} />
         <TextField
           id="outputId"
           label="Output"
@@ -55,24 +57,42 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
           onChange={this.onFieldChanged('output')}
           type="number"
           margin="normal"
-        />
+          style={BStyles.TextFieldStyle} />
+        <TextField
+          id="outputType"
+          label="Output Type"
+          placeholder="Output Type"
+          value={this.state.timeline.OutputType}
+          onChange={this.onFieldChanged('outputType')}
+          select={true}
+          margin="normal"
+          style={BStyles.TextFieldStyle}>
+          <MenuItem key={EOutputType.Analog} value={EOutputType.Analog}>
+            Analog
+          </MenuItem>
+          <MenuItem key={EOutputType.Digital} value={EOutputType.Digital}>
+            Digital
+          </MenuItem>
+        </TextField>
         <Button style={{ margin: "10px" }}
           variant="fab"
           onClick={this.remove.bind(this.thisInstance)}>
           <RemoveIcon />
         </Button>
         {entries}
-        <Button style={{ margin: "10px" }}
-          variant="fab"
-          onClick={this.addEntry.bind(this.thisInstance)}>
-          <AddIcon />
-        </Button>
+        <div>
+          <Button style={{ margin: "10px" }}
+            variant="fab"
+            onClick={this.addEntry.bind(this.thisInstance)}>
+            <AddIcon />
+          </Button>
+        </div>
       </div>
     );
   }
 
   private addEntry() {
-    this.state.timeline.AddEntry(0, 0, 0);
+    this.state.timeline.AddEntry(0, 0);
     this.forceUpdate();
   }
 
@@ -91,6 +111,7 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
       switch (fieldName) {
         case 'name': this.state.timeline.Name = newValue; break;
         case 'output': this.state.timeline.OutputId = +newValue; break;
+        case 'outputType': this.state.timeline.OutputType = +newValue; break;
       }
       this.props.onUpdate();
       this.forceUpdate();

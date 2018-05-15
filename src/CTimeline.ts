@@ -36,8 +36,13 @@ class CTimeline {
     CTimeline.NextKey += 1;
   }
 
-  public AddEntry(time: number, value: number, duration: number) {
-    this.Entries.push(new CTimelineEntry(time, value, duration));
+  public AddEntry(value: number, duration: number, time?: number) {
+    // if time undefined, calc based on last entry duration
+    if (time) {
+      this.Entries.push(new CTimelineEntry(time, value, duration));
+    } else{
+      this.Entries.push(new CTimelineEntry(this.mGetNextStartTime(), value, duration));      
+    }
   }
 
   public RemoveEntry(key: number) {
@@ -61,6 +66,15 @@ class CTimeline {
     return true;
   }
 
+  // calc start time based on entry position
+  private mGetNextStartTime(): number {
+    let nextTime = 0;
+    if (this.Entries.length > 0) {
+      const lastEntry = this.Entries[this.Entries.length - 1];
+      nextTime = lastEntry.Time + lastEntry.Duration;
+    }
+    return nextTime;
+  }
 }
 
 export { EOutputType, CTimelineEntry, CTimeline };

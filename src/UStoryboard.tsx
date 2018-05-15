@@ -42,15 +42,15 @@ class UStoryboard extends React.Component<any, UStoryboardState> {
     });
 
     return (
-      <div style={{ marginLeft: "25px", marginRight: "25px" }}>
+      <div style={{ marginLeft: "5px", marginRight: "5px" }}>
         {timelines}
-        <Button style={{ margin: "25px" }}
+        <Button style={{ margin: "5px" }}
           color="primary"
           variant="fab"
           onClick={this.addTimeline.bind(that)}>
           <AddIcon />
         </Button>
-        <Button style={{ margin: "25px" }}
+        <Button style={{ margin: "5px" }}
           variant="fab"
           onClick={this.exportStoryboard.bind(that)}>
           <ImportExportIcon />
