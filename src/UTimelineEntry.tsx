@@ -68,6 +68,7 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
           />
         )}
         <Button style={{ margin: "10px" }}
+          mini={true}
           color="secondary"
           variant="fab"
           onClick={this.removeEntry.bind(that)}>

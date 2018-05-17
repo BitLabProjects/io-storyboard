@@ -18,7 +18,7 @@ class App extends React.Component {
             <IconButton color="inherit" aria-label="Menu">
               <MenuIcon />
             </IconButton>
-            <Typography variant="title" color="inherit" >storyboard.io</Typography>
+            <Typography variant="title" color="inherit" >io.storyboard</Typography>
           </Toolbar>
         </AppBar>
         <div style={{ marginTop: "100px" }}>
