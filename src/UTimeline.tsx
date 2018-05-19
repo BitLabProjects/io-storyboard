@@ -1,13 +1,15 @@
 import Button from "material-ui/Button";
 import * as React from "react";
-import { CTimeline, EOutputType } from "./CTimeline";
+import { CTimeline, CTimelineEntry, EOutputType } from "./CTimeline";
 import UTimelineEntry from "./UTimelineEntry";
 
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
+import SortIcon from '@material-ui/icons/Sort';
 
-import { Dialog, DialogActions, DialogContent, DialogContentText, Grow, MenuItem, Paper, TextField } from "material-ui";
+import { Dialog, DialogActions, DialogContent, DialogContentText, Grid, MenuItem, Paper, TextField } from "material-ui";
 
+import { arrayMove, SortableContainer, SortableElement, SortableHandle, SortEnd, SortEvent } from "react-sortable-hoc";
 import BStyles from "./BStyles";
 
 class CTimelineProps {
@@ -17,6 +19,7 @@ class CTimelineProps {
 }
 class CTimelineState {
   public timeline: CTimeline;
+  public entryKeyToAdd: number;
   public entryKeyToRemove: number;
   public removeDialogOpen: boolean;
 }
@@ -29,6 +32,7 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
     this.thisInstance = this;
     this.state = {
       timeline: props.timeline,
+      entryKeyToAdd: -1,
       entryKeyToRemove: -1,
       removeDialogOpen: false
     };
@@ -36,42 +40,47 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
 
   public render() {
 
-    // const SortableItem = SortableElement<{ value: CTimelineEntry }>(({ value }) =>
-    //   <Grow
-    //     in={this.state.entryKeyToRemove !== value.Key}
-    //     onExited={this.removeEntry.bind(this.thisInstance)}>
-    //     <Paper style={{ margin: "5px", padding: "15px" }} >
-    //       <UTimelineEntry
-    //         entry={value}
-    //         removeEntry={this.animateEntryRemoving.bind(this.thisInstance)}
-    //         outputType={this.state.timeline.OutputType} />
-    //     </Paper>
-    //   </Grow>
-    // );
-    // const SortableList = SortableContainer<{items: CTimelineEntry[]}>(({items}) => {
-    //   return (
-    //     <div>
-    //       {items.map((item: any, index: any) => (
-    //         <SortableItem key={item.Key} index={index} value={item} />
-    //       ))}
-    //     </div>
-    //   )
-    // });
+    const DragHandle = SortableHandle(() => <SortIcon />);
 
-    const entries = this.state.timeline.Entries.map((entry) => {
-      return (
-        <Grow key={entry.Key}
-          in={this.state.entryKeyToRemove !== entry.Key}
-          onExited={this.removeEntry.bind(this.thisInstance)}>
-          <Paper style={{ margin: "5px", padding: "15px" }} >
+    const SortableItem = SortableElement<{ value: CTimelineEntry }>(({ value }) =>
+      <Paper style={{ margin: "5px", padding: "15px" }} >
+        <Grid container={true} alignItems="center">
+          <Grid item={true} >
             <UTimelineEntry
-              entry={entry}
-              removeEntry={this.animateEntryRemoving.bind(this.thisInstance)}
+              entry={value}
+              removeEntry={this.removeEntry.bind(this.thisInstance)}
               outputType={this.state.timeline.OutputType} />
-          </Paper>
-        </Grow>
-      );
+          </Grid>
+          <Grid item={true} >
+            <DragHandle />
+          </Grid>
+        </Grid>
+      </Paper>
+    );
+    const SortableList = SortableContainer<{ items: CTimelineEntry[] }>(({ items }) => {
+      return (
+        <div>
+          {items.map((item, index) => (
+            <SortableItem key={item.Key} index={index} value={item} />
+          ))}
+        </div>
+      )
     });
+
+    // const entries = this.state.timeline.Entries.map((entry) => {
+    //   return (
+    //     <Grow key={entry.Key}
+    //       in={this.state.entryKeyToRemove !== entry.Key}
+    //       onExited={this.removeEntry.bind(this.thisInstance)}>
+    //       <Paper style={{ margin: "5px", padding: "15px" }} >
+    //         <UTimelineEntry
+    //           entry={entry}
+    //           removeEntry={this.animateEntryRemoving.bind(this.thisInstance)}
+    //           outputType={this.state.timeline.OutputType} />
+    //       </Paper>
+    //     </Grow>
+    //   );
+    // });
 
     const removeDialog = (
       <Dialog
@@ -115,12 +124,8 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
           select={true}
           margin="normal"
           style={BStyles.TextFieldStyle}>
-          <MenuItem key={EOutputType.Analog} value={EOutputType.Analog}>
-            Analog
-          </MenuItem>
-          <MenuItem key={EOutputType.Digital} value={EOutputType.Digital}>
-            Digital
-          </MenuItem>
+          <MenuItem key={EOutputType.Analog} value={EOutputType.Analog}>Analog</MenuItem>
+          <MenuItem key={EOutputType.Digital} value={EOutputType.Digital}>Digital</MenuItem>
         </TextField>
         <Button style={{ margin: "10px" }}
           mini={true}
@@ -129,8 +134,11 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
           <RemoveIcon />
         </Button>
         {removeDialog}
-        {/* <SortableList items={this.state.timeline.Entries} /> */}
-        {entries}
+        <SortableList
+          useDragHandle={true}
+          items={this.state.timeline.Entries}
+          onSortEnd={this.onSortEnd.bind(this.thisInstance)} />
+        {/* {entries} */}
         <div>
           <Button style={{ margin: "10px" }}
             variant="fab"
@@ -143,18 +151,19 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
   }
 
   private addEntry() {
-    this.state.timeline.AddEntry(0, 0);
-    this.forceUpdate();
+    const newEntry = this.state.timeline.AddEntry(0, 0);
+    this.setState({ entryKeyToAdd: newEntry.Key });
   }
 
   // launch remove animation, onExit event will raise removeEntry
-  private animateEntryRemoving(key: number) {
-    this.setState({ entryKeyToRemove: key });
-  }
+  // private animateEntryRemoving(key: number) {
+  //   this.setState({ entryKeyToRemove: key });
+  // }
 
   // removeEntry for real
-  private removeEntry() {
-    this.state.timeline.RemoveEntry(this.state.entryKeyToRemove);
+  private removeEntry(key: number) {
+    // this.state.timeline.RemoveEntry(this.state.entryKeyToRemove);
+    this.state.timeline.RemoveEntry(key);
     // reset key to remove
     this.setState({ entryKeyToRemove: -1 });
   }
@@ -182,6 +191,11 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
       this.props.onUpdate();
       this.forceUpdate();
     });
+  }
+
+  private onSortEnd(sort: SortEnd, event: SortEvent) {
+    this.state.timeline.Entries = arrayMove(this.state.timeline.Entries, sort.oldIndex, sort.newIndex);
+    this.forceUpdate();
   }
 
 }

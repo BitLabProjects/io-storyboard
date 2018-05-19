@@ -36,13 +36,15 @@ class CTimeline {
     CTimeline.NextKey += 1;
   }
 
-  public AddEntry(value: number, duration: number, time?: number) {
+  public AddEntry(value: number, duration: number, time?: number): CTimelineEntry {
     // if time undefined, calc based on last entry duration
+    let newLength: number;
     if (time) {
-      this.Entries.push(new CTimelineEntry(time, value, duration));
-    } else{
-      this.Entries.push(new CTimelineEntry(this.mGetNextStartTime(), value, duration));      
+      newLength = this.Entries.push(new CTimelineEntry(time, value, duration));
+    } else {
+      newLength = this.Entries.push(new CTimelineEntry(this.mGetNextStartTime(), value, duration));
     }
+    return this.Entries[newLength - 1];
   }
 
   public RemoveEntry(key: number) {
