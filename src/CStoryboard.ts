@@ -3,8 +3,7 @@ import { CTimeline, EOutputType } from "./CTimeline";
 
 class CStoryboard {
 
-  public static CreateFromJson(jsonStr: string): CStoryboard {
-    // TODO: const jsonObj = JSON.parse(jsonStr);
+  public static CreateFromJson(jsonStr: string): CStoryboard {    
     const jsonObj = BStoryboard.GetStoryboard0();
     const newStoryboard = new CStoryboard();
     for (const tl of jsonObj.timelines) {

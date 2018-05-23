@@ -12,6 +12,7 @@ import { Dialog, DialogActions, DialogContent, DialogContentText, Grid, MenuItem
 import { arrayMove, SortableContainer, SortableElement, SortableHandle, SortEnd, SortEvent } from "react-sortable-hoc";
 import BStyles from "./BStyles";
 
+
 class CTimelineProps {
   public timeline: CTimeline
   public onRemove: (key: number) => void;
@@ -135,7 +136,7 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
         </Button>
         {removeDialog}
         <SortableList
-          useDragHandle={true}
+          useDragHandle={true} lockAxis="y"
           items={this.state.timeline.Entries}
           onSortEnd={this.onSortEnd.bind(this.thisInstance)} />
         {/* {entries} */}
