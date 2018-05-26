@@ -10,7 +10,7 @@ import SortIcon from '@material-ui/icons/Sort';
 import { Dialog, DialogActions, DialogContent, DialogContentText, Grid, MenuItem, Paper, TextField } from "@material-ui/core";
 
 import { arrayMove, SortableContainer, SortableElement, SortableHandle, SortEnd, SortEvent } from "react-sortable-hoc";
-import BStyles from "./BStyles";
+// import BStyles from "./BStyles";
 
 
 class CTimelineProps {
@@ -44,16 +44,16 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
     const DragHandle = SortableHandle(() => <SortIcon />);
 
     const SortableItem = SortableElement<{ value: CTimelineEntry }>(({ value }) =>
-      <Paper style={{ margin: "5px", padding: "15px" }} >
+      <Paper style={{ margin: "5px", padding: "10px" }} >
         <Grid container={true} alignItems="center">
-          <Grid item={true} >
+          <Grid item={true} xs={1} >
+            <DragHandle />
+          </Grid>
+          <Grid item={true} xs={11} >
             <UTimelineEntry
               entry={value}
               removeEntry={this.removeEntry.bind(this.thisInstance)}
               outputType={this.state.timeline.OutputType} />
-          </Grid>
-          <Grid item={true} >
-            <DragHandle />
           </Grid>
         </Grid>
       </Paper>
@@ -99,55 +99,40 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
 
     return (
       <div>
-        <TextField
-          id="time"
-          label="Name"
-          placeholder="Name"
-          value={this.state.timeline.Name}
-          onChange={this.onFieldChanged('name')}
-          margin="normal"
-          style={BStyles.TextFieldStyle} />
-        <TextField
-          id="outputId"
-          label="Output"
-          placeholder="Output"
-          value={this.state.timeline.OutputId}
-          onChange={this.onFieldChanged('output')}
-          type="number"
-          margin="normal"
-          style={BStyles.TextFieldStyle} />
-        <TextField
-          id="outputType"
-          label="Output Type"
-          placeholder="Output Type"
-          value={this.state.timeline.OutputType}
-          onChange={this.onFieldChanged('outputType')}
-          select={true}
-          margin="normal"
-          style={BStyles.TextFieldStyle}>
-          <MenuItem key={EOutputType.Analog} value={EOutputType.Analog}>Analog</MenuItem>
-          <MenuItem key={EOutputType.Digital} value={EOutputType.Digital}>Digital</MenuItem>
-        </TextField>
-        <Button style={{ margin: "10px" }}
-          mini={true}
-          variant="fab"
-          onClick={this.openRemoveConfirmDialog.bind(this.thisInstance)}>
-          <RemoveIcon />
-        </Button>
+
+        <Grid container={true}>
+          <Grid item={true} xs={4} >
+            <TextField id="time" label="Name" placeholder="Name" value={this.state.timeline.Name}
+              onChange={this.onFieldChanged('name')} margin="normal" fullWidth={true} />
+          </Grid>
+          <Grid item={true} xs={2}>
+            <TextField id="outputId" label="Output" placeholder="Output" value={this.state.timeline.OutputId}
+              onChange={this.onFieldChanged('output')} type="number" margin="normal" fullWidth={true} />
+          </Grid>
+          <Grid item={true} xs={4}>
+            <TextField id="outputType" label="Output Type" placeholder="Output Type" value={this.state.timeline.OutputType}
+              onChange={this.onFieldChanged('outputType')} select={true} margin="normal" fullWidth={true} >
+              <MenuItem key={EOutputType.Analog} value={EOutputType.Analog}>Analog</MenuItem>
+              <MenuItem key={EOutputType.Digital} value={EOutputType.Digital}>Digital</MenuItem>
+            </TextField>
+          </Grid>
+          <Grid item={true} xs={2}>
+            <Button style={{ margin: "10px" }} mini={true}
+              variant="fab" onClick={this.openRemoveConfirmDialog.bind(this.thisInstance)}>
+              <RemoveIcon />
+            </Button>
+          </Grid>
+        </Grid >
         {removeDialog}
-        <SortableList
-          useDragHandle={true} lockAxis="y"
+        <SortableList useDragHandle={true} lockAxis="y"
           items={this.state.timeline.Entries}
           onSortEnd={this.onSortEnd.bind(this.thisInstance)} />
-        {/* {entries} */}
-        <div>
-          <Button style={{ margin: "10px" }}
-            variant="fab"
-            onClick={this.addEntry.bind(this.thisInstance)}>
-            <AddIcon />
-          </Button>
-        </div>
-      </div >
+        <Button style={{ margin: "5px" }}
+          variant="fab"
+          onClick={this.addEntry.bind(this.thisInstance)}>
+          <AddIcon />
+        </Button>
+      </div>
     );
   }
 

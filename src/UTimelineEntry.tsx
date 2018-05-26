@@ -4,6 +4,7 @@ import TextField from "@material-ui/core/TextField";
 import * as React from "react";
 import { CTimelineEntry, EOutputType } from "./CTimeline";
 
+import { Grid } from "@material-ui/core";
 import Switch from "@material-ui/core/Switch";
 import RemoveIcon from '@material-ui/icons/Remove';
 // import BStyles from "./BStyles";
@@ -26,52 +27,36 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
   public render() {
     const that = this;
     return (
-      <div>
-        <TextField
-          id="time"
-          label="Start time"
-          placeholder="Start time"
-          value={this.state.entry.Time}
-          onChange={this.onFieldChanged('time')}
-          type="number"
-          margin="normal"
-        />
-        {this.props.outputType === EOutputType.Analog ?
-          (<TextField
-            id="value"
-            label="Value"
-            placeholder="Value"
-            value={this.state.entry.Value}
-            onChange={this.onFieldChanged('value')}
-            type="number"
-            margin="normal"
-          />) :
-          (<Switch
-            checked={this.state.entry.Value > 0}
-            color="primary"
-            onChange={this.onFieldChanged('digitalValue')}
-            value="digitalValue"
-          />
-          )}
+      <Grid container={true} >
+        <Grid item={true} xs={3} >
+          <TextField id="time" label="Time" placeholder="Time" value={this.state.entry.Time}
+            onChange={this.onFieldChanged('time')} type="number" margin="normal" fullWidth={true} />
+        </Grid>
+        <Grid item={true} xs={3}>
+          {this.props.outputType === EOutputType.Analog ?
+            (<TextField id="value" label="Value" placeholder="Value" value={this.state.entry.Value}
+              onChange={this.onFieldChanged('value')} type="number" margin="normal" fullWidth={true} />) :
+            (<Switch
+              checked={this.state.entry.Value > 0}
+              color="primary"
+              onChange={this.onFieldChanged('digitalValue')}
+              value="digitalValue"
+            />
+            )}
+        </Grid>
         {this.props.outputType === EOutputType.Analog && (
-          <TextField
-            id="duration"
-            label="Ramp duration"
-            placeholder="Ramp duration"
-            value={this.state.entry.Duration}
-            onChange={this.onFieldChanged('duration')}
-            type="number"
-            margin="normal"
-          />
+          <Grid item={true} xs={3}>
+            <TextField id="duration" label="Duration" placeholder="Duration" value={this.state.entry.Duration}
+              onChange={this.onFieldChanged('duration')} type="number" margin="normal" fullWidth={true} />
+          </Grid>
         )}
-        <Button style={{ margin: "10px" }}
-          mini={true}
-          color="secondary"
-          variant="fab"
-          onClick={this.removeEntry.bind(that)}>
-          <RemoveIcon />
-        </Button>
-      </div>
+        <Grid item={true} xs={3}>
+          <Button style={{ margin: "10px" }} mini={true} color="secondary"
+            variant="fab" onClick={this.removeEntry.bind(that)}>
+            <RemoveIcon />
+          </Button>
+        </Grid>
+      </Grid>
     );
   }
 
