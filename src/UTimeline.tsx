@@ -1,4 +1,4 @@
-import Button from "material-ui/Button";
+import Button from "@material-ui/core/Button";
 import * as React from "react";
 import { CTimeline, CTimelineEntry, EOutputType } from "./CTimeline";
 import UTimelineEntry from "./UTimelineEntry";
@@ -7,7 +7,7 @@ import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import SortIcon from '@material-ui/icons/Sort';
 
-import { Dialog, DialogActions, DialogContent, DialogContentText, Grid, MenuItem, Paper, TextField } from "material-ui";
+import { Dialog, DialogActions, DialogContent, DialogContentText, Grid, MenuItem, Paper, TextField } from "@material-ui/core";
 
 import { arrayMove, SortableContainer, SortableElement, SortableHandle, SortEnd, SortEvent } from "react-sortable-hoc";
 import BStyles from "./BStyles";

@@ -6,9 +6,10 @@ import AddIcon from '@material-ui/icons/Add';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ImportExportIcon from '@material-ui/icons/ImportExport';
 
-import Button from 'material-ui/Button';
-import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'material-ui/ExpansionPanel';
-import Typography from 'material-ui/Typography';
+import { ExpansionPanelDetails, ExpansionPanelSummary } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import Typography from '@material-ui/core/Typography';
 import CStoryboard from './CStoryboard';
 
 class UStoryboardState {

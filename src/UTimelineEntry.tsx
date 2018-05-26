@@ -1,12 +1,12 @@
-import Button from "material-ui/Button";
+import Button from "@material-ui/core/Button";
 
-import TextField from "material-ui/TextField";
+import TextField from "@material-ui/core/TextField";
 import * as React from "react";
 import { CTimelineEntry, EOutputType } from "./CTimeline";
 
+import Switch from "@material-ui/core/Switch";
 import RemoveIcon from '@material-ui/icons/Remove';
-import Switch from "material-ui/Switch";
-import BStyles from "./BStyles";
+// import BStyles from "./BStyles";
 
 class CTimelineEntryProps {
   public entry: CTimelineEntry;
@@ -35,7 +35,6 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
           onChange={this.onFieldChanged('time')}
           type="number"
           margin="normal"
-          style={BStyles.TextFieldStyle}
         />
         {this.props.outputType === EOutputType.Analog ?
           (<TextField
@@ -46,7 +45,6 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
             onChange={this.onFieldChanged('value')}
             type="number"
             margin="normal"
-            style={BStyles.TextFieldStyle}
           />) :
           (<Switch
             checked={this.state.entry.Value > 0}
@@ -64,7 +62,6 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
             onChange={this.onFieldChanged('duration')}
             type="number"
             margin="normal"
-            style={BStyles.TextFieldStyle}
           />
         )}
         <Button style={{ margin: "10px" }}
