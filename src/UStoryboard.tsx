@@ -74,8 +74,18 @@ class UStoryboard extends React.Component<any, UStoryboardState> {
     this.forceUpdate();
   }
 
-  private exportStoryboard() {
-    alert(this.state.storyboard.ExportToJson());
+  private exportStoryboard() {    
+    const text= this.state.storyboard.ExportToJson();
+    // download file json
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', "timeline.json");
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+    document.body.removeChild(element);
   }
 
 
