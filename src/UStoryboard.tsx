@@ -10,21 +10,21 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import Typography from '@material-ui/core/Typography';
 import CStoryboard from './CStoryboard';
 
-class UStoryboardState {
+class UStoryboardProps {
   public storyboard: CStoryboard;
 }
-class UStoryboard extends React.Component<any, UStoryboardState> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      storyboard: CStoryboard.CreateFromJson("")
-    };
+
+class UStoryboardState {  
+}
+class UStoryboard extends React.Component<UStoryboardProps, UStoryboardState> {
+  constructor(props: UStoryboardProps) {
+    super(props);    
   }
 
   public render() {
     const that = this;
 
-    const timelines = this.state.storyboard.Timelines.map((tl) => {
+    const timelines = this.props.storyboard.Timelines.map((tl) => {
       return (
         <ExpansionPanel key={tl.Key}>
           <ExpansionPanelSummary expandIcon={<ExpandMore />}>
@@ -42,7 +42,7 @@ class UStoryboard extends React.Component<any, UStoryboardState> {
 
     return (
       <div style={{ marginLeft: "5px", marginRight: "5px" }}>
-        <Typography style={{margin: "40px 0"}} variant="title" >Storyboard mode</Typography>
+        <Typography style={{margin: "40px 0"}} variant="h6" >Storyboard mode</Typography>
         {timelines}
         <Button style={{ position: "fixed", bottom: "10px", right: "10px" }}
           color="primary"
@@ -60,12 +60,12 @@ class UStoryboard extends React.Component<any, UStoryboardState> {
   }
 
   private addTimeline() {
-    this.state.storyboard.AddTimeline();
+    this.props.storyboard.AddTimeline();
     this.forceUpdate();
   }
 
   private removeTimeline(key: number) {
-    this.state.storyboard.RemoveTimeline(key);
+    this.props.storyboard.RemoveTimeline(key);
     this.forceUpdate();
   }
 
@@ -74,7 +74,7 @@ class UStoryboard extends React.Component<any, UStoryboardState> {
   }
 
   private exportStoryboard() {
-    const text = this.state.storyboard.ExportToJson();
+    const text = this.props.storyboard.ExportToJson();
     // download file json
     const element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));

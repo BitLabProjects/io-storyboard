@@ -16,6 +16,7 @@ import {
   DashboardOutlined, InfoOutlined,
   MenuOutlined, TimelineOutlined
 } from '@material-ui/icons';
+import CStoryboard from './CStoryboard';
 
 enum EAppPage {
   StoryboardModePage,
@@ -31,7 +32,7 @@ class AppState {
 class App extends React.Component<any, AppState> {
 
   private mTheme = createMuiTheme({
-    palette: {      
+    palette: {
     }
   });
 
@@ -40,7 +41,7 @@ class App extends React.Component<any, AppState> {
     this.state = {
       mainMenuOpen: false,
       aboutDialogOpen: false,
-      currentPage: EAppPage.StoryboardModePage
+      currentPage: EAppPage.DashboardPage
     };
   }
 
@@ -90,6 +91,8 @@ class App extends React.Component<any, AppState> {
         </List>
       </Drawer>);
 
+      const storyboard = CStoryboard.CreateFromJson("");
+
     return (
       <MuiThemeProvider theme={this.mTheme}>
         {mainMenu}
@@ -99,15 +102,15 @@ class App extends React.Component<any, AppState> {
             <IconButton color="inherit" aria-label="Menu" onClick={this.openMainMenu}>
               <MenuOutlined />
             </IconButton>
-            <Typography variant="title" color="inherit" >io.storyboard</Typography>
+            <Typography variant="h6" color="inherit" >io.storyboard</Typography>
           </Toolbar>
         </AppBar>
         <div style={{ marginTop: "100px" }}>
           {this.state.currentPage === EAppPage.StoryboardModePage &&
-            <UStoryboard />
+            <UStoryboard storyboard={storyboard} />
           }
           {this.state.currentPage === EAppPage.DashboardPage &&
-            <UDashboard />
+            <UDashboard storyboard={storyboard} />
           }
         </div>
       </MuiThemeProvider>
@@ -130,8 +133,12 @@ class App extends React.Component<any, AppState> {
 
   private setAppPage = (page: string) => () => {
     switch (page) {
-      case "storyboardMode": this.setState({ currentPage: EAppPage.StoryboardModePage }); break;
-      case "dashboardMode": this.setState({ currentPage: EAppPage.DashboardPage }); break;
+      case "storyboardMode": {
+        this.setState({ mainMenuOpen: false, currentPage: EAppPage.StoryboardModePage }); break;
+      }
+      case "dashboardMode": {
+        this.setState({ mainMenuOpen: false, currentPage: EAppPage.DashboardPage }); break;
+      }
     }
   }
 

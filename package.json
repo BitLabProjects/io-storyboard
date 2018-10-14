@@ -5,12 +5,18 @@
   "dependencies": {
     "@material-ui/core": "^3.2.0",
     "@material-ui/icons": "^3.0.1",
+    "@material-ui/lab": "^3.0.0-alpha.19",
     "@types/react-sortable-hoc": "^0.6.4",
+    "@types/socket.io-client": "^1.4.32",
     "gh-pages": "^2.0.1",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-scripts-ts": "^3.1.0",
-    "react-sortable-hoc": "^0.8.3"
+    "react-sortable-hoc": "^0.8.3",
+    "express": "^4.16.4",
+    "serialport": "^7.0.2",
+    "socket.io": "^2.1.1",
+    "socket.io-client": "^2.1.1"
   },
   "scripts": {
     "start": "react-scripts-ts start",
@@ -18,7 +24,8 @@
     "test": "react-scripts-ts test --env=jsdom",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "eject": "react-scripts-ts eject"
+    "eject": "react-scripts-ts eject",
+    "start-server": "node scripts/TCP-COM-server.js"
   },
   "devDependencies": {
     "@types/jest": "^23.3.5",
