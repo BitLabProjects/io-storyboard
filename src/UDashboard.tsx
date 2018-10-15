@@ -7,6 +7,10 @@ import * as SocketIOClient from 'socket.io-client';
 import CStoryboard from './CStoryboard';
 import UOutput from './UOutput';
 
+import { RingNetwork } from './ringnetwork/RingNetwork';
+import { RingPacket } from './ringnetwork/RingPacket';
+import { RingPacketParser } from './ringnetwork/RingPacketParser';
+
 class UDashboardProps {
   public storyboard: CStoryboard;
 }
@@ -18,6 +22,8 @@ class UDashboardState {
 class UDashboard extends React.Component<UDashboardProps, UDashboardState> {
 
   private mSocket: SocketIOClient.Socket;
+  private mRingPacketParser: RingPacketParser;
+  private mRingNetwork: RingNetwork;
 
   constructor(props: UDashboardProps) {
     super(props);
@@ -27,10 +33,22 @@ class UDashboard extends React.Component<UDashboardProps, UDashboardState> {
       receivedText: ""
     };
 
+    this.mRingNetwork = new RingNetwork();
+    this.mRingPacketParser = new RingPacketParser((packet: RingPacket) => {
+      console.log("Received packet");
+
+      this.mRingNetwork.handlePacket(packet);
+
+      // TODO Update packet hash;
+      this.mSocket.send(packet.toUint8Array());
+    });
+
     this.mSocket = SocketIOClient("http://localhost:3030");
-    this.mSocket.on("fromCOM", (data: string) => {
-      console.log(`Received: ${data}`);
-      this.setState({ receivedText: data });
+    this.mSocket.on("fromCOM", (data: ArrayBuffer) => {
+      this.mRingPacketParser.inputBytes(new Uint8Array(data));
+
+      const receivedBytes = Number(this.state.receivedText) + data.byteLength;
+      this.setState({ receivedText: String(receivedBytes) });
     })
   }
 
