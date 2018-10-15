@@ -30,6 +30,8 @@ export class RingPacketParser {
   }
 
   public inputBytes(bytes: Uint8Array) {
+    console.log(bytes);
+
     for (let i = 0; i < bytes.byteLength; i++) {
       const value = bytes[i];
 
@@ -86,6 +88,7 @@ export class RingPacketParser {
             if (this.rxDataReadIdx === this.rxPacket.header.dataSize) {
               this.rxState = RxState.ReceivePacketFooter_Hash0;
             }
+            break;
 
           case RxState.ReceivePacketFooter_Hash0:
             this.rxPacket.footer.hash[0] = value;

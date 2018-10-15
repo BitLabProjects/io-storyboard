@@ -89,10 +89,10 @@ export class RingPacket {
     result.push(RingNetworkProtocol.EndByte);
     return Uint8Array.from(result);
   }
-  
+
 }
 
-class PacketUtils {
+export class PacketUtils {
   public static pushEscaped(dst: number[], value: number) {
     if (value === RingNetworkProtocol.StartByte ||
       value === RingNetworkProtocol.EndByte ||
@@ -100,5 +100,17 @@ class PacketUtils {
       dst.push(RingNetworkProtocol.EscapeByte);
     }
     dst.push(value);
+  }
+
+  public static getString(data: number[], offset: number, maxLength: number): string {
+    let result = "";
+    for (let i = 0; i < maxLength; i++) {
+      const v = data[offset + i];
+      if (v === 0) {
+        break;
+      }
+      result = result + String.fromCharCode(v);
+    }
+    return result;
   }
 }

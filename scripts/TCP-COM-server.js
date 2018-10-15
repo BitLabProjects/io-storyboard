@@ -16,7 +16,7 @@ const sPort = new serialport(portName, {
   baudRate: 115200
 })
 
-let delimiter = [85]
+let delimiter = [170]
 const parser = sPort.pipe(new serialport.parsers.Delimiter({ delimiter : delimiter, includeDelimiter: true }));
 
 sPort.on('open', () => {

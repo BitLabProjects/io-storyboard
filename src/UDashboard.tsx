@@ -33,14 +33,15 @@ class UDashboard extends React.Component<UDashboardProps, UDashboardState> {
       receivedText: ""
     };
 
-    this.mRingNetwork = new RingNetwork();
+    this.mRingNetwork = new RingNetwork(123456789);
     this.mRingPacketParser = new RingPacketParser((packet: RingPacket) => {
       console.log("Received packet");
 
       this.mRingNetwork.handlePacket(packet);
 
       // TODO Update packet hash;
-      this.mSocket.send(packet.toUint8Array());
+      const packetAsUint8Array = packet.toUint8Array();
+      this.mSocket.emit('toCOM', packetAsUint8Array.buffer.slice(packetAsUint8Array.byteOffset, packetAsUint8Array.byteLength));
     });
 
     this.mSocket = SocketIOClient("http://localhost:3030");
