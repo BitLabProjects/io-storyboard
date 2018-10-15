@@ -30,6 +30,8 @@ export class RingPacketParser {
   }
 
   public inputBytes(bytes: Uint8Array) {
+    console.log(bytes);
+
     for (let i = 0; i < bytes.byteLength; i++) {
       const value = bytes[i];
 
