@@ -86,6 +86,7 @@ export class RingPacketParser {
             if (this.rxDataReadIdx === this.rxPacket.header.dataSize) {
               this.rxState = RxState.ReceivePacketFooter_Hash0;
             }
+            break;
 
           case RxState.ReceivePacketFooter_Hash0:
             this.rxPacket.footer.hash[0] = value;
