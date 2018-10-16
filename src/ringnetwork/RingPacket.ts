@@ -43,6 +43,16 @@ export class RingPacket {
     this.footer = new RingPacketFooter();
   }
 
+  public copyFrom(other: RingPacket) {
+    this.header.dataSize = other.header.dataSize;
+    this.header.control = other.header.control;
+    this.header.srcAddress = other.header.srcAddress;
+    this.header.dstAddress = other.header.dstAddress;
+    this.header.ttl = other.header.ttl;
+    this.data = other.data.slice();
+    this.footer.hash = other.footer.hash.slice();
+  }
+
   public isProtocolPacket(): boolean {
     // tslint:disable-next-line
     return (this.header.control & 1) === 0;

@@ -3,13 +3,9 @@ import * as React from 'react';
 import { Button, List, Paper, TextField, Typography } from '@material-ui/core';
 import { ImportExportOutlined } from '@material-ui/icons';
 
-import * as SocketIOClient from 'socket.io-client';
 import CStoryboard from './CStoryboard';
 import UOutput from './UOutput';
-
-import { RingNetwork } from './ringnetwork/RingNetwork';
-import { RingPacket } from './ringnetwork/RingPacket';
-import { RingPacketParser } from './ringnetwork/RingPacketParser';
+import { BitLabHost } from './BitLabHost';
 
 class UDashboardProps {
   public storyboard: CStoryboard;
@@ -20,11 +16,7 @@ class UDashboardState {
 }
 
 class UDashboard extends React.Component<UDashboardProps, UDashboardState> {
-
-  private mSocket: SocketIOClient.Socket;
-  private mRingPacketParser: RingPacketParser;
-  private mRingNetwork: RingNetwork;
-
+  private mHost: BitLabHost;
   constructor(props: UDashboardProps) {
     super(props);
 
@@ -33,24 +25,13 @@ class UDashboard extends React.Component<UDashboardProps, UDashboardState> {
       receivedText: ""
     };
 
-    this.mRingNetwork = new RingNetwork(123456789);
-    this.mRingPacketParser = new RingPacketParser((packet: RingPacket) => {
-      console.log("Received packet");
+    this.mHost = new BitLabHost();
 
-      this.mRingNetwork.handlePacket(packet);
+    setInterval(this.onInterval, 1000);
 
-      // TODO Update packet hash;
-      const packetAsUint8Array = packet.toUint8Array();
-      this.mSocket.emit('toCOM', packetAsUint8Array.buffer.slice(packetAsUint8Array.byteOffset, packetAsUint8Array.byteLength));
-    });
-
-    this.mSocket = SocketIOClient("http://localhost:3030");
-    this.mSocket.on("fromCOM", (data: ArrayBuffer) => {
-      this.mRingPacketParser.inputBytes(new Uint8Array(data));
-
-      const receivedBytes = Number(this.state.receivedText) + data.byteLength;
-      this.setState({ receivedText: String(receivedBytes) });
-    })
+    setTimeout(() => {
+      this.mHost.enumerateDevices();
+    }, 3000);
   }
 
   public render() {
@@ -88,6 +69,11 @@ class UDashboard extends React.Component<UDashboardProps, UDashboardState> {
     );
   }
 
+  private onInterval = () => {
+    const txt = `Packets: ${this.mHost.PacketsReceived}, Devices: ${JSON.stringify(this.mHost.EnumeratedDevicesAddresses)}`;
+    this.setState({receivedText: txt});
+  }
+
   private onTextToSendChanged = (event: any) => {
     this.setState({ textToSend: event.target.value });
   }
@@ -98,8 +84,8 @@ class UDashboard extends React.Component<UDashboardProps, UDashboardState> {
   }
 
   private sendDataToSocket = (data: any) => {
-    console.log(`Sent: ${data}`);
-    this.mSocket.emit('toCOM', data + "\n");
+    // console.log(`Sent: ${data}`);
+    // this.mSocket.emit('toCOM', data + "\n");
   }
 
 

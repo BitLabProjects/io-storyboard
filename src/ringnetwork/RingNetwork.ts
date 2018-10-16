@@ -6,7 +6,7 @@ enum MacState {
   Idle
 };
 
-enum PTxAction {
+export enum PTxAction {
   PassAlongDecreasingTTL,
   SendFreePacket,
   Send
@@ -17,9 +17,12 @@ export class RingNetwork {
   private macAddress: number;
   private macDeviceName: string;
 
-  constructor(private hardwareID: number) {
+  constructor(private hardwareID: number,
+              private onPacketReceived: (p: RingPacket, arg: { pTxAction: PTxAction }) => void) {
     this.macState = MacState.AddressNotAssigned;
   }
+
+  get MacAddress() { return this.macAddress; }
 
   public handlePacket(p: RingPacket) {
     const protocolMsgID = p.header.dataSize > 0 ? p.data[0] : RingNetworkProtocol.protocolMsgIDFree;
@@ -107,9 +110,61 @@ export class RingNetwork {
           pTxAction = PTxAction.PassAlongDecreasingTTL;
         }
         break;
-        
-      case MacState.Idle:
 
+      case MacState.Idle:
+        if (p.isForDstAddress(this.macAddress)) {
+          // Packets that are for me are considered read by default, the response is SendFreePacket
+          pTxAction = PTxAction.SendFreePacket;
+
+          if (p.isProtocolPacket()) {
+            switch (protocolMsgID) {
+              case RingNetworkProtocol.protocolMsgIDAddressClaim:
+                // We are not claiming an address and received an addressclaim packet: refuse the claimer
+                // since we are the one owning the address being claimed
+                break;
+
+              case RingNetworkProtocol.protocolMsgIDHello:
+                const arg = { 'pTxAction': pTxAction }
+                this.onPacketReceived(p, arg);
+                pTxAction = arg.pTxAction;
+                break;
+
+              default:
+                // Unknown protocol msgid, TODO signal
+                break;
+            }
+          }
+          else {
+            const arg = { 'pTxAction': pTxAction }
+            this.onPacketReceived(p, arg);
+            pTxAction = arg.pTxAction;
+          }
+        }
+        else {
+          if (protocolMsgID === RingNetworkProtocol.protocolMsgIDFree) {
+            // Defaults to SendFreePacket
+            pTxAction = PTxAction.SendFreePacket;
+
+            const arg = { 'pTxAction': pTxAction }
+            this.onPacketReceived(p, arg);
+            pTxAction = arg.pTxAction;
+          }
+          else if (p.isProtocolPacket() && protocolMsgID === RingNetworkProtocol.protocolMsgIDWhoAreYou) {
+            if (p.header.ttl <= 1) {
+              // this whoareyou is for us, answer
+              p.setHelloUsingSrcAsDst(this.macAddress);
+              pTxAction = PTxAction.Send;
+            }
+            else {
+              // this whoareyou is not for us, pass along
+              pTxAction = PTxAction.PassAlongDecreasingTTL;
+            }
+          }
+          else {
+            // Not for us, pass along
+            pTxAction = PTxAction.PassAlongDecreasingTTL;
+          }
+        }
         break;
     }
 
