@@ -12,11 +12,13 @@ export class BitLabHost {
   private mPacketsReceived: number;
   private mEnumeratedDevicesAddresses: number[];
   private mPendingPromise: IPendingPromise | null;
+  private mLastLedState: number;
 
   constructor() {
     this.mPacketsReceived = 0;
     this.mEnumeratedDevicesAddresses = [];
     this.mPendingPromise = null;
+    this.mLastLedState = 0;
 
     this.mRingNetwork = new RingNetwork(123456789, this.onPacketReceived);
     this.mRingPacketParser = new RingPacketParser((packet: RingPacket) => {
@@ -61,6 +63,18 @@ export class BitLabHost {
       }
     }
     console.log(`enumerateDevices finish, ${this.mEnumeratedDevicesAddresses.length} found`);
+  }
+
+  public async toggleLed() {
+    this.mLastLedState = 1 - this.mLastLedState;
+    const p = new RingPacket();
+    p.header.dataSize = 2;
+    p.header.control = 1;
+    p.header.srcAddress = this.mRingNetwork.MacAddress;
+    p.header.dstAddress = this.mEnumeratedDevicesAddresses[0];
+    p.header.ttl = RingNetworkProtocol.ttlMax;
+    p.data = [1, this.mLastLedState];
+    await this.waitFreeAndSend(p);
   }
 
   // private async waitFreePacket(): Promise<PacketAndPTxAction> {

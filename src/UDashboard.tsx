@@ -78,9 +78,10 @@ class UDashboard extends React.Component<UDashboardProps, UDashboardState> {
     this.setState({ textToSend: event.target.value });
   }
 
-  private sendDataFromTerminal = () => {
+  private sendDataFromTerminal = async () => {
     // send text to COM port   
-    this.sendDataToSocket(this.state.textToSend);
+    // this.sendDataToSocket(this.state.textToSend);
+    await this.mHost.toggleLed();
   }
 
   private sendDataToSocket = (data: any) => {
