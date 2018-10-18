@@ -70,8 +70,8 @@ class UDashboard extends React.Component<UDashboardProps, UDashboardState> {
   }
 
   private onInterval = () => {
-    const txt = `Packets: ${this.mHost.PacketsReceived}, Devices: ${JSON.stringify(this.mHost.EnumeratedDevicesAddresses)}`;
-    this.setState({receivedText: txt});
+    // const txt = `Packets: ${this.mHost.PacketsReceived}, Devices: ${JSON.stringify(this.mHost.EnumeratedDevicesAddresses)}`;
+    // this.setState({receivedText: txt});
   }
 
   private onTextToSendChanged = (event: any) => {
