@@ -8,7 +8,7 @@ import { Remove } from '@material-ui/icons';
 import { Dialog, DialogActions, DialogContent, DialogContentText, Grid, MenuItem, Paper, TextField, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
 
 import { ExpandMore } from "@material-ui/icons";
-import { AreaChart, XAxis, YAxis, Area, Tooltip } from "recharts";
+import { AreaChart, XAxis, YAxis, Area, Tooltip, ResponsiveContainer } from "recharts";
 // import BStyles from "./BStyles";
 
 
@@ -58,7 +58,7 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
 
     this.props.timeline.Entries.forEach((entry) => {
       tlData.push({
-        time: entry.Time, value: entry.Value
+        time: entry.Time * 0.001, value: entry.Value
       });
     });
 
@@ -66,13 +66,17 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
       <ExpansionPanel key={this.props.timeline.key}>
         <ExpansionPanelSummary expandIcon={<ExpandMore />}>
           <Typography>{this.props.timeline.Name}</Typography>
-          <AreaChart width={500} height={100} data={tlData}
-            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-            <XAxis dataKey="time" type="number" domain={this.props.zoomRange} allowDataOverflow />
-            <YAxis type="number" domain={[0, 100]} />
-            <Tooltip />
-            <Area type="linear" dataKey="value" stroke="#8884d8" />
-          </AreaChart>
+          <div style={{ width: "calc(100vw - 170px)" }} >
+            <ResponsiveContainer width="100%" height={100}>
+              <AreaChart data={tlData}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <XAxis dataKey="time" type="number" unit="s" tickCount={10} domain={this.props.zoomRange} allowDataOverflow />
+                <YAxis type="number" domain={[0, 100]} />
+                <Tooltip />
+                <Area type="linear" dataKey="value" stroke="#8884d8" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <div style={{ width: "100%" }}>
@@ -102,7 +106,7 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
             {removeDialog}
             <div style={{ display: "flex", flexDirection: "row", overflowX: "auto" }} >
               {this.props.timeline.Entries.map((entry, index) =>
-                (<Paper key={index} style={{ width: "100px", margin: "5px", padding: "10px" }} >
+                (<Paper key={entry.key} style={{ width: "100px", margin: "5px", padding: "10px" }} >
                   <UTimelineEntry
                     onUpdate={this.onUpdate}
                     entry={entry}
@@ -111,7 +115,7 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
                     outputType={this.props.timeline.OutputType} />
                 </Paper>)
               )}
-            </div>            
+            </div>
           </div>
         </ExpansionPanelDetails>
       </ExpansionPanel>

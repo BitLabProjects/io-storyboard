@@ -31,6 +31,8 @@ class AppState {
 
 class App extends React.Component<any, AppState> {
 
+  private mStoryboard: CStoryboard;
+
   private mTheme = createMuiTheme({
     palette: {
     }
@@ -38,6 +40,7 @@ class App extends React.Component<any, AppState> {
 
   constructor(props: any) {
     super(props);
+    this.mStoryboard = CStoryboard.CreateFromJson("");
     this.state = {
       mainMenuOpen: false,
       aboutDialogOpen: false,
@@ -91,26 +94,27 @@ class App extends React.Component<any, AppState> {
         </List>
       </Drawer>);
 
-      const storyboard = CStoryboard.CreateFromJson("");
-
     return (
       <MuiThemeProvider theme={this.mTheme}>
         {mainMenu}
         {aboutDialog}
         <AppBar>
-          <Toolbar>
+          <Toolbar disableGutters>
             <IconButton color="inherit" aria-label="Menu" onClick={this.openMainMenu}>
               <MenuOutlined />
             </IconButton>
-            <Typography variant="h6" color="inherit" >io.storyboard</Typography>
+            <Typography style={{ margin: "0px 20px" }} variant="h6" color="inherit" >io.storyboard</Typography>
+            <Typography style={{ margin: "0px 20px" }} variant="subtitle1" color="inherit" >
+              [{this.state.currentPage === EAppPage.StoryboardModePage ? "edit" : "dashboard"}]
+            </Typography>
           </Toolbar>
         </AppBar>
-        <div style={{ marginTop: "100px" }}>
+        <div style={{ marginTop: "64px" }}>
           {this.state.currentPage === EAppPage.StoryboardModePage &&
-            <UStoryboard storyboard={storyboard} />
+            <UStoryboard storyboard={this.mStoryboard} />
           }
           {this.state.currentPage === EAppPage.DashboardPage &&
-            <UDashboard storyboard={storyboard} />
+            <UDashboard storyboard={this.mStoryboard} />
           }
         </div>
       </MuiThemeProvider>

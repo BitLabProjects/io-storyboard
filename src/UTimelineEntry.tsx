@@ -30,11 +30,11 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
 
   public render() {
     return (
-      <div>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         <TextField id="time" label="Time" placeholder="Time"
           value={this.props.entry.Time}
           onChange={this.onFieldChanged('time')} type="number" margin="normal" fullWidth={true} />
-        <div style={{ height: "200px", margin: "10px" }}>
+        <div style={{ height: "200px", margin: "10px", display: "flex" }}>
           {this.props.outputType === EOutputType.Analog ?
             (<USlider vertical step={1}
               min={0} max={CTimelineEntry.MaxValue} defaultValue={this.props.entry.Value}

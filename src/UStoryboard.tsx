@@ -5,7 +5,6 @@ import UTimeline from './UTimeline';
 import { Add, ImportExport } from '@material-ui/icons';
 
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import CStoryboard from './CStoryboard';
 import USlider from './USlider';
 
@@ -13,7 +12,7 @@ class UStoryboardProps {
   public storyboard: CStoryboard;
 }
 
-class UStoryboardState {  
+class UStoryboardState {
   public zoomRange: [number, number];
 }
 class UStoryboard extends React.Component<UStoryboardProps, UStoryboardState> {
@@ -22,14 +21,14 @@ class UStoryboard extends React.Component<UStoryboardProps, UStoryboardState> {
 
   constructor(props: UStoryboardProps) {
     super(props);
-    this.mMaxTime = this.props.storyboard.MaxTime;
-    this.state = {      
+    this.mMaxTime = this.props.storyboard.MaxTime * 0.001;
+    this.state = {
       zoomRange: [0, this.mMaxTime]
     };
   }
 
   public render() {
-    this.mMaxTime = this.props.storyboard.MaxTime;
+    this.mMaxTime = this.props.storyboard.MaxTime * 0.001;
     const timelines = this.props.storyboard.Timelines.map((tl) =>
       <UTimeline
         onUpdate={this.onUpdate}
@@ -40,12 +39,11 @@ class UStoryboard extends React.Component<UStoryboardProps, UStoryboardState> {
     );
 
     return (
-      <div style={{ marginLeft: "5px", marginRight: "5px" }}>
-        <Typography style={{ margin: "40px 0" }} variant="h6" >Storyboard mode</Typography>
-        <div>
-          <USlider label="Zoom start" min={0} max={this.mMaxTime} step={1000}
+      <div style={{ margin: "0px 5px" }}>
+        <div style={{ margin: "10px" }}>
+          <USlider label="Zoom start" min={0} max={this.mMaxTime} step={1}
             defaultValue={this.state.zoomRange[0]} onValueApplied={this.onZoomChange("start")} />
-          <USlider label="Zoom end" min={0} max={this.mMaxTime} step={1000}
+          <USlider label="Zoom end" min={0} max={this.mMaxTime} step={1}
             defaultValue={this.state.zoomRange[1]} onValueApplied={this.onZoomChange("end")} />
         </div>
         {timelines}
@@ -85,7 +83,7 @@ class UStoryboard extends React.Component<UStoryboardProps, UStoryboardState> {
   };
 
   private onUpdate = () => {
-    this.setState({ });
+    this.setState({});
   }
 
   private exportStoryboard = () => {

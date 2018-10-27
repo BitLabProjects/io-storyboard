@@ -5,11 +5,15 @@ import { Slider } from "@material-ui/lab";
 
 const styles = createStyles({
   root: {
-    height: "100%",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
-    padding: "20px"
+    alignItems: "center"
+  },
+  slider: {
+    padding: '22px 0px',
+  },
+  verticalSlider: {
+    padding: '0px 22px',
   }
 });
 
@@ -41,11 +45,14 @@ class USlider extends React.Component<ISliderProps, ISliderState> {
 
   public render() {
     const { classes } = this.props;
+
+    const label = this.props.label ? this.props.label + " " : "";
     return (
       <div className={classes.root} >
-        <Typography style={{ padding: "10px 0" }} >{this.props.label || ""}&nbsp;({this.state.currValue})</Typography>
+        <Typography style={{ padding: "10px 0" }} >{label}({this.state.currValue})</Typography>
         <div style={{ width: this.props.vertical ? "auto" : "100%", height: "100%", display: "flex" }}>
           <Slider vertical={this.props.vertical}
+            classes={{ container: (this.props.vertical ? classes.verticalSlider : classes.slider) }}
             min={this.props.min} max={this.props.max} step={this.props.step}
             value={this.state.currValue} onChange={this.onChange} onDragEnd={this.onValueApplied} />
         </div>

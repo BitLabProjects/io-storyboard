@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Button, List, Paper, TextField, Typography } from '@material-ui/core';
+import { Button, Paper, TextField, Typography } from '@material-ui/core';
 import { ImportExportOutlined } from '@material-ui/icons';
 
 import CStoryboard from './CStoryboard';
@@ -37,14 +37,13 @@ class UDashboard extends React.Component<UDashboardProps, UDashboardState> {
   public render() {
 
     return (
-      <div style={{        
+      <div style={{
         marginLeft: "5px", marginRight: "5px",
         display: "flex", flexDirection: "column"
       }}>
-        <Typography style={{ margin: "40px 0" }} variant="h6" >Dashboard mode</Typography>
         <Paper style={{
-          display: "flex", flexDirection: "column", margin: "5px",
-          paddingLeft: "5px", paddingRight: "5px"
+          display: "flex", flexDirection: "column",
+          margin: "5px", padding: "5px"
         }} >
           <Typography style={{ margin: "20px 0px" }} variant="h5" >Command line</Typography>
           <TextField variant={"outlined"} label="Text to send" multiline
@@ -55,15 +54,18 @@ class UDashboard extends React.Component<UDashboardProps, UDashboardState> {
           <TextField variant={"outlined"} label="Text received" multiline value={this.state.receivedText} />
         </Paper>
         <Paper style={{
-          display: "flex", flexDirection: "column", margin: "5px",
-          paddingLeft: "5px", paddingRight: "5px"
+          display: "flex", flexDirection: "column",
+          margin: "5px", padding: "5px"
         }} >
           <Typography style={{ margin: "20px 0px" }} variant="h5" >Output</Typography>
-          <List>
+          <div style={{
+            margin: "5px", height: "400px",
+            display: "flex", flexDirection: "row", overflowX: "auto"
+          }} >
             {this.props.storyboard.Timelines.map((timeline) => (
               <UOutput timeline={timeline} onChange={this.sendDataToSocket} />
             ))}
-          </List>
+          </div>
         </Paper>
       </div>
     );

@@ -1,7 +1,6 @@
-import { Divider, Typography } from "@material-ui/core";
-import { Slider } from "@material-ui/lab";
 import * as React from "react";
-import { CTimeline } from "./CTimeline";
+import { CTimeline, CTimelineEntry } from "./CTimeline";
+import USlider from "./USlider";
 
 
 class UOutputProps {
@@ -20,16 +19,15 @@ class UOutput extends React.Component<UOutputProps, UOutputState> {
 
   public render() {
     return (
-      <div style={{ margin: "5px" }} >
-        <Typography>{this.props.timeline.Name}</Typography>
-        <Slider style={{ padding: "22px 0" }} step={1} value={this.state.currValue} onChange={this.onChange} />
-        <Divider />
+      <div style={{ display: "flex", margin: "20px 10px" }}>
+        <USlider min={0} max={CTimelineEntry.MaxValue} step={1} defaultValue={this.state.currValue}
+          vertical onChange={this.onChange} label={this.props.timeline.Name} />
       </div>
     );
   }
 
-  private onChange = (event: React.ChangeEvent<{}>, value: number) => {
-    this.props.onChange( `${this.props.timeline.Name}: ${value}`);
+  private onChange = (value: number) => {
+    this.props.onChange(`${this.props.timeline.Name}: ${value}`);
     this.setState({ currValue: value });
   }
 
