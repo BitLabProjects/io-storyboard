@@ -5,6 +5,8 @@ enum EOutputType {
 
 class CTimelineEntry {
 
+  public static readonly MaxValue: number = 100;
+
   private static nextKey: number = 0;
   public readonly key: number;
 
@@ -27,7 +29,7 @@ class CTimelineEntry {
     if (this.Value < other.Value) { return -1; }
     if (this.Value > other.Value) { return 1; }
     if (this.Duration < other.Duration) { return -1; }
-    if (this.Duration > other.Duration) { return 1; }    
+    if (this.Duration > other.Duration) { return 1; }
     return 0;
   }
 
@@ -51,14 +53,22 @@ class CTimeline {
   }
 
   public AddEntry(value: number, duration: number, time?: number): CTimelineEntry {
-    // if time undefined, calc based on last entry duration
-    let newLength: number;
-    if (time) {
-      newLength = this.Entries.push(new CTimelineEntry(time, value, duration));
-    } else {
-      newLength = this.Entries.push(new CTimelineEntry(this.mGetNextStartTime(), value, duration));
+    if (!time) {
+      // if time undefined, calc based on last entry duration
+      time = this.mGetNextStartTime();
     }
-    return this.Entries[newLength - 1];
+    const newEntry = new CTimelineEntry(time, value, duration);        
+
+    return this.Entries[this.Entries.push(newEntry) - 1];
+  }
+
+  public DuplicateEntry(key: number): CTimelineEntry {
+    const indexEntry = this.Entries.findIndex((entry, index, a) => entry.key === key);
+    const entryToDuplicate = this.Entries[indexEntry];
+    this.Entries.splice(indexEntry + 1, 0,
+      new CTimelineEntry(entryToDuplicate.Time + 1, entryToDuplicate.Value, entryToDuplicate.Duration));
+
+    return this.Entries[indexEntry + 1];
   }
 
   public RemoveEntry(key: number) {
@@ -67,6 +77,7 @@ class CTimeline {
       this.Entries.splice(indexToRemove, 1);
     }
   }
+
 
   public CheckEntriesOrder(): boolean {
     if (this.Entries.length > 0) {
@@ -90,7 +101,7 @@ class CTimeline {
     return newTimeline;
   }
 
-  public compareTo(other: CTimeline): number {    
+  public compareTo(other: CTimeline): number {
     if (this.Name < other.Name) { return -1; }
     if (this.Name > other.Name) { return 1; }
     if (this.OutputId < other.OutputId) { return -1; }

@@ -3,8 +3,7 @@ import * as React from "react";
 import { CTimeline, EOutputType } from "./CTimeline";
 import UTimelineEntry from "./UTimelineEntry";
 
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
+import { Remove } from '@material-ui/icons';
 
 import { Dialog, DialogActions, DialogContent, DialogContentText, Grid, MenuItem, Paper, TextField, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
 
@@ -76,7 +75,7 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
           </AreaChart>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <div>
+          <div style={{ width: "100%" }}>
             <Grid container={true}>
               <Grid item={true} xs={4} >
                 <TextField id="time" label="Name" placeholder="Name" value={this.props.timeline.Name}
@@ -96,40 +95,36 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
               <Grid item={true} xs={2}>
                 <Button style={{ margin: "10px" }} mini={true}
                   variant="fab" onClick={this.openRemoveConfirmDialog}>
-                  <RemoveIcon />
+                  <Remove />
                 </Button>
               </Grid>
             </Grid >
             {removeDialog}
-            {this.props.timeline.Entries.map((entry, index) =>
-              (<Paper key={index} style={{ margin: "5px", padding: "10px" }} >
-                <UTimelineEntry
-                  onUpdate={this.onUpdate}
-                  entry={entry}
-                  removeEntry={this.removeEntry}
-                  outputType={this.props.timeline.OutputType} />
-              </Paper>)
-            )}
-            <Button style={{ margin: "5px" }}
-              variant="fab"
-              onClick={this.addEntry}>
-              <AddIcon />
-            </Button>
+            <div style={{ display: "flex", flexDirection: "row", overflowX: "auto" }} >
+              {this.props.timeline.Entries.map((entry, index) =>
+                (<Paper key={index} style={{ width: "100px", margin: "5px", padding: "10px" }} >
+                  <UTimelineEntry
+                    onUpdate={this.onUpdate}
+                    entry={entry}
+                    removeEntry={this.removeEntry}
+                    duplicateEntry={this.duplicateEntry}
+                    outputType={this.props.timeline.OutputType} />
+                </Paper>)
+              )}
+            </div>            
           </div>
         </ExpansionPanelDetails>
       </ExpansionPanel>
     );
   }
 
-  private addEntry = () => {
-    this.props.timeline.AddEntry(0, 0);
+  private removeEntry = (key: number) => {
+    this.props.timeline.RemoveEntry(key);
     this.onUpdate();
   }
 
-  // removeEntry for real
-  private removeEntry = (key: number) => {
-    // this.props.timeline.RemoveEntry(this.state.entryKeyToRemove);
-    this.props.timeline.RemoveEntry(key);
+  private duplicateEntry = (key: number) => {
+    this.props.timeline.DuplicateEntry(key);
     this.onUpdate();
   }
 

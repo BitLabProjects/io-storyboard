@@ -26,6 +26,19 @@ class CStoryboard {
     this.Timelines = [];
   }
 
+  public get MaxTime(): number {
+    let maxValue: number = 0;
+    for (const timeline of this.Timelines) {      
+      for (const entry of timeline.Entries) {
+        const currTime = entry.Time+entry.Duration;
+        if(currTime>maxValue){
+          maxValue = currTime;
+        }
+      }
+    }
+    return maxValue
+  }
+
   public AddTimeline() {
     this.Timelines.push(new CTimeline("new timeline", 99, EOutputType.Analog));
   }
@@ -51,7 +64,8 @@ class CStoryboard {
     for (const tl of this.Timelines) {
       const entriesObj = [];
       for (const tle of tl.Entries) {
-        entriesObj.push({ "time": tle.Time, "value": tle.Value, "duration": tle.Duration });
+        // convert value [0-100] -> [0-4095]
+        entriesObj.push({ "time": tle.Time, "value": (tle.Value * 40.95).toFixed(0), "duration": tle.Duration });
       }
       //Additional reduntant entry with count of array entries in exported json
       timelinesObj.push({

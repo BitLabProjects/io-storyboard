@@ -7,30 +7,30 @@ import { Add, ImportExport } from '@material-ui/icons';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import CStoryboard from './CStoryboard';
-import { Slider } from '@material-ui/lab';
+import USlider from './USlider';
 
 class UStoryboardProps {
   public storyboard: CStoryboard;
 }
 
-class UStoryboardState {
-  public storyboard: CStoryboard;
-  public zoomRangePreview: [number, number];
+class UStoryboardState {  
   public zoomRange: [number, number];
 }
 class UStoryboard extends React.Component<UStoryboardProps, UStoryboardState> {
+
+  private mMaxTime: number;
+
   constructor(props: UStoryboardProps) {
     super(props);
-    this.state = {
-      storyboard: this.props.storyboard.clone(),
-      zoomRangePreview: [0, 350000],
-      zoomRange: [0, 350000]
+    this.mMaxTime = this.props.storyboard.MaxTime;
+    this.state = {      
+      zoomRange: [0, this.mMaxTime]
     };
   }
 
   public render() {
-
-    const timelines = this.state.storyboard.Timelines.map((tl) =>
+    this.mMaxTime = this.props.storyboard.MaxTime;
+    const timelines = this.props.storyboard.Timelines.map((tl) =>
       <UTimeline
         onUpdate={this.onUpdate}
         key={tl.key}
@@ -42,15 +42,11 @@ class UStoryboard extends React.Component<UStoryboardProps, UStoryboardState> {
     return (
       <div style={{ marginLeft: "5px", marginRight: "5px" }}>
         <Typography style={{ margin: "40px 0" }} variant="h6" >Storyboard mode</Typography>
-        <div style={{ padding: "20px" }}>
-          <Typography style={{ margin: "10px 0" }} variant="subtitle1" >Zoom start&nbsp;({this.state.zoomRangePreview[0]})</Typography>
-          <Slider style={{ padding: "10px 0px" }}
-            min={0} max={350000} step={5000}
-            value={this.state.zoomRangePreview[0]} onChange={this.onZoomChange("start")} onDragEnd={this.onZoomApply} />
-          <Typography style={{ margin: "10px 0" }} variant="subtitle1" >Zoom end&nbsp;({this.state.zoomRangePreview[1]})</Typography>
-          <Slider style={{ padding: "10px 0px" }}
-            min={0} max={350000} step={5000}
-            value={this.state.zoomRangePreview[1]} onChange={this.onZoomChange("end")} onDragEnd={this.onZoomApply} />
+        <div>
+          <USlider label="Zoom start" min={0} max={this.mMaxTime} step={1000}
+            defaultValue={this.state.zoomRange[0]} onValueApplied={this.onZoomChange("start")} />
+          <USlider label="Zoom end" min={0} max={this.mMaxTime} step={1000}
+            defaultValue={this.state.zoomRange[1]} onValueApplied={this.onZoomChange("end")} />
         </div>
         {timelines}
         <Button style={{ position: "fixed", bottom: "10px", right: "10px" }}
@@ -69,35 +65,31 @@ class UStoryboard extends React.Component<UStoryboardProps, UStoryboardState> {
   }
 
   private onZoomChange = (field: string) =>
-    (event: React.ChangeEvent<{}>, value: number) => {
+    (value: number) => {
       let [start, end] = this.state.zoomRange;
       switch (field) {
         case "start": start = value; break;
         case "end": end = value; break;
       }
-      this.setState({ zoomRangePreview: [start, end] });
+      this.setState({ zoomRange: [start, end] });
     }
 
-  private onZoomApply = () => {
-    this.setState({ zoomRange: this.state.zoomRangePreview });
-  }
-
   private addTimeline = () => {
-    this.state.storyboard.AddTimeline();
+    this.props.storyboard.AddTimeline();
     this.onUpdate();
   };
 
   private removeTimeline = (key: number) => {
-    this.state.storyboard.RemoveTimeline(key);
+    this.props.storyboard.RemoveTimeline(key);
     this.onUpdate();
   };
 
   private onUpdate = () => {
-    this.setState({ storyboard: this.state.storyboard.clone() });
+    this.setState({ });
   }
 
   private exportStoryboard = () => {
-    const text = this.state.storyboard.ExportToJson();
+    const text = this.props.storyboard.ExportToJson();
     // download file json
     const element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
