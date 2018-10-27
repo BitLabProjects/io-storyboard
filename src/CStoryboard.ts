@@ -3,8 +3,8 @@ import { CTimeline, EOutputType } from "./CTimeline";
 
 class CStoryboard {
 
-  public static CreateFromJson(jsonStr: string): CStoryboard {    
-    const jsonObj = BStoryboard.GetStoryboard0();
+  public static CreateFromJson(jsonStr: string): CStoryboard {
+    const jsonObj = BStoryboard.GetStoryboard1();
     const newStoryboard = new CStoryboard();
     for (const tl of jsonObj.timelines) {
       if (tl.name) {
@@ -31,10 +31,18 @@ class CStoryboard {
   }
 
   public RemoveTimeline(key: number) {
-    const indexToRemove = this.Timelines.findIndex((tl, index, a) => tl.Key === key);
+    const indexToRemove = this.Timelines.findIndex((tl, index, a) => tl.key === key);
     if (indexToRemove > -1) {
       this.Timelines.splice(indexToRemove, 1);
     }
+  }
+
+  public clone(): CStoryboard {
+    const newStoryboard = new CStoryboard();
+    newStoryboard.Timelines = this.Timelines.map((timeline) => {
+      return timeline.clone();
+    });
+    return newStoryboard;
   }
 
   /* tslint:disable */

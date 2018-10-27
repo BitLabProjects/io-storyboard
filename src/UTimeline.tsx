@@ -1,187 +1,163 @@
 import Button from "@material-ui/core/Button";
 import * as React from "react";
-import { CTimeline, CTimelineEntry, EOutputType } from "./CTimeline";
+import { CTimeline, EOutputType } from "./CTimeline";
 import UTimelineEntry from "./UTimelineEntry";
 
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
-import SortIcon from '@material-ui/icons/Sort';
 
-import { Dialog, DialogActions, DialogContent, DialogContentText, Grid, MenuItem, Paper, TextField } from "@material-ui/core";
+import { Dialog, DialogActions, DialogContent, DialogContentText, Grid, MenuItem, Paper, TextField, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
 
-import { arrayMove, SortableContainer, SortableElement, SortableHandle, SortEnd, SortEvent } from "react-sortable-hoc";
+import { ExpandMore } from "@material-ui/icons";
+import { AreaChart, XAxis, YAxis, Area, Tooltip } from "recharts";
 // import BStyles from "./BStyles";
 
 
 class CTimelineProps {
-  public timeline: CTimeline
-  public onRemove: (key: number) => void;
+  public timeline: CTimeline;
+  public zoomRange: [number, number];
   public onUpdate: () => void;
+  public onRemove: (key: number) => void;
 }
 class CTimelineState {
-  public timeline: CTimeline;
-  public entryKeyToAdd: number;
-  public entryKeyToRemove: number;
   public removeDialogOpen: boolean;
 }
 class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
 
-  private thisInstance: UTimeline;
-
   constructor(props: CTimelineProps) {
     super(props);
-    this.thisInstance = this;
     this.state = {
-      timeline: props.timeline,
-      entryKeyToAdd: -1,
-      entryKeyToRemove: -1,
       removeDialogOpen: false
     };
   }
 
+  // public shouldComponentUpdate(nextProps: CTimelineProps, nextState: CTimelineState): boolean {
+  //   let result = (this.state.prevTimeline.compareTo(nextProps.timeline) !== 0);
+  //   result = result || (this.state.removeDialogOpen !== nextState.removeDialogOpen);
+  //   console.log(this.props.timeline.Name + ': ' + result);
+  //   return result;
+  // }
+
   public render() {
-
-    const DragHandle = SortableHandle(() => <SortIcon />);
-
-    const SortableItem = SortableElement<{ value: CTimelineEntry }>(({ value }) =>
-      <Paper style={{ margin: "5px", padding: "10px" }} >
-        <Grid container={true} alignItems="center">
-          <Grid item={true} xs={1} >
-            <DragHandle />
-          </Grid>
-          <Grid item={true} xs={11} >
-            <UTimelineEntry
-              entry={value}
-              removeEntry={this.removeEntry.bind(this.thisInstance)}
-              outputType={this.state.timeline.OutputType} />
-          </Grid>
-        </Grid>
-      </Paper>
-    );
-    const SortableList = SortableContainer<{ items: CTimelineEntry[] }>(({ items }) => {
-      return (
-        <div>
-          {items.map((item, index) => (
-            <SortableItem key={item.Key} index={index} value={item} />
-          ))}
-        </div>
-      )
-    });
-
-    // const entries = this.state.timeline.Entries.map((entry) => {
-    //   return (
-    //     <Grow key={entry.Key}
-    //       in={this.state.entryKeyToRemove !== entry.Key}
-    //       onExited={this.removeEntry.bind(this.thisInstance)}>
-    //       <Paper style={{ margin: "5px", padding: "15px" }} >
-    //         <UTimelineEntry
-    //           entry={entry}
-    //           removeEntry={this.animateEntryRemoving.bind(this.thisInstance)}
-    //           outputType={this.state.timeline.OutputType} />
-    //       </Paper>
-    //     </Grow>
-    //   );
-    // });
 
     const removeDialog = (
       <Dialog
         open={this.state.removeDialogOpen}
-        onClose={this.closeRemoveConfirmDialog.bind(this.thisInstance)} >
+        onClose={this.closeRemoveConfirmDialog} >
         <DialogContent>
           <DialogContentText>
             Are you sure you want to remove the whole timeline?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button color="secondary" onClick={this.remove.bind(this.thisInstance)}>Remove timeline</Button>
+          <Button color="secondary" onClick={this.remove}>Remove timeline</Button>
         </DialogActions>
       </Dialog>);
 
-    return (
-      <div>
 
-        <Grid container={true}>
-          <Grid item={true} xs={4} >
-            <TextField id="time" label="Name" placeholder="Name" value={this.state.timeline.Name}
-              onChange={this.onFieldChanged('name')} margin="normal" fullWidth={true} />
-          </Grid>
-          <Grid item={true} xs={2}>
-            <TextField id="outputId" label="Output" placeholder="Output" value={this.state.timeline.OutputId}
-              onChange={this.onFieldChanged('output')} type="number" margin="normal" fullWidth={true} />
-          </Grid>
-          <Grid item={true} xs={4}>
-            <TextField id="outputType" label="Output Type" placeholder="Output Type" value={this.state.timeline.OutputType}
-              onChange={this.onFieldChanged('outputType')} select={true} margin="normal" fullWidth={true} >
-              <MenuItem key={EOutputType.Analog} value={EOutputType.Analog}>Analog</MenuItem>
-              <MenuItem key={EOutputType.Digital} value={EOutputType.Digital}>Digital</MenuItem>
-            </TextField>
-          </Grid>
-          <Grid item={true} xs={2}>
-            <Button style={{ margin: "10px" }} mini={true}
-              variant="fab" onClick={this.openRemoveConfirmDialog.bind(this.thisInstance)}>
-              <RemoveIcon />
+    const tlData: Array<{ time: number, value: number }> = [];
+
+    this.props.timeline.Entries.forEach((entry) => {
+      tlData.push({
+        time: entry.Time, value: entry.Value
+      });
+    });
+
+    return (
+      <ExpansionPanel key={this.props.timeline.key}>
+        <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+          <Typography>{this.props.timeline.Name}</Typography>
+          <AreaChart width={500} height={100} data={tlData}
+            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+            <XAxis dataKey="time" type="number" domain={this.props.zoomRange} allowDataOverflow />
+            <YAxis type="number" domain={[0, 100]} />
+            <Tooltip />
+            <Area type="linear" dataKey="value" stroke="#8884d8" />
+          </AreaChart>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <div>
+            <Grid container={true}>
+              <Grid item={true} xs={4} >
+                <TextField id="time" label="Name" placeholder="Name" value={this.props.timeline.Name}
+                  onChange={this.onFieldChanged('name')} margin="normal" fullWidth={true} />
+              </Grid>
+              <Grid item={true} xs={2}>
+                <TextField id="outputId" label="Output" placeholder="Output" value={this.props.timeline.OutputId}
+                  onChange={this.onFieldChanged('output')} type="number" margin="normal" fullWidth={true} />
+              </Grid>
+              <Grid item={true} xs={4}>
+                <TextField id="outputType" label="Output Type" placeholder="Output Type" value={this.props.timeline.OutputType}
+                  onChange={this.onFieldChanged('outputType')} select={true} margin="normal" fullWidth={true} >
+                  <MenuItem key={EOutputType.Analog} value={EOutputType.Analog}>Analog</MenuItem>
+                  <MenuItem key={EOutputType.Digital} value={EOutputType.Digital}>Digital</MenuItem>
+                </TextField>
+              </Grid>
+              <Grid item={true} xs={2}>
+                <Button style={{ margin: "10px" }} mini={true}
+                  variant="fab" onClick={this.openRemoveConfirmDialog}>
+                  <RemoveIcon />
+                </Button>
+              </Grid>
+            </Grid >
+            {removeDialog}
+            {this.props.timeline.Entries.map((entry, index) =>
+              (<Paper key={index} style={{ margin: "5px", padding: "10px" }} >
+                <UTimelineEntry
+                  onUpdate={this.onUpdate}
+                  entry={entry}
+                  removeEntry={this.removeEntry}
+                  outputType={this.props.timeline.OutputType} />
+              </Paper>)
+            )}
+            <Button style={{ margin: "5px" }}
+              variant="fab"
+              onClick={this.addEntry}>
+              <AddIcon />
             </Button>
-          </Grid>
-        </Grid >
-        {removeDialog}
-        <SortableList useDragHandle={true} lockAxis="y"
-          items={this.state.timeline.Entries}
-          onSortEnd={this.onSortEnd.bind(this.thisInstance)} />
-        <Button style={{ margin: "5px" }}
-          variant="fab"
-          onClick={this.addEntry.bind(this.thisInstance)}>
-          <AddIcon />
-        </Button>
-      </div>
+          </div>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
     );
   }
 
-  private addEntry() {
-    const newEntry = this.state.timeline.AddEntry(0, 0);
-    this.setState({ entryKeyToAdd: newEntry.Key });
+  private addEntry = () => {
+    this.props.timeline.AddEntry(0, 0);
+    this.onUpdate();
   }
-
-  // launch remove animation, onExit event will raise removeEntry
-  // private animateEntryRemoving(key: number) {
-  //   this.setState({ entryKeyToRemove: key });
-  // }
 
   // removeEntry for real
-  private removeEntry(key: number) {
-    // this.state.timeline.RemoveEntry(this.state.entryKeyToRemove);
-    this.state.timeline.RemoveEntry(key);
-    // reset key to remove
-    this.setState({ entryKeyToRemove: -1 });
+  private removeEntry = (key: number) => {
+    // this.props.timeline.RemoveEntry(this.state.entryKeyToRemove);
+    this.props.timeline.RemoveEntry(key);
+    this.onUpdate();
   }
 
-  private openRemoveConfirmDialog() {
+  private openRemoveConfirmDialog = () => {
     this.setState({ removeDialogOpen: true });
   }
-  private closeRemoveConfirmDialog() {
+  private closeRemoveConfirmDialog = () => {
     this.setState({ removeDialogOpen: false });
   }
 
-  private remove() {
+  private remove = () => {
     this.closeRemoveConfirmDialog();
-    this.props.onRemove(this.state.timeline.Key);
+    this.props.onRemove(this.props.timeline.key);
   }
 
-  private onFieldChanged(fieldName: string) {
-    return ((e: any) => {
+  private onFieldChanged = (fieldName: string) =>
+    (e: any) => {
       const newValue = e.target.value;
       switch (fieldName) {
-        case 'name': this.state.timeline.Name = newValue; break;
-        case 'output': this.state.timeline.OutputId = +newValue; break;
-        case 'outputType': this.state.timeline.OutputType = +newValue; break;
+        case 'name': this.props.timeline.Name = newValue; break;
+        case 'output': this.props.timeline.OutputId = +newValue; break;
+        case 'outputType': this.props.timeline.OutputType = +newValue; break;
       }
-      this.props.onUpdate();
-      this.forceUpdate();
-    });
-  }
+      this.onUpdate();
+    }
 
-  private onSortEnd(sort: SortEnd, event: SortEvent) {
-    this.state.timeline.Entries = arrayMove(this.state.timeline.Entries, sort.oldIndex, sort.newIndex);
-    this.forceUpdate();
+  private onUpdate = () => {
+    this.setState({});
   }
 
 }

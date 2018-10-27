@@ -203,9 +203,7 @@ class BStoryboard {
           "outputType": "1",
           "entries": [
             { "time": "25000", "value": "100", "duration": "0" },
-            { "time": "80000", "value": "0", "duration": "0" },
-            { "time": "25000", "value": "100", "duration": "0" },
-            { "time": "80000", "value": "0", "duration": "0" }
+            { "time": "80000", "value": "0", "duration": "0" }            
           ]
         },
         {

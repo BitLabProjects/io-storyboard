@@ -7,37 +7,43 @@ import { CTimelineEntry, EOutputType } from "./CTimeline";
 import { Grid } from "@material-ui/core";
 import Switch from "@material-ui/core/Switch";
 import RemoveIcon from '@material-ui/icons/Remove';
+import { Slider } from "@material-ui/lab";
 // import BStyles from "./BStyles";
 
 class CTimelineEntryProps {
   public entry: CTimelineEntry;
   public outputType: EOutputType;
+  public onUpdate: () => void;
   public removeEntry: (key: number) => void;
 }
 class UTimelineEntryState {
-  public entry: CTimelineEntry;
 }
 class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntryState> {
 
   constructor(props: CTimelineEntryProps) {
     super(props);
-    this.state = { entry: props.entry };
   }
+
+  // public shouldComponentUpdate(nextProps: CTimelineEntryProps, nextState: UTimelineEntryState): boolean {
+  //   return (this.props.entry.compareTo(nextProps.entry) !== 0);
+  // }
 
   public render() {
     const that = this;
     return (
-      <Grid container={true} >
+      <Grid container={true} alignItems="center" spacing={16} >
         <Grid item={true} xs={3} >
-          <TextField id="time" label="Time" placeholder="Time" value={this.state.entry.Time}
+          <TextField id="time" label="Time" placeholder="Time" 
+            value={this.props.entry.Time}
             onChange={this.onFieldChanged('time')} type="number" margin="normal" fullWidth={true} />
         </Grid>
-        <Grid item={true} xs={3}>
+        <Grid item={true} xs={4}>
           {this.props.outputType === EOutputType.Analog ?
-            (<TextField id="value" label="Value" placeholder="Value" value={this.state.entry.Value}
-              onChange={this.onFieldChanged('value')} type="number" margin="normal" fullWidth={true} />) :
+            (<Slider style={{ padding: "22px 0" }} min={0} max={100} step={1}
+              value={this.props.entry.Value}
+              onChange={this.onSliderChanged} />) :
             (<Switch
-              checked={this.state.entry.Value > 0}
+              checked={this.props.entry.Value > 0}
               color="primary"
               onChange={this.onFieldChanged('digitalValue')}
               value="digitalValue"
@@ -46,11 +52,11 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
         </Grid>
         {this.props.outputType === EOutputType.Analog && (
           <Grid item={true} xs={3}>
-            <TextField id="duration" label="Duration" placeholder="Duration" value={this.state.entry.Duration}
+            <TextField id="duration" label="Duration" placeholder="Duration" value={this.props.entry.Duration}
               onChange={this.onFieldChanged('duration')} type="number" margin="normal" fullWidth={true} />
           </Grid>
         )}
-        <Grid item={true} xs={3}>
+        <Grid item={true} xs={2}>
           <Button style={{ margin: "10px" }} mini={true} color="secondary"
             variant="fab" onClick={this.removeEntry.bind(that)}>
             <RemoveIcon />
@@ -60,22 +66,25 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
     );
   }
 
-  private onFieldChanged(fieldName: string) {
-    return ((e: React.ChangeEvent<HTMLInputElement>) => {
+  private onFieldChanged = (fieldName: string) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
       switch (fieldName) {
         // operator '+' convert any object to number          
-        case 'time': this.state.entry.Time = +newValue; break;
-        case 'value': this.state.entry.Value = +newValue; break;
-        case 'digitalValue': e.target.checked ? this.state.entry.Value = 100 : this.state.entry.Value = 0; break;
-        case 'duration': this.state.entry.Duration = +newValue; break;
+        case 'time': this.props.entry.Time = +newValue; break;
+        case 'digitalValue': e.target.checked ? this.props.entry.Value = 100 : this.props.entry.Value = 0; break;
+        case 'duration': this.props.entry.Duration = +newValue; break;
       }
-      this.forceUpdate();
-    });
+      this.props.onUpdate();
+    }
+
+  private onSliderChanged = (event: React.ChangeEvent<{}>, value: number) => {
+    this.props.entry.Value = value;
+    this.props.onUpdate();
   }
 
-  private removeEntry() {
-    this.props.removeEntry(this.state.entry.Key);
+  private removeEntry = () => {
+    this.props.removeEntry(this.props.entry.key);
   }
 
 }

@@ -5,24 +5,38 @@ enum EOutputType {
 
 class CTimelineEntry {
 
-  private static NextKey: number = 0;
-  public readonly Key: number;
+  private static nextKey: number = 0;
+  public readonly key: number;
 
   constructor(
     public Time: number,
     public Value: number,
     public Duration: number,
   ) {
-    this.Key = CTimelineEntry.NextKey;
-    CTimelineEntry.NextKey += 1;
+    this.key = CTimelineEntry.nextKey;
+    CTimelineEntry.nextKey += 1;
+  }
+
+  public clone(): CTimelineEntry {
+    return new CTimelineEntry(this.Time, this.Value, this.Duration);
+  }
+
+  public compareTo(other: CTimelineEntry): number {
+    if (this.Time < other.Time) { return -1; }
+    if (this.Time > other.Time) { return 1; }
+    if (this.Value < other.Value) { return -1; }
+    if (this.Value > other.Value) { return 1; }
+    if (this.Duration < other.Duration) { return -1; }
+    if (this.Duration > other.Duration) { return 1; }    
+    return 0;
   }
 
 }
 
 class CTimeline {
 
-  private static NextKey: number = 0;
-  public readonly Key: number;
+  private static nextKey: number = 0;
+  public readonly key: number;
 
   public Entries: CTimelineEntry[];
 
@@ -32,8 +46,8 @@ class CTimeline {
     public OutputType: EOutputType
   ) {
     this.Entries = [];
-    this.Key = CTimeline.NextKey;
-    CTimeline.NextKey += 1;
+    this.key = CTimeline.nextKey;
+    CTimeline.nextKey += 1;
   }
 
   public AddEntry(value: number, duration: number, time?: number): CTimelineEntry {
@@ -48,7 +62,7 @@ class CTimeline {
   }
 
   public RemoveEntry(key: number) {
-    const indexToRemove = this.Entries.findIndex((entry, index, a) => entry.Key === key);
+    const indexToRemove = this.Entries.findIndex((entry, index, a) => entry.key === key);
     if (indexToRemove > -1) {
       this.Entries.splice(indexToRemove, 1);
     }
@@ -68,6 +82,35 @@ class CTimeline {
     return true;
   }
 
+  public clone(): CTimeline {
+    const newTimeline = new CTimeline(this.Name, this.OutputId, this.OutputType);
+    newTimeline.Entries = this.Entries.map((entry) => {
+      return entry.clone();
+    });
+    return newTimeline;
+  }
+
+  public compareTo(other: CTimeline): number {    
+    if (this.Name < other.Name) { return -1; }
+    if (this.Name > other.Name) { return 1; }
+    if (this.OutputId < other.OutputId) { return -1; }
+    if (this.OutputId > other.OutputId) { return 1; }
+    if (this.OutputType < other.OutputType) { return -1; }
+    if (this.OutputType > other.OutputType) { return 1; }
+
+    if (this.Entries.length < other.Entries.length) { return -1; }
+    if (this.Entries.length > other.Entries.length) { return 1; }
+
+    for (let i = 0; i < this.Entries.length; i++) {
+      const thisEntry = this.Entries[i];
+      const otherEntry = other.Entries[i];
+      const compare = thisEntry.compareTo(otherEntry);
+      if (compare !== 0) { return compare; }
+    }
+
+    return 0;
+  }
+
   // calc start time based on entry position
   private mGetNextStartTime(): number {
     let nextTime = 0;
@@ -77,6 +120,7 @@ class CTimeline {
     }
     return nextTime;
   }
+
 }
 
 export { EOutputType, CTimelineEntry, CTimeline };

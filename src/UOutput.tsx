@@ -28,7 +28,7 @@ class UOutput extends React.Component<UOutputProps, UOutputState> {
     );
   }
 
-  private onChange = (event: any, value: any) => {
+  private onChange = (event: React.ChangeEvent<{}>, value: number) => {
     this.props.onChange( `${this.props.timeline.Name}: ${value}`);
     this.setState({ currValue: value });
   }
