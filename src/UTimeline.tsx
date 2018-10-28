@@ -5,7 +5,7 @@ import UTimelineEntry from "./UTimelineEntry";
 
 import { Remove } from '@material-ui/icons';
 
-import { Dialog, DialogActions, DialogContent, DialogContentText, Grid, MenuItem, Paper, TextField, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
+import { Dialog, DialogActions, DialogContent, DialogContentText, MenuItem, Paper, TextField, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
 
 import { ExpandMore } from "@material-ui/icons";
 import { AreaChart, XAxis, YAxis, Area, Tooltip, ResponsiveContainer } from "recharts";
@@ -58,19 +58,19 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
 
     this.props.timeline.Entries.forEach((entry) => {
       tlData.push({
-        time: entry.Time * 0.001, value: entry.Value
+        time: entry.Time, value: entry.Value
       });
     });
 
     return (
-      <ExpansionPanel key={this.props.timeline.key}>
+      <ExpansionPanel key={this.props.timeline.key} style={{ width: "100%" }}>
         <ExpansionPanelSummary expandIcon={<ExpandMore />}>
           <Typography>{this.props.timeline.Name}</Typography>
           <div style={{ width: "calc(100vw - 170px)" }} >
             <ResponsiveContainer width="100%" height={100}>
               <AreaChart data={tlData}
                 margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                <XAxis dataKey="time" type="number" unit="s" tickCount={10} domain={this.props.zoomRange} allowDataOverflow />
+                <XAxis dataKey="time" type="number" tickCount={10} domain={this.props.zoomRange} allowDataOverflow />
                 <YAxis type="number" domain={[0, 100]} />
                 <Tooltip />
                 <Area type="linear" dataKey="value" stroke="#8884d8" />
@@ -80,29 +80,21 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <div style={{ width: "100%" }}>
-            <Grid container={true}>
-              <Grid item={true} xs={4} >
-                <TextField id="time" label="Name" placeholder="Name" value={this.props.timeline.Name}
-                  onChange={this.onFieldChanged('name')} margin="normal" fullWidth={true} />
-              </Grid>
-              <Grid item={true} xs={2}>
-                <TextField id="outputId" label="Output" placeholder="Output" value={this.props.timeline.OutputId}
-                  onChange={this.onFieldChanged('output')} type="number" margin="normal" fullWidth={true} />
-              </Grid>
-              <Grid item={true} xs={4}>
-                <TextField id="outputType" label="Output Type" placeholder="Output Type" value={this.props.timeline.OutputType}
-                  onChange={this.onFieldChanged('outputType')} select={true} margin="normal" fullWidth={true} >
-                  <MenuItem key={EOutputType.Analog} value={EOutputType.Analog}>Analog</MenuItem>
-                  <MenuItem key={EOutputType.Digital} value={EOutputType.Digital}>Digital</MenuItem>
-                </TextField>
-              </Grid>
-              <Grid item={true} xs={2}>
-                <Button style={{ margin: "10px" }} mini={true}
-                  variant="fab" onClick={this.openRemoveConfirmDialog}>
-                  <Remove />
-                </Button>
-              </Grid>
-            </Grid >
+            <div style={{ display: "flex" }}>
+              <TextField id="time" label="Name" placeholder="Name" value={this.props.timeline.Name}
+                onChange={this.onFieldChanged('name')} margin="normal" />
+              <TextField id="outputId" label="Output" placeholder="Output" value={this.props.timeline.OutputId}
+                onChange={this.onFieldChanged('output')} type="number" margin="normal" />
+              <TextField id="outputType" label="Output Type" placeholder="Output Type" value={this.props.timeline.OutputType}
+                onChange={this.onFieldChanged('outputType')} select={true} margin="normal" >
+                <MenuItem key={EOutputType.Analog} value={EOutputType.Analog}>Analog</MenuItem>
+                <MenuItem key={EOutputType.Digital} value={EOutputType.Digital}>Digital</MenuItem>
+              </TextField>
+              <Button style={{ margin: "10px" }} mini={true}
+                variant="fab" onClick={this.openRemoveConfirmDialog}>
+                <Remove />
+              </Button>
+            </div>
             {removeDialog}
             <div style={{ display: "flex", flexDirection: "row", overflowX: "auto" }} >
               {this.props.timeline.Entries.map((entry, index) =>

@@ -4,14 +4,16 @@ import { CTimeline, EOutputType } from "./CTimeline";
 class CStoryboard {
 
   public static CreateFromJson(jsonStr: string): CStoryboard {
-    const jsonObj = BStoryboard.GetStoryboard1();
+    const jsonObj = BStoryboard.GetStoryboard2();
     const newStoryboard = new CStoryboard();
     for (const tl of jsonObj.timelines) {
       if (tl.name) {
         const newTimeline = new CTimeline(tl.name, +tl.outputId, +tl.outputType);
         for (const tle of tl.entries) {
           if (tle.value) {
-            newTimeline.AddEntry(+tle.value, +tle.duration, +tle.time);
+            // convert time values from milliseconds to seconds
+            // convert value [0-4095] -> [0-100]
+            newTimeline.AddEntry(+tle.value / 40.95, +tle.duration / 1000, +tle.time / 1000);
           }
         }
         newStoryboard.Timelines.push(newTimeline);
@@ -28,10 +30,10 @@ class CStoryboard {
 
   public get MaxTime(): number {
     let maxValue: number = 0;
-    for (const timeline of this.Timelines) {      
+    for (const timeline of this.Timelines) {
       for (const entry of timeline.Entries) {
-        const currTime = entry.Time+entry.Duration;
-        if(currTime>maxValue){
+        const currTime = entry.Time + entry.Duration;
+        if (currTime > maxValue) {
           maxValue = currTime;
         }
       }
@@ -58,16 +60,20 @@ class CStoryboard {
     return newStoryboard;
   }
 
-  /* tslint:disable */
   public ExportToJson(): string {
     const timelinesObj = [];
     for (const tl of this.Timelines) {
       const entriesObj = [];
       for (const tle of tl.Entries) {
-        // convert value [0-100] -> [0-4095]
-        entriesObj.push({ "time": tle.Time, "value": (tle.Value * 40.95).toFixed(0), "duration": tle.Duration });
+        // convert back time values from seconds to milliseconds
+        // convert back value [0-100] -> [0-4095]
+        entriesObj.push({
+          "time": tle.Time * 1000,
+          "value": (tle.Value * 40.95).toFixed(0),
+          "duration": tle.Duration * 1000
+        });
       }
-      //Additional reduntant entry with count of array entries in exported json
+      // Additional reduntant entry with count of array entries in exported json
       timelinesObj.push({
         "name": tl.Name,
         "outputId": tl.OutputId,
@@ -81,7 +87,6 @@ class CStoryboard {
       "timelines": timelinesObj
     });
   }
-  /* tslint:enable */
 
 }
 

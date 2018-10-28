@@ -5,7 +5,7 @@ import * as React from "react";
 import { CTimelineEntry, EOutputType } from "./CTimeline";
 
 import Switch from "@material-ui/core/Switch";
-import { Add, Remove } from '@material-ui/icons';
+import { ControlPointDuplicateOutlined, Remove } from '@material-ui/icons';
 import USlider from "./USlider";
 // import BStyles from "./BStyles";
 
@@ -34,17 +34,22 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
         <TextField id="time" label="Time" placeholder="Time"
           value={this.props.entry.Time}
           onChange={this.onFieldChanged('time')} type="number" margin="normal" fullWidth={true} />
-        <div style={{ height: "200px", margin: "10px", display: "flex" }}>
-          {this.props.outputType === EOutputType.Analog ?
-            (<USlider vertical step={1}
+        {this.props.outputType === EOutputType.Analog
+          ?
+          <div style={{ height: "200px", margin: "10px", display: "flex" }}>
+            <USlider vertical step={1}
               min={0} max={CTimelineEntry.MaxValue} defaultValue={this.props.entry.Value}
-              onChange={this.onSliderChanged} />) :
-            (<Switch
+              onChange={this.onSliderChanged} />
+          </div>
+          :
+          <div style={{ margin: "10px", display: "flex" }}>
+            <Switch
               checked={this.props.entry.Value > 0}
               color="primary"
               onChange={this.onFieldChanged('digitalValue')}
-              value="digitalValue" />)}
-        </div>
+              value="digitalValue" />
+          </div>
+        }
         {this.props.outputType === EOutputType.Analog && (
           <TextField id="duration" label="Duration" placeholder="Duration" value={this.props.entry.Duration}
             onChange={this.onFieldChanged('duration')} type="number" margin="normal" fullWidth={true} />
@@ -56,7 +61,7 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
           </Button>
           <Button style={{ margin: "5px" }} mini={true} color="secondary"
             variant="fab" onClick={this.addEntryAfterMe}>
-            <Add />
+            <ControlPointDuplicateOutlined />
           </Button>
         </div>
       </div>

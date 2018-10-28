@@ -5,6 +5,7 @@ enum EOutputType {
 
 class CTimelineEntry {
 
+  // use percent value
   public static readonly MaxValue: number = 100;
 
   private static nextKey: number = 0;
