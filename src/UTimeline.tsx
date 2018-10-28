@@ -53,22 +53,13 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
         </DialogActions>
       </Dialog>);
 
-
-    const tlData: Array<{ time: number, value: number }> = [];
-
-    this.props.timeline.Entries.forEach((entry) => {
-      tlData.push({
-        time: entry.Time, value: entry.Value
-      });
-    });
-
     return (
       <ExpansionPanel key={this.props.timeline.key} style={{ width: "100%" }}>
         <ExpansionPanelSummary expandIcon={<ExpandMore />}>
           <Typography>{this.props.timeline.Name}</Typography>
-          <div style={{ width: "calc(100vw - 170px)" }} >
+          <div style={{ width: "calc(100vw - 200px)" }} >
             <ResponsiveContainer width="100%" height={100}>
-              <AreaChart data={tlData}
+              <AreaChart data={this.mCalcDataForGraph()}
                 margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <XAxis dataKey="time" type="number" tickCount={10} domain={this.props.zoomRange} allowDataOverflow />
                 <YAxis type="number" domain={[0, 100]} />
@@ -112,6 +103,20 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
         </ExpansionPanelDetails>
       </ExpansionPanel>
     );
+  }
+
+  private mCalcDataForGraph = () => {
+    // build ramp from last value to target value after duration
+    const data: Array<{ time: number, value: number }> = [];
+    let lastValue = 0;
+    for (const entry of this.props.timeline.Entries) {
+      const entryBegin = { time: entry.Time, value: lastValue };
+      const entryEnd = { time: entry.Time + entry.Duration, value: entry.Value };
+      lastValue = entry.Value;
+      data.push(entryBegin);
+      data.push(entryEnd);
+    }
+    return data;
   }
 
   private removeEntry = (key: number) => {

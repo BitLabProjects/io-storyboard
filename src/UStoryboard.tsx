@@ -51,7 +51,7 @@ class UStoryboard extends React.Component<UStoryboardProps, UStoryboardState> {
 
     const SortableList = SortableContainer<{ items: CTimeline[] }>(({ items }) => {
       return (
-        <div style={{ overflowX: "auto" }}>
+        <div>
           {items.map((item, index) => (
             <SortableItem key={item.key} index={index} value={item} />
           ))}

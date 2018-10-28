@@ -8,13 +8,11 @@ class CStoryboard {
     const newStoryboard = new CStoryboard();
     for (const tl of jsonObj.timelines) {
       if (tl.name) {
-        const newTimeline = new CTimeline(tl.name, +tl.outputId, +tl.outputType);
+        const newTimeline = new CTimeline(tl.name, tl.outputId, tl.outputType);
         for (const tle of tl.entries) {
-          if (tle.value) {
-            // convert time values from milliseconds to seconds
-            // convert value [0-4095] -> [0-100]
-            newTimeline.AddEntry(+tle.value / 40.95, +tle.duration / 1000, +tle.time / 1000);
-          }
+          // convert time values from milliseconds to seconds
+          // convert value [0-4095] -> [0-100]
+          newTimeline.AddEntry(tle.value / 40.95, tle.duration / 1000, tle.time / 1000);
         }
         newStoryboard.Timelines.push(newTimeline);
       }
@@ -69,7 +67,7 @@ class CStoryboard {
         // convert back value [0-100] -> [0-4095]
         entriesObj.push({
           "time": tle.Time * 1000,
-          "value": (tle.Value * 40.95).toFixed(0),
+          "value": +(tle.Value * 40.95).toFixed(0),
           "duration": tle.Duration * 1000
         });
       }

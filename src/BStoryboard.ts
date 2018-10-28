@@ -2,50 +2,50 @@
 
 class BStoryboard {
 
-  public static GetStoryboard0(): any {
+  public static GetStoryboard0() {
     return ({
       "timelines": [
         {
           "name": "timeline0",
-          "outputId": "1",
-          "outputType": "0",
+          "outputId": 1,
+          "outputType": 0,
           "entries": [
             {
-              "time": "0",
-              "value": "100",
-              "duration": "500"
+              "time": 0,
+              "value": 4095,
+              "duration": 5000
             },
             {
-              "time": "500",
-              "value": "20",
-              "duration": "250"
+              "time": 5000,
+              "value": 20,
+              "duration": 2500
             },
             {
-              "time": "750",
-              "value": "50",
-              "duration": "100"
+              "time": 7500,
+              "value": 2048,
+              "duration": 1000
             }
           ]
         },
         {
           "name": "timeline1",
-          "outputId": "2",
-          "outputType": "1",
+          "outputId": 2,
+          "outputType": 1,
           "entries": [
             {
-              "time": "0",
-              "value": "1",
-              "duration": "125"
+              "time": 0,
+              "value": 4095,
+              "duration": 0
             },
             {
-              "time": "125",
-              "value": "0",
-              "duration": "1000"
+              "time": 1250,
+              "value": 0,
+              "duration": 0
             },
             {
-              "time": "1125",
-              "value": "1",
-              "duration": "250"
+              "time": 11250,
+              "value": 4095,
+              "duration": 0
             }
           ]
         }
@@ -433,7 +433,7 @@ class BStoryboard {
   }
 
   // values normalized to [0-4095]
-  public static GetStoryboard2(): any {
+  public static GetStoryboard2() {
     return ({
       "timelinesCount": 40,
       "timelines": [
@@ -445,17 +445,17 @@ class BStoryboard {
           "entries": [
             {
               "time": 0,
-              "value": "0",
+              "value": 0,
               "duration": 10000
             },
             {
               "time": 10000,
-              "value": "4095",
+              "value": 4095,
               "duration": 44000
             },
             {
               "time": 54000,
-              "value": "0",
+              "value": 41,
               "duration": 65000
             }
           ]
@@ -468,22 +468,22 @@ class BStoryboard {
           "entries": [
             {
               "time": 0,
-              "value": "0",
-              "duration": 11000
+              "value": 41,
+              "duration": 10000
             },
             {
               "time": 11000,
-              "value": "3276",
+              "value": 3276,
               "duration": 58000
             },
             {
               "time": 69000,
-              "value": "3276",
+              "value": 3235,
               "duration": 110000
             },
             {
               "time": 179000,
-              "value": "0",
+              "value": 0,
               "duration": 45000
             }
           ]
@@ -496,22 +496,22 @@ class BStoryboard {
           "entries": [
             {
               "time": 0,
-              "value": "0",
+              "value": 0,
               "duration": 40000
             },
             {
               "time": 40000,
-              "value": "2457",
+              "value": 2457,
               "duration": 50000
             },
             {
               "time": 90000,
-              "value": "2457",
+              "value": 2457,
               "duration": 80000
             },
             {
               "time": 170000,
-              "value": "0",
+              "value": 0,
               "duration": 50000
             }
           ]
@@ -524,17 +524,17 @@ class BStoryboard {
           "entries": [
             {
               "time": 0,
-              "value": "0",
+              "value": 0,
               "duration": 160000
             },
             {
               "time": 160000,
-              "value": "2457",
+              "value": 2457,
               "duration": 20000
             },
             {
               "time": 180000,
-              "value": "0",
+              "value": 0,
               "duration": 50000
             }
           ]
@@ -547,22 +547,22 @@ class BStoryboard {
           "entries": [
             {
               "time": 0,
-              "value": "0",
+              "value": 0,
               "duration": 280000
             },
             {
               "time": 280000,
-              "value": "1638",
+              "value": 1638,
               "duration": 20000
             },
             {
               "time": 300000,
-              "value": "1638",
+              "value": 1638,
               "duration": 30000
             },
             {
               "time": 330000,
-              "value": "0",
+              "value": 0,
               "duration": 20000
             }
           ]
@@ -575,22 +575,22 @@ class BStoryboard {
           "entries": [
             {
               "time": 0,
-              "value": "0",
+              "value": 0,
               "duration": 185000
             },
             {
               "time": 185000,
-              "value": "1024",
+              "value": 1024,
               "duration": 50000
             },
             {
               "time": 235000,
-              "value": "1024",
+              "value": 1024,
               "duration": 50000
             },
             {
               "time": 285000,
-              "value": "0",
+              "value": 0,
               "duration": 15000
             }
           ]
@@ -603,22 +603,22 @@ class BStoryboard {
           "entries": [
             {
               "time": 0,
-              "value": "0",
+              "value": 0,
               "duration": 245000
             },
             {
               "time": 245000,
-              "value": "1638",
+              "value": 1638,
               "duration": 15000
             },
             {
               "time": 260000,
-              "value": "1638",
+              "value": 1638,
               "duration": 20000
             },
             {
               "time": 280000,
-              "value": "0",
+              "value": 0,
               "duration": 12000
             }
           ]
@@ -631,22 +631,22 @@ class BStoryboard {
           "entries": [
             {
               "time": 0,
-              "value": "0",
+              "value": 0,
               "duration": 250000
             },
             {
               "time": 250000,
-              "value": "1843",
+              "value": 1843,
               "duration": 50000
             },
             {
               "time": 300000,
-              "value": "1843",
+              "value": 1843,
               "duration": 40000
             },
             {
               "time": 340000,
-              "value": "0",
+              "value": 0,
               "duration": 25000
             }
           ]
@@ -666,22 +666,22 @@ class BStoryboard {
           "entries": [
             {
               "time": 3000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 100000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             },
             {
               "time": 180000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 240000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -701,22 +701,22 @@ class BStoryboard {
           "entries": [
             {
               "time": 28000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 90000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             },
             {
               "time": 180000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 220000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -729,22 +729,22 @@ class BStoryboard {
           "entries": [
             {
               "time": 25000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 65000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             },
             {
               "time": 175000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 230000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -757,12 +757,12 @@ class BStoryboard {
           "entries": [
             {
               "time": 60000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 225000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -775,12 +775,12 @@ class BStoryboard {
           "entries": [
             {
               "time": 25000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 80000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -793,12 +793,12 @@ class BStoryboard {
           "entries": [
             {
               "time": 55000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 220000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -811,12 +811,12 @@ class BStoryboard {
           "entries": [
             {
               "time": 65000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 185000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -829,22 +829,22 @@ class BStoryboard {
           "entries": [
             {
               "time": 10000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 95000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             },
             {
               "time": 155000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 255000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -857,12 +857,12 @@ class BStoryboard {
           "entries": [
             {
               "time": 200000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 240000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -875,22 +875,22 @@ class BStoryboard {
           "entries": [
             {
               "time": 15000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 60000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             },
             {
               "time": 180000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 290000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -903,12 +903,12 @@ class BStoryboard {
           "entries": [
             {
               "time": 65000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 225000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -921,12 +921,12 @@ class BStoryboard {
           "entries": [
             {
               "time": 60000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 315000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -939,12 +939,12 @@ class BStoryboard {
           "entries": [
             {
               "time": 30000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 210000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -957,12 +957,12 @@ class BStoryboard {
           "entries": [
             {
               "time": 25000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 210000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -982,12 +982,12 @@ class BStoryboard {
           "entries": [
             {
               "time": 205000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 305000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -1000,12 +1000,12 @@ class BStoryboard {
           "entries": [
             {
               "time": 200000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 340000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -1018,12 +1018,12 @@ class BStoryboard {
           "entries": [
             {
               "time": 190000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 320000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -1036,12 +1036,12 @@ class BStoryboard {
           "entries": [
             {
               "time": 195000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 295000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -1061,12 +1061,12 @@ class BStoryboard {
           "entries": [
             {
               "time": 50000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 295000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -1093,22 +1093,22 @@ class BStoryboard {
           "entries": [
             {
               "time": 10000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 60000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             },
             {
               "time": 150000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 200000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -1121,42 +1121,42 @@ class BStoryboard {
           "entries": [
             {
               "time": 18000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 19000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             },
             {
               "time": 20000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 21000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             },
             {
               "time": 158000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 160000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             },
             {
               "time": 161000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 162000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -1176,12 +1176,12 @@ class BStoryboard {
           "entries": [
             {
               "time": 250000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 265000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -1194,12 +1194,12 @@ class BStoryboard {
           "entries": [
             {
               "time": 10000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 13000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -1212,12 +1212,12 @@ class BStoryboard {
           "entries": [
             {
               "time": 14000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 18000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
@@ -1230,12 +1230,12 @@ class BStoryboard {
           "entries": [
             {
               "time": 287000,
-              "value": "4095",
+              "value": 4095,
               "duration": 0
             },
             {
               "time": 302000,
-              "value": "0",
+              "value": 0,
               "duration": 0
             }
           ]
