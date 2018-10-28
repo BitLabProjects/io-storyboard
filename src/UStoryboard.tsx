@@ -2,75 +2,71 @@ import * as React from 'react';
 
 import UTimeline from './UTimeline';
 
-import { Add, Share } from '@material-ui/icons';
+import { Add, Share, ExpandMore } from '@material-ui/icons';
 
 import Button from '@material-ui/core/Button';
 import CStoryboard from './CStoryboard';
-import USlider from './USlider';
-import { Typography } from '@material-ui/core';
-import { SortOutlined } from '@material-ui/icons';
+import { Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 
-import { arrayMove, SortableContainer, SortableElement, SortableHandle, SortEnd, SortEvent } from "react-sortable-hoc";
-import { CTimeline } from './CTimeline';
+import UWorkspace from './UWorkspace';
 
-class UStoryboardProps {
-  public storyboard: CStoryboard;
+interface IStoryboardProps {
+  storyboard: CStoryboard;
 }
 
-class UStoryboardState {
-  public zoomRange: [number, number];
+interface IStoryboardState {
+  zoomRange: [number, number];
+  timelinesVisibility: boolean[];
 }
-class UStoryboard extends React.Component<UStoryboardProps, UStoryboardState> {
+class UStoryboard extends React.Component<IStoryboardProps, IStoryboardState> {
 
   private mMaxTime: number;
 
-  constructor(props: UStoryboardProps) {
+  constructor(props: IStoryboardProps) {
     super(props);
     this.mMaxTime = this.props.storyboard.MaxTime;
     this.state = {
-      zoomRange: [0, this.mMaxTime]
+      zoomRange: [0, this.mMaxTime],
+      timelinesVisibility: Array<boolean>(this.props.storyboard.Timelines.length).fill(true)
     };
   }
 
   public render() {
     this.mMaxTime = this.props.storyboard.MaxTime;
 
-    const DragHandle = SortableHandle(() => <SortOutlined style={{ margin: "5px" }} />);
+    const timelines: JSX.Element[] = [];
 
-    const SortableItem = SortableElement<{ value: CTimeline }>(({ value }) =>
-      <div style={{ display: "flex", alignItems: "center" }} key={value.key}>
-        <DragHandle />
-        <UTimeline
-          onUpdate={this.onUpdate}
-          timeline={value}
-          zoomRange={this.state.zoomRange}
-          onRemove={this.removeTimeline} />
-      </div>
-    );
-
-
-    const SortableList = SortableContainer<{ items: CTimeline[] }>(({ items }) => {
-      return (
-        <div>
-          {items.map((item, index) => (
-            <SortableItem key={item.key} index={index} value={item} />
-          ))}
-        </div>
-      )
-    });
+    for (let i = 0; i < this.props.storyboard.Timelines.length; i++) {
+      const tl = this.props.storyboard.Timelines[i];
+      if (this.state.timelinesVisibility[i]) {
+        timelines.push(
+          <UTimeline key={tl.key}
+            onUpdate={this.onUpdate}
+            timeline={tl}
+            zoomRange={this.state.zoomRange}
+            onRemove={this.removeTimeline} />
+        );
+      }
+    }
 
     return (
       <div style={{ margin: "0px 5px" }}>
         <Typography style={{ margin: "10px", fontStyle: "italic" }} >All time values are expressed in seconds</Typography>
-        <div style={{ margin: "10px" }}>
-          <USlider label="Zoom start" min={0} max={this.mMaxTime} step={1}
-            defaultValue={this.state.zoomRange[0]} onValueApplied={this.onZoomChange("start")} />
-          <USlider label="Zoom end" min={0} max={this.mMaxTime} step={1}
-            defaultValue={this.state.zoomRange[1]} onValueApplied={this.onZoomChange("end")} />
-        </div>
-        <SortableList lockAxis="y" useDragHandle
-          items={this.props.storyboard.Timelines} onSortEnd={this.onSortEnd} />
-        <Button style={{ position: "fixed", bottom: "10px", right: "10px" }}
+        <ExpansionPanel style={{ margin: "10px" }}>
+          <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+            <Typography>Workspace</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            <UWorkspace storyboard={this.props.storyboard}
+              zoomRange={this.state.zoomRange}
+              timelinesVisibility={this.state.timelinesVisibility}              
+              onZoomChange={this.onZoomChange}
+              onWorkspaceApplied={this.onWorkspaceApplied}
+            />
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+        {timelines}
+        < Button style={{ position: "fixed", bottom: "10px", right: "10px" }}
           color="primary"
           variant="fab"
           onClick={this.addTimeline}>
@@ -81,7 +77,7 @@ class UStoryboard extends React.Component<UStoryboardProps, UStoryboardState> {
           onClick={this.exportStoryboard}>
           <Share />
         </Button>
-      </div>
+      </div >
     );
   }
 
@@ -93,12 +89,11 @@ class UStoryboard extends React.Component<UStoryboardProps, UStoryboardState> {
         case "end": end = value; break;
       }
       this.setState({ zoomRange: [start, end] });
-    }
+    }  
 
-  private onSortEnd = (sort: SortEnd, event: SortEvent) => {
-    this.props.storyboard.Timelines = arrayMove<CTimeline>(this.props.storyboard.Timelines, sort.oldIndex, sort.newIndex);
+  private onWorkspaceApplied = ()=>{
     this.onUpdate();
-  };
+  }
 
   private addTimeline = () => {
     this.props.storyboard.AddTimeline();

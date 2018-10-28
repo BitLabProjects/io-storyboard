@@ -29,14 +29,7 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
       removeDialogOpen: false
     };
   }
-
-  // public shouldComponentUpdate(nextProps: CTimelineProps, nextState: CTimelineState): boolean {
-  //   let result = (this.state.prevTimeline.compareTo(nextProps.timeline) !== 0);
-  //   result = result || (this.state.removeDialogOpen !== nextState.removeDialogOpen);
-  //   console.log(this.props.timeline.Name + ': ' + result);
-  //   return result;
-  // }
-
+  
   public render() {
 
     const removeDialog = (
