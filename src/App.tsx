@@ -16,22 +16,22 @@ import {
   DashboardOutlined, InfoOutlined,
   MenuOutlined, TimelineOutlined
 } from '@material-ui/icons';
-import CStoryboard from './CStoryboard';
+import CStoryboard, { IStoryboard } from './CStoryboard';
+import BStoryboard from './BStoryboard';
 
 enum EAppPage {
   StoryboardModePage,
   DashboardPage
 }
 
-class AppState {
-  public mainMenuOpen: boolean;
-  public aboutDialogOpen: boolean;
-  public currentPage: EAppPage;
+interface IAppState {
+  mainMenuOpen: boolean;
+  aboutDialogOpen: boolean;
+  currentPage: EAppPage;
+  storyboard: CStoryboard;
 }
 
-class App extends React.Component<any, AppState> {
-
-  private mStoryboard: CStoryboard;
+class App extends React.Component<any, IAppState> {
 
   private mTheme = createMuiTheme({
     palette: {
@@ -40,16 +40,15 @@ class App extends React.Component<any, AppState> {
 
   constructor(props: any) {
     super(props);
-    this.mStoryboard = CStoryboard.CreateFromJson("");
     this.state = {
       mainMenuOpen: false,
       aboutDialogOpen: false,
-      currentPage: EAppPage.StoryboardModePage
+      currentPage: EAppPage.StoryboardModePage,
+      storyboard: CStoryboard.CreateFromJson(BStoryboard.GetStoryboard2())
     };
   }
 
   public render() {
-
 
     const d = new Date(2018, 10, 13, 14, 0);
     // yyyy.MM.dd.HHmm
@@ -111,10 +110,11 @@ class App extends React.Component<any, AppState> {
         </AppBar>
         <div style={{ marginTop: "64px" }}>
           {this.state.currentPage === EAppPage.StoryboardModePage &&
-            <UStoryboard storyboard={this.mStoryboard} />
+            <UStoryboard storyboard={this.state.storyboard}
+              onOpenLocalStoryboard={this.onOpenLocalStoryboard} />
           }
           {this.state.currentPage === EAppPage.DashboardPage &&
-            <UDashboard storyboard={this.mStoryboard} />
+            <UDashboard storyboard={this.state.storyboard} />
           }
         </div>
       </MuiThemeProvider>
@@ -133,6 +133,10 @@ class App extends React.Component<any, AppState> {
   }
   private closeMainMenu = () => {
     this.setState({ mainMenuOpen: false });
+  }
+
+  private onOpenLocalStoryboard = (sb: IStoryboard) => {
+    this.setState({ storyboard: CStoryboard.CreateFromJson(sb) });
   }
 
   private setAppPage = (page: string) => () => {

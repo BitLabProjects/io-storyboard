@@ -1,18 +1,36 @@
-import BStoryboard from "./BStoryboard";
 import { CTimeline, EOutputType } from "./CTimeline";
+
+export interface IStoryboard {
+  "timelinesCount": number;
+  "timelines": Array<{
+    "name": string;
+    "outputId": number;
+    "outputType": number;
+    "entriesCount": number;
+    "entries": Array<{
+      "time": number;
+      "value": number;
+      "duration": number;
+    }>;
+  }>;
+}
 
 class CStoryboard {
 
-  public static CreateFromJson(jsonStr: string): CStoryboard {
-    const jsonObj = BStoryboard.GetStoryboard2();
+  public static CreateFromJson(sb: IStoryboard): CStoryboard {
+    // const jsonObj = BStoryboard.GetStoryboard2();    
     const newStoryboard = new CStoryboard();
-    for (const tl of jsonObj.timelines) {
+    for (const tl of sb.timelines) {
       if (tl.name) {
         const newTimeline = new CTimeline(tl.name, tl.outputId, tl.outputType);
         for (const tle of tl.entries) {
           // convert time values from milliseconds to seconds
           // convert value [0-4095] -> [0-100]
           newTimeline.AddEntry(tle.value / 40.95, tle.duration / 1000, tle.time / 1000);
+        }
+        if (tl.entries.length === 0) {
+          // at least one empty entry
+          newTimeline.AddEntry(0, 0, 0);
         }
         newStoryboard.Timelines.push(newTimeline);
       }
@@ -40,7 +58,10 @@ class CStoryboard {
   }
 
   public AddTimeline() {
-    this.Timelines.push(new CTimeline("new timeline", 99, EOutputType.Analog));
+    const newTL = new CTimeline("new timeline", 99, EOutputType.Analog);
+    // at least one empty entry
+    newTL.AddEntry(0, 0, 0);
+    this.Timelines.push(newTL);
   }
 
   public RemoveTimeline(key: number) {

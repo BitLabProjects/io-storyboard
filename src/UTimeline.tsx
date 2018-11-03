@@ -80,7 +80,7 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
               </Button>
             </div>
             {removeDialog}
-            <div style={{ display: "flex", flexDirection: "row", overflowX: "auto" }} >
+            <div style={{ display: "flex", flexDirection: "row", overflowX: "auto", overflowY: "hidden" }} >
               {this.props.timeline.Entries.map((entry, index) =>
                 (<Paper key={entry.key} style={{ width: "100px", margin: "5px", padding: "10px" }} >
                   <UTimelineEntry
@@ -120,7 +120,7 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
   private duplicateEntry = (key: number) => {
     this.props.timeline.DuplicateEntry(key);
     this.onUpdate();
-  }
+  }  
 
   private openRemoveConfirmDialog = () => {
     this.setState({ removeDialogOpen: true });

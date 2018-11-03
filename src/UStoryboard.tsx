@@ -2,16 +2,18 @@ import * as React from 'react';
 
 import UTimeline from './UTimeline';
 
-import { Add, Share, ExpandMore } from '@material-ui/icons';
+import { Add, Save, ExpandMore, OpenInBrowser } from '@material-ui/icons';
 
 import Button from '@material-ui/core/Button';
-import CStoryboard from './CStoryboard';
+import CStoryboard, { IStoryboard } from './CStoryboard';
 import { Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 
 import UWorkspace from './UWorkspace';
+import BStoryboard from './BStoryboard';
 
 interface IStoryboardProps {
   storyboard: CStoryboard;
+  onOpenLocalStoryboard: (sb: IStoryboard) => void;
 }
 
 interface IStoryboardState {
@@ -59,23 +61,28 @@ class UStoryboard extends React.Component<IStoryboardProps, IStoryboardState> {
           <ExpansionPanelDetails>
             <UWorkspace storyboard={this.props.storyboard}
               zoomRange={this.state.zoomRange}
-              timelinesVisibility={this.state.timelinesVisibility}              
+              timelinesVisibility={this.state.timelinesVisibility}
               onZoomChange={this.onZoomChange}
               onWorkspaceApplied={this.onWorkspaceApplied}
             />
           </ExpansionPanelDetails>
         </ExpansionPanel>
         {timelines}
+        <Button style={{ position: "fixed", bottom: "150px", right: "10px" }}
+          variant="fab"
+          onClick={this.openLocalStoryboard}>
+          <OpenInBrowser />
+        </Button>
+        <Button style={{ position: "fixed", bottom: "80px", right: "10px" }}
+          variant="fab"
+          onClick={this.exportStoryboard}>
+          <Save />
+        </Button>
         < Button style={{ position: "fixed", bottom: "10px", right: "10px" }}
           color="primary"
           variant="fab"
           onClick={this.addTimeline}>
           <Add />
-        </Button>
-        <Button style={{ position: "fixed", bottom: "80px", right: "10px" }}
-          variant="fab"
-          onClick={this.exportStoryboard}>
-          <Share />
         </Button>
       </div >
     );
@@ -89,24 +96,34 @@ class UStoryboard extends React.Component<IStoryboardProps, IStoryboardState> {
         case "end": end = value; break;
       }
       this.setState({ zoomRange: [start, end] });
-    }  
+    }
 
-  private onWorkspaceApplied = ()=>{
+  private onWorkspaceApplied = () => {
     this.onUpdate();
   }
 
   private addTimeline = () => {
     this.props.storyboard.AddTimeline();
-    this.onUpdate();
+    this.setState({
+      timelinesVisibility: [...this.state.timelinesVisibility].concat(true)
+    });
   };
 
   private removeTimeline = (key: number) => {
     this.props.storyboard.RemoveTimeline(key);
-    this.onUpdate();
+    const tlCount = this.state.timelinesVisibility.length;
+    this.state.timelinesVisibility.splice(tlCount - 1, 1);
+    this.setState({
+      timelinesVisibility: this.state.timelinesVisibility
+    });
   };
 
   private onUpdate = () => {
     this.setState({});
+  }
+
+  private openLocalStoryboard = async () => {
+    this.props.onOpenLocalStoryboard(await BStoryboard.GetLocalStoryboard())
   }
 
   private exportStoryboard = () => {

@@ -60,7 +60,7 @@ class UDashboard extends React.Component<UDashboardProps, UDashboardState> {
           <Typography style={{ margin: "20px 0px" }} variant="h5" >Output</Typography>
           <div style={{
             margin: "5px", height: "400px",
-            display: "flex", flexDirection: "row", overflowX: "auto"
+            display: "flex", flexDirection: "row", overflowX: "auto", overflowY: "hidden"
           }} >
             {this.props.storyboard.Timelines.map((timeline) => (
               <UOutput timeline={timeline} onChange={this.sendDataToSocket} />

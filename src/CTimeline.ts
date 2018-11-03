@@ -50,7 +50,7 @@ class CTimeline {
   ) {
     this.Entries = [];
     this.key = CTimeline.nextKey;
-    CTimeline.nextKey += 1;
+    CTimeline.nextKey += 1;    
   }
 
   public AddEntry(value: number, duration: number, time?: number): CTimelineEntry {
@@ -58,7 +58,7 @@ class CTimeline {
       // if time undefined, calc based on last entry duration
       time = this.mGetNextStartTime();
     }
-    const newEntry = new CTimelineEntry(time, value, duration);        
+    const newEntry = new CTimelineEntry(time, value, duration);
 
     return this.Entries[this.Entries.push(newEntry) - 1];
   }
