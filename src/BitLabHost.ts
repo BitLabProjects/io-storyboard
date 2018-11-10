@@ -15,20 +15,17 @@ export interface INetworkState {
 
 export class BitLabHost {
   private mSerialInterface: SerialInterface;
-  private mEnumeratedDevicesAddresses: number[];
-  // private mLastLedState: number;
 
   constructor() {
-    this.mEnumeratedDevicesAddresses = [];
-    // this.mLastLedState = 0;
-
     this.mSerialInterface = new SerialInterface("http://localhost:3030");
   }
 
-  get EnumeratedDevicesAddresses() { return this.mEnumeratedDevicesAddresses; }
+  public get LastResponse(): string {
+    return this.mSerialInterface.LastResponse.join("\n");
+  }
 
-  public async enumerateDevices() {
-    // TODO
+  public async sendText(commandText: string) {
+    await this.mSerialInterface.sendAndGetResponse(commandText + "\n");
   }
 
   public async toggleLed() {
@@ -59,56 +56,67 @@ export class BitLabHost {
       if (upTime && freePackets && netState && devicesArray) {
         match = expr.exec(devicesArray);
         while (match) {
-          devices.push(
-            {
-              address: parseInt(match[1].trim(), 10),
-              hwId: parseInt(match[2].trim(), 16),
-              crc: parseInt(match[3].trim(), 16)
-            }
-          );
+          devices.push({
+            address: parseInt(match[1].trim(), 10),
+            hwId: parseInt(match[2].trim(), 16),
+            crc: parseInt(match[3].trim(), 16)
+          });
           match = expr.exec(devicesArray);
         }
-        resolve(
-          {
-            EnumeratedDevice: devices,
-            FreePackets: freePackets,
-            NetState: netState,
-            UpTime: upTime
-          }
-        );
+        resolve({
+          EnumeratedDevice: devices,
+          FreePackets: freePackets,
+          NetState: netState,
+          UpTime: upTime
+        });
       }
       else {
         reject();
       }
-      return;
-
-      // if (devicesArray) {
-      //   const devicesStr = devicesArray.replace("[", "").replace("]", "");
-      //   const devicesSplitted = devicesStr.split(",");
-      //   if (devicesSplitted) {
-      //     for (const device of devicesSplitted) {
-      //       const entries = device.split(";");
-      //       if (entries) {
-      //         const addr = entries[0].split(":");
-      //         const hwId = entries[1].split(":");
-      //         const crc = entries[2].split(":");
-      //         if (addr && hwId && crc) {
-      //           devices.push({
-      //             address: parseInt(addr[1].trim(), 10),
-      //             hwId: parseInt(hwId[1].trim(), 16),
-      //             crc: parseInt(crc[1].trim(), 16)
-      //           })
-      //         }
-      //       }
-      //     }
-      //   }
-      // }      
     });
-
   }
+
+  public async setOutput(hwId: string, outputId: number, value: number) {
+    await this.mSerialInterface.sendAndGetResponse(
+      `setOutput ${hwId} ${outputId} ${value}\n`
+    );
+  }
+
+  public async openFile(filePath: string, mode: "w" | "r" | "w+") {
+    await this.mSerialInterface.sendAndGetResponse(`openFile ${filePath} ${mode}\n`);
+  }
+  public async closeFile() {
+    await this.mSerialInterface.sendAndGetResponse(`closeFile\n`);
+  }
+  public async writeFile(contentAsBase64: string) {
+    await this.mSerialInterface.sendAndGetResponse(`writeFile ${contentAsBase64}\n`);
+  }
+
+  public async loadFile(fileName: string) {
+    await this.mSerialInterface.sendAndGetResponse(`load ${fileName}\n`);
+  }
+  public async uploadFile() {
+    await this.mSerialInterface.sendAndGetResponse(`upload\n`);
+  }
+  public async checkFile() {
+    await this.mSerialInterface.sendAndGetResponse(`check\n`);
+  }
+  public async playStoryboard() {
+    await this.mSerialInterface.sendAndGetResponse(`play\n`);
+  }
+  public async pauseStoryboard() {
+    await this.mSerialInterface.sendAndGetResponse(`pause\n`);
+  }
+  public async stopStoryboard() {
+    await this.mSerialInterface.sendAndGetResponse(`stop\n`);
+  }
+
 }
 
 class SerialInterface {
+
+  public LastResponse: string[] = [];
+
   private mSocket: SocketIOClient.Socket;
   private mCurrentPromise: null | ((line: string) => void);
 
@@ -133,6 +141,7 @@ class SerialInterface {
       this.mCurrentPromise = (line: string) => {
         if (line === "Ok" || line === "Error") {
           this.mCurrentPromise = null;
+          this.LastResponse = lines.concat(line);
           resolve(lines);
         } else {
           lines.push(line);

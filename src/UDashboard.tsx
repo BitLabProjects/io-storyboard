@@ -37,10 +37,6 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
     this.mHost = new BitLabHost();
 
     setInterval(this.onInterval, 1000);
-
-    setTimeout(() => {
-      this.mHost.enumerateDevices();
-    }, 3000);
   }
 
   public render() {
@@ -71,19 +67,37 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
           <Typography style={{ margin: "20px 0px" }} variant="h6" >Command line</Typography>
           <TextField variant={"outlined"} label="Text to send" multiline
             onChange={this.onTextToSendChanged} value={this.state.textToSend} />
-          <Button style={{ margin: "10px" }} variant="fab" onClick={this.sendDataFromTerminal}>
-            <ImportExportOutlined />
-          </Button>
+          <div>
+            <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }} >
+              <Button style={{ margin: "10px" }} variant="fab" onClick={this.sendText}>
+                <ImportExportOutlined />
+              </Button>
+              <Button style={{ margin: "10px" }} onClick={this.toggleLed}>toggle_led</Button>
+              <Button style={{ margin: "10px" }} onClick={this.getState}>get_state</Button>
+            </div>
+            <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }} >
+              <Button style={{ margin: "10px" }} onClick={this.loadFile}>load_file</Button>
+              <Button style={{ margin: "10px" }} onClick={this.uploadFile}>upload_file</Button>
+              <Button style={{ margin: "10px" }} onClick={this.checkFile}>check_file</Button>
+            </div>
+            <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }} >
+              <Button style={{ margin: "10px" }} onClick={this.openFile}>open_file</Button>
+              <Button style={{ margin: "10px" }} onClick={this.closeFile}>close_file</Button>
+              <Button style={{ margin: "10px" }} onClick={this.writeFile}>writefile</Button>
+            </div>
+            <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }} >
+              <Button style={{ margin: "10px" }} onClick={this.playStoryboard}>play</Button>
+              <Button style={{ margin: "10px" }} onClick={this.pauseStoryboard}>pause</Button>
+              <Button style={{ margin: "10px" }} onClick={this.stopStoryboard}>stop</Button>
+            </div>
+          </div>
           <TextField variant={"outlined"} label="Text received" multiline value={this.state.receivedText} />
         </Paper>
         <Paper style={{
           display: "flex", flexDirection: "column",
           margin: "5px", padding: "5px"
         }} >
-          <Typography style={{ margin: "20px 0px" }} variant="h6" >Commands</Typography>
-          <div style={{ display: "flex", flexDirection: "row" }} >
-            <Button onClick={this.getState}>State</Button>
-          </div>
+          <Typography style={{ margin: "20px 0px" }} variant="h6" >Network state</Typography>
           <div style={{ display: "flex", flexDirection: "row" }} >
             <TextField label="Uptime" InputProps={{ readOnly: true }} style={textFieldStyle}
               value={this.state.networkState.UpTime} />
@@ -125,8 +139,8 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
                 margin: "5px", height: "400px",
                 display: "flex", flexDirection: "row", overflowX: "auto", overflowY: "hidden"
               }} >
-                {timelinesByHwId[hwId].map((timeline, index) => (
-                  <UOutput key={index} timeline={timeline} onChange={this.sendDataToSocket} />
+                {timelinesByHwId[hwId].map((tl, index) => (
+                  <UOutput key={index} timeline={tl} onChange={this.setOutput(tl)} />
                 ))}
               </div>
             </div>
@@ -137,35 +151,60 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
   }
 
   private onInterval = () => {
-    // const txt = `Packets: ${this.mHost.PacketsReceived}, Devices: ${JSON.stringify(this.mHost.EnumeratedDevicesAddresses)}`;
-    // this.setState({receivedText: txt});
+    this.setState({ receivedText: this.mHost.LastResponse });
   }
 
   private onTextToSendChanged = (event: any) => {
     this.setState({ textToSend: event.target.value });
   }
 
-  private sendDataFromTerminal = async () => {
-    // send text to COM port   
-    // this.sendDataToSocket(this.state.textToSend);
+  private sendText = async () => {
+    await this.mHost.sendText(this.state.textToSend);
+  }
+
+  private toggleLed = async () => {
     await this.mHost.toggleLed();
   }
   private getState = async () => {
-    // send text to COM port   
-    // this.sendDataToSocket(this.state.textToSend);
     this.setState({
       networkState: await this.mHost.getState()
     })
-
+  }
+  private setOutput = (tl: CTimeline) => async (value: number) => {
+    await this.mHost.setOutput(tl.HardwareId, tl.OutputId, value);
   }
 
-
-
-  private sendDataToSocket = (data: any) => {
-    // console.log(`Sent: ${data}`);
-    // this.mSocket.emit('toCOM', data + "\n");
+  private loadFile = async () => {
+    // TODO
+    await this.mHost.loadFile("");
+  }
+  private uploadFile = async () => {
+    await this.mHost.uploadFile();
+  }
+  private checkFile = async () => {
+    await this.mHost.checkFile();
+  }
+  private openFile = async () => {
+    // TODO
+    await this.mHost.openFile("", "r");
+  }
+  private closeFile = async () => {
+    await this.mHost.closeFile();
+  }
+  private writeFile = async () => {
+    // TODO
+    await this.mHost.writeFile("");
   }
 
+  private playStoryboard = async () => {
+    await this.mHost.playStoryboard();
+  }
+  private pauseStoryboard = async () => {
+    await this.mHost.pauseStoryboard();
+  }
+  private stopStoryboard = async () => {
+    await this.mHost.stopStoryboard();
+  }
 
 }
 

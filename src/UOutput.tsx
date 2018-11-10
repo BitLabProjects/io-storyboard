@@ -5,7 +5,7 @@ import USlider from "./USlider";
 
 class UOutputProps {
   public timeline: CTimeline;
-  public onChange: (value: any) => void;
+  public onChange: (value: number) => void;
 }
 class UOutputState {
   public currValue: number;
@@ -27,7 +27,7 @@ class UOutput extends React.Component<UOutputProps, UOutputState> {
   }
 
   private onChange = (value: number) => {
-    this.props.onChange(`${this.props.timeline.Name}: ${value}`);
+    this.props.onChange(value);
     this.setState({ currValue: value });
   }
 
