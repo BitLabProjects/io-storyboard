@@ -35,7 +35,7 @@ class BStoryboard {
         {
           "name": "analog2",
           "hwId": "66BFF33",
-          "outputId": 2,
+          "outputId": 1,
           "outputType": 0,
           "entriesCount": 4,
           "entries": [
@@ -64,7 +64,7 @@ class BStoryboard {
         {
           "name": "analog3",
           "hwId": "66BFF33",
-          "outputId": 3,
+          "outputId": 2,
           "outputType": 0,
           "entriesCount": 4,
           "entries": [

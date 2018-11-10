@@ -82,7 +82,7 @@ export class BitLabHost {
     );
   }
 
-  public async openFile(filePath: string, mode: "w" | "r" | "w+") {
+  public async openFile(filePath: string, mode: "r" | "w" | "a" | "r+" | "w+" | "a+") {
     await this.mSerialInterface.sendAndGetResponse(`openFile ${filePath} ${mode}\n`);
   }
   public async closeFile() {

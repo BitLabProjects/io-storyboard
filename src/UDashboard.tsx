@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Button, Paper, TextField, Typography, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
-import { ImportExportOutlined } from '@material-ui/icons';
+import { ImportExportOutlined, PlayArrow, Pause, Stop } from '@material-ui/icons';
 
 import CStoryboard from './CStoryboard';
 import UOutput from './UOutput';
@@ -83,12 +83,18 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
             <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }} >
               <Button style={{ margin: "10px" }} onClick={this.openFile}>open_file</Button>
               <Button style={{ margin: "10px" }} onClick={this.closeFile}>close_file</Button>
-              <Button style={{ margin: "10px" }} onClick={this.writeFile}>writefile</Button>
+              <Button style={{ margin: "10px" }} onClick={this.writeFile}>write_file</Button>
             </div>
             <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }} >
-              <Button style={{ margin: "10px" }} onClick={this.playStoryboard}>play</Button>
-              <Button style={{ margin: "10px" }} onClick={this.pauseStoryboard}>pause</Button>
-              <Button style={{ margin: "10px" }} onClick={this.stopStoryboard}>stop</Button>
+              <Button style={{ margin: "10px" }} variant="fab" onClick={this.playStoryboard}>
+                <PlayArrow />
+              </Button>
+              <Button style={{ margin: "10px" }} variant="fab" onClick={this.pauseStoryboard}>
+                <Pause />
+              </Button>
+              <Button style={{ margin: "10px" }} variant="fab" onClick={this.stopStoryboard}>
+                <Stop />
+              </Button>
             </div>
           </div>
           <TextField variant={"outlined"} label="Text received" multiline value={this.state.receivedText} />
@@ -176,7 +182,7 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
 
   private loadFile = async () => {
     // TODO
-    await this.mHost.loadFile("");
+    await this.mHost.loadFile("sd\\storyboard_2.json");
   }
   private uploadFile = async () => {
     await this.mHost.uploadFile();
@@ -186,13 +192,15 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
   }
   private openFile = async () => {
     // TODO
-    await this.mHost.openFile("", "r");
+    await this.mHost.openFile("sd\\storyboard_2.json", "w+");
   }
   private closeFile = async () => {
     await this.mHost.closeFile();
   }
   private writeFile = async () => {
     // TODO
+    // Send timeline as base64
+    // await this.mHost.writeFile(btoa(this.props.storyboard.ExportToJson()));
     await this.mHost.writeFile("");
   }
 
