@@ -1,40 +1,85 @@
 {
+  "timelinesCount": 40,
   "timelines": [
     {
-      "name": "timeline0",
-      "outputId": "1",
-      "outputType": "0",
+      "name": "analog1",
+      "hwId": "370054",
+      "outputId": 1,
+      "outputType": 0,
+      "entriesCount": 3,
       "entries": [
         {
-          "value": "100",
-          "duration": "500"
+          "time": 0,
+          "value": 0,
+          "duration": 10000
         },
         {
-          "value": "20",
-          "duration": "250"
+          "time": 10000,
+          "value": 4095,
+          "duration": 44000
         },
         {
-          "value": "50",
-          "duration": "100"
+          "time": 54000,
+          "value": 41,
+          "duration": 65000
         }
       ]
     },
     {
-      "name": "timeline1",
-      "outputId": "2",
-      "outputType": "1",
+      "name": "analog2",
+      "hwId": "66BFF33",
+      "outputId": 2,
+      "outputType": 0,
+      "entriesCount": 4,
       "entries": [
         {
-          "value": "1",
-          "duration": "125"
+          "time": 0,
+          "value": 41,
+          "duration": 10000
         },
         {
-          "value": "0",
-          "duration": "1000"
+          "time": 11000,
+          "value": 3276,
+          "duration": 58000
         },
         {
-          "value": "1",
-          "duration": "250"
+          "time": 69000,
+          "value": 3235,
+          "duration": 110000
+        },
+        {
+          "time": 179000,
+          "value": 0,
+          "duration": 45000
+        }
+      ]
+    },
+    {
+      "name": "analog3",
+      "hwId": "66BFF33",
+      "outputId": 3,
+      "outputType": 0,
+      "entriesCount": 4,
+      "entries": [
+        {
+          "time": 0,
+          "value": 0,
+          "duration": 40000
+        },
+        {
+          "time": 40000,
+          "value": 2457,
+          "duration": 50000
+        },
+        {
+          "time": 90000,
+          "value": 2457,
+          "duration": 80000
+        },
+        {
+          "time": 170000,
+          "value": 0,
+          "duration": 50000
         }
       ]
     }

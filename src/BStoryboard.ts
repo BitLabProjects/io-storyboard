@@ -1,16 +1,16 @@
-import { IStoryboard } from "./CStoryboard";
+import { IStoryboardJson } from "./CStoryboard";
 
 // tslint:disable:object-literal-sort-keys
 
-class BStoryboard {  
+class BStoryboard {
 
-  // values normalized to [0-4095]
-  public static GetStoryboard2(): IStoryboard {
-    return ({
+  public static GetStoryboard0(): IStoryboardJson {
+    return {
       "timelinesCount": 40,
       "timelines": [
         {
           "name": "analog1",
+          "hwId": "370054",
           "outputId": 1,
           "outputType": 0,
           "entriesCount": 3,
@@ -34,6 +34,7 @@ class BStoryboard {
         },
         {
           "name": "analog2",
+          "hwId": "66BFF33",
           "outputId": 2,
           "outputType": 0,
           "entriesCount": 4,
@@ -62,7 +63,96 @@ class BStoryboard {
         },
         {
           "name": "analog3",
+          "hwId": "66BFF33",
           "outputId": 3,
+          "outputType": 0,
+          "entriesCount": 4,
+          "entries": [
+            {
+              "time": 0,
+              "value": 0,
+              "duration": 40000
+            },
+            {
+              "time": 40000,
+              "value": 2457,
+              "duration": 50000
+            },
+            {
+              "time": 90000,
+              "value": 2457,
+              "duration": 80000
+            },
+            {
+              "time": 170000,
+              "value": 0,
+              "duration": 50000
+            }
+          ]
+        }
+      ]
+    }
+  }
+
+  // values normalized to [0-4095]
+  public static GetStoryboard2(): IStoryboardJson {
+    return ({
+      "timelinesCount": 40,
+      "timelines": [
+        {
+          "name": "analog1",
+          "hwId": "AABBCCDD", "outputId": 1,
+          "outputType": 0,
+          "entriesCount": 3,
+          "entries": [
+            {
+              "time": 0,
+              "value": 0,
+              "duration": 10000
+            },
+            {
+              "time": 10000,
+              "value": 4095,
+              "duration": 44000
+            },
+            {
+              "time": 54000,
+              "value": 41,
+              "duration": 65000
+            }
+          ]
+        },
+        {
+          "name": "analog2",
+          "hwId": "AABBCCDD", "outputId": 2,
+          "outputType": 0,
+          "entriesCount": 4,
+          "entries": [
+            {
+              "time": 0,
+              "value": 41,
+              "duration": 10000
+            },
+            {
+              "time": 11000,
+              "value": 3276,
+              "duration": 58000
+            },
+            {
+              "time": 69000,
+              "value": 3235,
+              "duration": 110000
+            },
+            {
+              "time": 179000,
+              "value": 0,
+              "duration": 45000
+            }
+          ]
+        },
+        {
+          "name": "analog3",
+          "hwId": "AABBCCDD", "outputId": 3,
           "outputType": 0,
           "entriesCount": 4,
           "entries": [
@@ -90,7 +180,7 @@ class BStoryboard {
         },
         {
           "name": "analog4",
-          "outputId": 4,
+          "hwId": "AABBCCDD", "outputId": 4,
           "outputType": 0,
           "entriesCount": 3,
           "entries": [
@@ -113,7 +203,7 @@ class BStoryboard {
         },
         {
           "name": "analog5",
-          "outputId": 5,
+          "hwId": "AABBCCDD", "outputId": 5,
           "outputType": 0,
           "entriesCount": 4,
           "entries": [
@@ -141,7 +231,7 @@ class BStoryboard {
         },
         {
           "name": "analog6",
-          "outputId": 6,
+          "hwId": "AABBCCDD", "outputId": 6,
           "outputType": 0,
           "entriesCount": 4,
           "entries": [
@@ -169,7 +259,7 @@ class BStoryboard {
         },
         {
           "name": "analog7",
-          "outputId": 7,
+          "hwId": "AABBCCDD", "outputId": 7,
           "outputType": 0,
           "entriesCount": 4,
           "entries": [
@@ -197,7 +287,7 @@ class BStoryboard {
         },
         {
           "name": "analog8",
-          "outputId": 8,
+          "hwId": "AABBCCDD", "outputId": 8,
           "outputType": 0,
           "entriesCount": 4,
           "entries": [
@@ -225,14 +315,14 @@ class BStoryboard {
         },
         {
           "name": "digital1",
-          "outputId": 9,
+          "hwId": "AABBCCDD", "outputId": 9,
           "outputType": 1,
           "entriesCount": 0,
           "entries": []
         },
         {
           "name": "digital2",
-          "outputId": 10,
+          "hwId": "AABBCCDD", "outputId": 10,
           "outputType": 1,
           "entriesCount": 4,
           "entries": [
@@ -260,14 +350,14 @@ class BStoryboard {
         },
         {
           "name": "digital3",
-          "outputId": 11,
+          "hwId": "AABBCCDD", "outputId": 11,
           "outputType": 1,
           "entriesCount": 0,
           "entries": []
         },
         {
           "name": "digital4",
-          "outputId": 12,
+          "hwId": "AABBCCDD", "outputId": 12,
           "outputType": 1,
           "entriesCount": 4,
           "entries": [
@@ -295,7 +385,7 @@ class BStoryboard {
         },
         {
           "name": "digital5",
-          "outputId": 13,
+          "hwId": "AABBCCDD", "outputId": 13,
           "outputType": 1,
           "entriesCount": 4,
           "entries": [
@@ -323,7 +413,7 @@ class BStoryboard {
         },
         {
           "name": "digital6",
-          "outputId": 14,
+          "hwId": "AABBCCDD", "outputId": 14,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -341,7 +431,7 @@ class BStoryboard {
         },
         {
           "name": "digital7",
-          "outputId": 15,
+          "hwId": "AABBCCDD", "outputId": 15,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -359,7 +449,7 @@ class BStoryboard {
         },
         {
           "name": "digital8",
-          "outputId": 16,
+          "hwId": "AABBCCDD", "outputId": 16,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -377,7 +467,7 @@ class BStoryboard {
         },
         {
           "name": "digital9",
-          "outputId": 17,
+          "hwId": "AABBCCDD", "outputId": 17,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -395,7 +485,7 @@ class BStoryboard {
         },
         {
           "name": "digital10",
-          "outputId": 18,
+          "hwId": "AABBCCDD", "outputId": 18,
           "outputType": 1,
           "entriesCount": 4,
           "entries": [
@@ -423,7 +513,7 @@ class BStoryboard {
         },
         {
           "name": "digital11",
-          "outputId": 19,
+          "hwId": "AABBCCDD", "outputId": 19,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -441,7 +531,7 @@ class BStoryboard {
         },
         {
           "name": "digital12",
-          "outputId": 20,
+          "hwId": "AABBCCDD", "outputId": 20,
           "outputType": 1,
           "entriesCount": 4,
           "entries": [
@@ -469,7 +559,7 @@ class BStoryboard {
         },
         {
           "name": "digital13",
-          "outputId": 21,
+          "hwId": "AABBCCDD", "outputId": 21,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -487,7 +577,7 @@ class BStoryboard {
         },
         {
           "name": "digital14",
-          "outputId": 22,
+          "hwId": "AABBCCDD", "outputId": 22,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -505,7 +595,7 @@ class BStoryboard {
         },
         {
           "name": "digital15",
-          "outputId": 23,
+          "hwId": "AABBCCDD", "outputId": 23,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -523,7 +613,7 @@ class BStoryboard {
         },
         {
           "name": "digital16",
-          "outputId": 24,
+          "hwId": "AABBCCDD", "outputId": 24,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -541,14 +631,14 @@ class BStoryboard {
         },
         {
           "name": "digital17",
-          "outputId": 25,
+          "hwId": "AABBCCDD", "outputId": 25,
           "outputType": 1,
           "entriesCount": 0,
           "entries": []
         },
         {
           "name": "digital18",
-          "outputId": 26,
+          "hwId": "AABBCCDD", "outputId": 26,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -566,7 +656,7 @@ class BStoryboard {
         },
         {
           "name": "digital19",
-          "outputId": 27,
+          "hwId": "AABBCCDD", "outputId": 27,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -584,7 +674,7 @@ class BStoryboard {
         },
         {
           "name": "digital20",
-          "outputId": 28,
+          "hwId": "AABBCCDD", "outputId": 28,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -602,7 +692,7 @@ class BStoryboard {
         },
         {
           "name": "digital21",
-          "outputId": 29,
+          "hwId": "AABBCCDD", "outputId": 29,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -620,14 +710,14 @@ class BStoryboard {
         },
         {
           "name": "digital22",
-          "outputId": 30,
+          "hwId": "AABBCCDD", "outputId": 30,
           "outputType": 1,
           "entriesCount": 0,
           "entries": []
         },
         {
           "name": "digital23",
-          "outputId": 31,
+          "hwId": "AABBCCDD", "outputId": 31,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -645,21 +735,21 @@ class BStoryboard {
         },
         {
           "name": "digital24",
-          "outputId": 32,
+          "hwId": "AABBCCDD", "outputId": 32,
           "outputType": 1,
           "entriesCount": 0,
           "entries": []
         },
         {
           "name": "digital25",
-          "outputId": 33,
+          "hwId": "AABBCCDD", "outputId": 33,
           "outputType": 1,
           "entriesCount": 0,
           "entries": []
         },
         {
           "name": "digital26",
-          "outputId": 34,
+          "hwId": "AABBCCDD", "outputId": 34,
           "outputType": 1,
           "entriesCount": 4,
           "entries": [
@@ -687,7 +777,7 @@ class BStoryboard {
         },
         {
           "name": "digital27",
-          "outputId": 35,
+          "hwId": "AABBCCDD", "outputId": 35,
           "outputType": 1,
           "entriesCount": 8,
           "entries": [
@@ -735,14 +825,14 @@ class BStoryboard {
         },
         {
           "name": "digital28",
-          "outputId": 36,
+          "hwId": "AABBCCDD", "outputId": 36,
           "outputType": 1,
           "entriesCount": 0,
           "entries": []
         },
         {
           "name": "digital29",
-          "outputId": 37,
+          "hwId": "AABBCCDD", "outputId": 37,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -760,7 +850,7 @@ class BStoryboard {
         },
         {
           "name": "digital30",
-          "outputId": 38,
+          "hwId": "AABBCCDD", "outputId": 38,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -778,7 +868,7 @@ class BStoryboard {
         },
         {
           "name": "digital31",
-          "outputId": 39,
+          "hwId": "AABBCCDD", "outputId": 39,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -796,7 +886,7 @@ class BStoryboard {
         },
         {
           "name": "digital32",
-          "outputId": 40,
+          "hwId": "AABBCCDD", "outputId": 40,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -816,8 +906,8 @@ class BStoryboard {
     });
   }
 
-  public static async GetLocalStoryboard(): Promise<IStoryboard> {
-    return new Promise<IStoryboard>((resolve, reject) => {
+  public static async GetLocalStoryboard(): Promise<IStoryboardJson> {
+    return new Promise<IStoryboardJson>((resolve, reject) => {
       const element = document.createElement('div');
       element.innerHTML = '<input type="file">';
       const fileInput = element.firstChild;
@@ -842,7 +932,6 @@ class BStoryboard {
       }
     });
   }
-
 
 }
 export default BStoryboard;

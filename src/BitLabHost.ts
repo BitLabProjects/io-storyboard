@@ -41,54 +41,68 @@ export class BitLabHost {
         reject();
         return;
       }
-      let upTime: number = -1;
-      let match = (new RegExp("Up time\: (.*) sec")).exec(stateStr[0]);
-      if (match) {
-        upTime = parseInt(match[1], 10);
-      }
-      let freePackets: number = -1;
-      match = (new RegExp("Free packets\: (.*)")).exec(stateStr[1]);
-      if (match) {
-        freePackets = parseInt(match[1], 10);
-      }
-      let netState: string = "undefined";
-      match = (new RegExp("Net state\: (.*)")).exec(stateStr[2]);
-      if (match) {
-        netState = match[1];
-      }
-      const devices: IDevice[] = [];
-      match = (new RegExp("Enumerated devices\: (.*)")).exec(stateStr[3]);
+
+      let match = /Up time\: (.*) sec/.exec(stateStr[0]);
+      const upTime = match && parseInt(match[1], 10);
+
+      match = /Free packets\: (.*)/.exec(stateStr[1]);
+      const freePackets = match && parseInt(match[1], 10);
+
+      match = /Net state\: (.*)/.exec(stateStr[2]);
+      const netState = match && match[1];
+
+      match = /Enumerated devices\: (.*)/.exec(stateStr[3]);
       const devicesArray = match && match[1];
-      if (devicesArray) {
-        const devicesStr = devicesArray.replace("[", "").replace("]", "");
-        const devicesSplitted = devicesStr.split(",");
-        if (devicesSplitted) {
-          for (const device of devicesSplitted) {
-            const entries = device.split(";");
-            if (entries) {
-              const addr = entries[0].split(":");
-              const hwId = entries[1].split(":");
-              const crc = entries[2].split(":");
-              if (addr && hwId && crc) {
-                devices.push({
-                  address: parseInt(addr[1].trim(), 10),
-                  hwId: parseInt(hwId[1].trim(), 16),
-                  crc: parseInt(crc[1].trim(), 16)
-                })
-              }
+
+      const devices: IDevice[] = [];
+      const expr = /addr:([\d]+); hwId:([\dA-F]+); crc:([\dA-F]+)/g;
+      if (upTime && freePackets && netState && devicesArray) {
+        match = expr.exec(devicesArray);
+        while (match) {
+          devices.push(
+            {
+              address: parseInt(match[1].trim(), 10),
+              hwId: parseInt(match[2].trim(), 16),
+              crc: parseInt(match[3].trim(), 16)
             }
+          );
+          match = expr.exec(devicesArray);
+        }
+        resolve(
+          {
+            EnumeratedDevice: devices,
+            FreePackets: freePackets,
+            NetState: netState,
+            UpTime: upTime
           }
-        }
+        );
       }
-      resolve(
-        {
-          EnumeratedDevice: devices,
-          FreePackets: freePackets,
-          NetState: netState,
-          UpTime: upTime
-        }
-      );
+      else {
+        reject();
+      }
       return;
+
+      // if (devicesArray) {
+      //   const devicesStr = devicesArray.replace("[", "").replace("]", "");
+      //   const devicesSplitted = devicesStr.split(",");
+      //   if (devicesSplitted) {
+      //     for (const device of devicesSplitted) {
+      //       const entries = device.split(";");
+      //       if (entries) {
+      //         const addr = entries[0].split(":");
+      //         const hwId = entries[1].split(":");
+      //         const crc = entries[2].split(":");
+      //         if (addr && hwId && crc) {
+      //           devices.push({
+      //             address: parseInt(addr[1].trim(), 10),
+      //             hwId: parseInt(hwId[1].trim(), 16),
+      //             crc: parseInt(crc[1].trim(), 16)
+      //           })
+      //         }
+      //       }
+      //     }
+      //   }
+      // }      
     });
 
   }

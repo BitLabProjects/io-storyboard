@@ -5,7 +5,7 @@ import UTimeline from './UTimeline';
 import { Add, Save, ExpandMore, OpenInBrowser } from '@material-ui/icons';
 
 import Button from '@material-ui/core/Button';
-import CStoryboard, { IStoryboard } from './CStoryboard';
+import CStoryboard, { IStoryboardJson } from './CStoryboard';
 import { Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 
 import UWorkspace from './UWorkspace';
@@ -13,14 +13,15 @@ import BStoryboard from './BStoryboard';
 
 interface IStoryboardProps {
   storyboard: CStoryboard;
-  onOpenLocalStoryboard: (sb: IStoryboard) => void;
+  onOpenLocalStoryboard: (sb: IStoryboardJson) => void;
 }
 
 interface IStoryboardState {
   zoomRange: [number, number];
   timelinesVisibility: boolean[];
 }
-class UStoryboard extends React.Component<IStoryboardProps, IStoryboardState> {
+// Inheriting from PureComponent, so Render is triggered only by shallow comparison
+class UStoryboard extends React.PureComponent<IStoryboardProps, IStoryboardState> {
 
   private mMaxTime: number;
 
@@ -114,12 +115,12 @@ class UStoryboard extends React.Component<IStoryboardProps, IStoryboardState> {
     const tlCount = this.state.timelinesVisibility.length;
     this.state.timelinesVisibility.splice(tlCount - 1, 1);
     this.setState({
-      timelinesVisibility: this.state.timelinesVisibility
+      timelinesVisibility: [...this.state.timelinesVisibility].concat()
     });
   };
 
   private onUpdate = () => {
-    this.setState({});
+    this.forceUpdate();
   }
 
   private openLocalStoryboard = async () => {

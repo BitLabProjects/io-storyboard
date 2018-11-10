@@ -1,11 +1,12 @@
 import * as React from 'react';
 
-import { Button, Paper, TextField, Typography } from '@material-ui/core';
+import { Button, Paper, TextField, Typography, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import { ImportExportOutlined } from '@material-ui/icons';
 
 import CStoryboard from './CStoryboard';
 import UOutput from './UOutput';
 import { BitLabHost, INetworkState } from './BitLabHost';
+import { CTimeline } from './CTimeline';
 
 
 interface IDashboardProps {
@@ -14,7 +15,7 @@ interface IDashboardProps {
 interface IDashboardState {
   textToSend: string;
   receivedText: string;
-  networkState: INetworkState | null;
+  networkState: INetworkState;
 }
 
 class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
@@ -25,7 +26,12 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
     this.state = {
       textToSend: "",
       receivedText: "",
-      networkState: null
+      networkState: {
+        UpTime: 0,
+        FreePackets: 0,
+        NetState: "unknown",
+        EnumeratedDevice: [],
+      }
     };
 
     this.mHost = new BitLabHost();
@@ -38,6 +44,20 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
   }
 
   public render() {
+    const textFieldStyle = {
+      margin: "5px 10px",
+      width: "100px"
+    };
+
+    const timelinesByHwId: { [hwId: string]: CTimeline[] } = {};
+    const hwIds: string[] = [];
+    for (const tl of this.props.storyboard.Timelines) {
+      if (!timelinesByHwId[tl.HardwareId]) {
+        timelinesByHwId[tl.HardwareId] = [];
+        hwIds.push(tl.HardwareId);
+      }
+      timelinesByHwId[tl.HardwareId].push(tl);
+    }
 
     return (
       <div style={{
@@ -48,7 +68,7 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
           display: "flex", flexDirection: "column",
           margin: "5px", padding: "5px"
         }} >
-          <Typography style={{ margin: "20px 0px" }} variant="h5" >Command line</Typography>
+          <Typography style={{ margin: "20px 0px" }} variant="h6" >Command line</Typography>
           <TextField variant={"outlined"} label="Text to send" multiline
             onChange={this.onTextToSendChanged} value={this.state.textToSend} />
           <Button style={{ margin: "10px" }} variant="fab" onClick={this.sendDataFromTerminal}>
@@ -60,25 +80,57 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
           display: "flex", flexDirection: "column",
           margin: "5px", padding: "5px"
         }} >
-          <Typography style={{ margin: "20px 0px" }} variant="h5" >Commands</Typography>
-          <Button onClick={this.getState}>State</Button>
-          <TextField variant={"outlined"} label="Text to send" multiline
-            value={(this.state.networkState && this.state.networkState.NetState) || "unknown"} />
+          <Typography style={{ margin: "20px 0px" }} variant="h6" >Commands</Typography>
+          <div style={{ display: "flex", flexDirection: "row" }} >
+            <Button onClick={this.getState}>State</Button>
+          </div>
+          <div style={{ display: "flex", flexDirection: "row" }} >
+            <TextField label="Uptime" InputProps={{ readOnly: true }} style={textFieldStyle}
+              value={this.state.networkState.UpTime} />
+            <TextField label="Free Packets" InputProps={{ readOnly: true }} style={textFieldStyle}
+              value={this.state.networkState.FreePackets} />
+            <TextField label="Net State" InputProps={{ readOnly: true }} style={textFieldStyle}
+              value={this.state.networkState.NetState} />
+          </div>
+          <Typography style={{ margin: "10px" }} >Devices</Typography>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell numeric>Address</TableCell>
+                <TableCell numeric>hwId</TableCell>
+                <TableCell numeric>crc</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {this.state.networkState.EnumeratedDevice.map((device, index) =>
+                <TableRow key={index}>
+                  <TableCell numeric>{device.address.toString(10).toUpperCase()}</TableCell>
+                  <TableCell numeric>{device.hwId.toString(16).toUpperCase()}</TableCell>
+                  <TableCell numeric>{device.crc.toString(16).toUpperCase()}</TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </Paper>
 
         <Paper style={{
           display: "flex", flexDirection: "column",
           margin: "5px", padding: "5px"
         }} >
-          <Typography style={{ margin: "20px 0px" }} variant="h5" >Output</Typography>
-          <div style={{
-            margin: "5px", height: "400px",
-            display: "flex", flexDirection: "row", overflowX: "auto", overflowY: "hidden"
-          }} >
-            {this.props.storyboard.Timelines.map((timeline) => (
-              <UOutput timeline={timeline} onChange={this.sendDataToSocket} />
-            ))}
-          </div>
+          <Typography style={{ margin: "10px 0px" }} variant="h6" >Output</Typography>
+          {hwIds.map((hwId, i) =>
+            <div key={i} >
+              <Typography style={{ margin: "5px 0px" }} >Board: {hwId}</Typography>
+              <div style={{
+                margin: "5px", height: "400px",
+                display: "flex", flexDirection: "row", overflowX: "auto", overflowY: "hidden"
+              }} >
+                {timelinesByHwId[hwId].map((timeline, index) => (
+                  <UOutput key={index} timeline={timeline} onChange={this.sendDataToSocket} />
+                ))}
+              </div>
+            </div>
+          )}
         </Paper>
       </div>
     );

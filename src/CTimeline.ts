@@ -45,6 +45,7 @@ class CTimeline {
 
   constructor(
     public Name: string,
+    public HardwareId: string,
     public OutputId: number,
     public OutputType: EOutputType
   ) {
@@ -95,7 +96,7 @@ class CTimeline {
   }
 
   public clone(): CTimeline {
-    const newTimeline = new CTimeline(this.Name, this.OutputId, this.OutputType);
+    const newTimeline = new CTimeline(this.Name, this.HardwareId, this.OutputId, this.OutputType);
     newTimeline.Entries = this.Entries.map((entry) => {
       return entry.clone();
     });

@@ -1,28 +1,33 @@
 import { CTimeline, EOutputType } from "./CTimeline";
 
-export interface IStoryboard {
-  "timelinesCount": number;
-  "timelines": Array<{
-    "name": string;
-    "outputId": number;
-    "outputType": number;
-    "entriesCount": number;
-    "entries": Array<{
-      "time": number;
-      "value": number;
-      "duration": number;
-    }>;
-  }>;
+export interface ITimelineEntryJson {
+  time: number;
+  value: number;
+  duration: number;
+}
+
+export interface ITimelineJson {
+  name: string;
+  hwId: string;
+  outputId: number;
+  outputType: number;
+  entriesCount: number;
+  entries: ITimelineEntryJson[];
+}
+
+export interface IStoryboardJson {
+  timelinesCount: number;
+  timelines: ITimelineJson[];
 }
 
 class CStoryboard {
 
-  public static CreateFromJson(sb: IStoryboard): CStoryboard {
+  public static CreateFromJson(sb: IStoryboardJson): CStoryboard {
     // const jsonObj = BStoryboard.GetStoryboard2();    
     const newStoryboard = new CStoryboard();
     for (const tl of sb.timelines) {
       if (tl.name) {
-        const newTimeline = new CTimeline(tl.name, tl.outputId, tl.outputType);
+        const newTimeline = new CTimeline(tl.name, tl.hwId, tl.outputId, tl.outputType);
         for (const tle of tl.entries) {
           // convert time values from milliseconds to seconds
           // convert value [0-4095] -> [0-100]
@@ -58,7 +63,7 @@ class CStoryboard {
   }
 
   public AddTimeline() {
-    const newTL = new CTimeline("new timeline", 99, EOutputType.Analog);
+    const newTL = new CTimeline("new timeline", "AABBCCDD", 99, EOutputType.Analog);
     // at least one empty entry
     newTL.AddEntry(0, 0, 0);
     this.Timelines.push(newTL);
@@ -80,30 +85,31 @@ class CStoryboard {
   }
 
   public ExportToJson(): string {
-    const timelinesObj = [];
+    const timelinesObj: ITimelineJson[] = [];
     for (const tl of this.Timelines) {
-      const entriesObj = [];
+      const entriesObj: ITimelineEntryJson[] = [];
       for (const tle of tl.Entries) {
         // convert back time values from seconds to milliseconds
         // convert back value [0-100] -> [0-4095]
         entriesObj.push({
-          "time": tle.Time * 1000,
-          "value": +(tle.Value * 40.95).toFixed(0),
-          "duration": tle.Duration * 1000
+          time: tle.Time * 1000,
+          value: +(tle.Value * 40.95).toFixed(0),
+          duration: tle.Duration * 1000
         });
       }
       // Additional reduntant entry with count of array entries in exported json
       timelinesObj.push({
-        "name": tl.Name,
-        "outputId": tl.OutputId,
-        "outputType": tl.OutputType,
-        "entriesCount": entriesObj.length,
-        "entries": entriesObj
+        name: tl.Name,
+        hwId: tl.HardwareId,
+        outputId: tl.OutputId,
+        outputType: tl.OutputType,
+        entriesCount: entriesObj.length,
+        entries: entriesObj
       });
     }
     return JSON.stringify({
-      "timelinesCount": timelinesObj.length,
-      "timelines": timelinesObj
+      timelinesCount: timelinesObj.length,
+      timelines: timelinesObj
     });
   }
 

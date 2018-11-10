@@ -29,8 +29,14 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
       removeDialogOpen: false
     };
   }
-  
+
   public render() {
+
+    const textFieldStyle = {
+      marginLeft: "10px",
+      marginRight: "10px",
+      minWidth: "100px", maxWidth: "150px"
+    };
 
     const removeDialog = (
       <Dialog
@@ -64,13 +70,16 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <div style={{ width: "100%" }}>
-            <div style={{ display: "flex" }}>
+            <div style={{ display: "flex", flexWrap: "wrap" }}>
               <TextField id="time" label="Name" placeholder="Name" value={this.props.timeline.Name}
-                onChange={this.onFieldChanged('name')} margin="normal" />
-              <TextField id="outputId" label="Output" placeholder="Output" value={this.props.timeline.OutputId}
-                onChange={this.onFieldChanged('output')} type="number" margin="normal" />
+                onChange={this.onFieldChanged('name')} margin="normal" style={textFieldStyle} />
+              <TextField id="HardwareId" label="HardwareId" placeholder="HardwareId" value={this.props.timeline.HardwareId}
+                onChange={this.onFieldChanged('hwId')} margin="normal" style={textFieldStyle} />
+              <TextField id="outputId" label="OutputId" placeholder="OutputId"
+                value={this.props.timeline.OutputId} margin="normal" style={textFieldStyle}
+                onChange={this.onFieldChanged('output')} type="number" />
               <TextField id="outputType" label="Output Type" placeholder="Output Type" value={this.props.timeline.OutputType}
-                onChange={this.onFieldChanged('outputType')} select={true} margin="normal" >
+                onChange={this.onFieldChanged('outputType')} select={true} margin="normal" style={textFieldStyle} >
                 <MenuItem key={EOutputType.Analog} value={EOutputType.Analog}>Analog</MenuItem>
                 <MenuItem key={EOutputType.Digital} value={EOutputType.Digital}>Digital</MenuItem>
               </TextField>
@@ -120,7 +129,7 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
   private duplicateEntry = (key: number) => {
     this.props.timeline.DuplicateEntry(key);
     this.onUpdate();
-  }  
+  }
 
   private openRemoveConfirmDialog = () => {
     this.setState({ removeDialogOpen: true });
@@ -139,6 +148,8 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
       const newValue = e.target.value;
       switch (fieldName) {
         case 'name': this.props.timeline.Name = newValue; break;
+        // TODO: add base 16 field validation
+        case 'hwId': this.props.timeline.HardwareId = newValue; break;
         case 'output': this.props.timeline.OutputId = +newValue; break;
         case 'outputType': this.props.timeline.OutputType = +newValue; break;
       }

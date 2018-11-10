@@ -16,7 +16,7 @@ import {
   DashboardOutlined, InfoOutlined,
   MenuOutlined, TimelineOutlined
 } from '@material-ui/icons';
-import CStoryboard, { IStoryboard } from './CStoryboard';
+import CStoryboard, { IStoryboardJson } from './CStoryboard';
 import BStoryboard from './BStoryboard';
 
 enum EAppPage {
@@ -44,7 +44,7 @@ class App extends React.Component<any, IAppState> {
       mainMenuOpen: false,
       aboutDialogOpen: false,
       currentPage: EAppPage.DashboardPage,
-      storyboard: CStoryboard.CreateFromJson(BStoryboard.GetStoryboard2())
+      storyboard: CStoryboard.CreateFromJson(BStoryboard.GetStoryboard0())
     };
   }
 
@@ -135,7 +135,7 @@ class App extends React.Component<any, IAppState> {
     this.setState({ mainMenuOpen: false });
   }
 
-  private onOpenLocalStoryboard = (sb: IStoryboard) => {
+  private onOpenLocalStoryboard = (sb: IStoryboardJson) => {
     this.setState({ storyboard: CStoryboard.CreateFromJson(sb) });
   }
 
