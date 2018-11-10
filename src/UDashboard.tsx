@@ -5,24 +5,27 @@ import { ImportExportOutlined } from '@material-ui/icons';
 
 import CStoryboard from './CStoryboard';
 import UOutput from './UOutput';
-import { BitLabHost } from './BitLabHost';
+import { BitLabHost, INetworkState } from './BitLabHost';
 
-class UDashboardProps {
-  public storyboard: CStoryboard;
+
+interface IDashboardProps {
+  storyboard: CStoryboard;
 }
-class UDashboardState {
-  public textToSend: string;
-  public receivedText: string;
+interface IDashboardState {
+  textToSend: string;
+  receivedText: string;
+  networkState: INetworkState | null;
 }
 
-class UDashboard extends React.Component<UDashboardProps, UDashboardState> {
+class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
   private mHost: BitLabHost;
-  constructor(props: UDashboardProps) {
+  constructor(props: IDashboardProps) {
     super(props);
 
     this.state = {
       textToSend: "",
-      receivedText: ""
+      receivedText: "",
+      networkState: null
     };
 
     this.mHost = new BitLabHost();
@@ -57,6 +60,16 @@ class UDashboard extends React.Component<UDashboardProps, UDashboardState> {
           display: "flex", flexDirection: "column",
           margin: "5px", padding: "5px"
         }} >
+          <Typography style={{ margin: "20px 0px" }} variant="h5" >Commands</Typography>
+          <Button onClick={this.getState}>State</Button>
+          <TextField variant={"outlined"} label="Text to send" multiline
+            value={(this.state.networkState && this.state.networkState.NetState) || "unknown"} />
+        </Paper>
+
+        <Paper style={{
+          display: "flex", flexDirection: "column",
+          margin: "5px", padding: "5px"
+        }} >
           <Typography style={{ margin: "20px 0px" }} variant="h5" >Output</Typography>
           <div style={{
             margin: "5px", height: "400px",
@@ -85,6 +98,16 @@ class UDashboard extends React.Component<UDashboardProps, UDashboardState> {
     // this.sendDataToSocket(this.state.textToSend);
     await this.mHost.toggleLed();
   }
+  private getState = async () => {
+    // send text to COM port   
+    // this.sendDataToSocket(this.state.textToSend);
+    this.setState({
+      networkState: await this.mHost.getState()
+    })
+
+  }
+
+
 
   private sendDataToSocket = (data: any) => {
     // console.log(`Sent: ${data}`);

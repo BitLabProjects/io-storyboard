@@ -43,7 +43,7 @@ class App extends React.Component<any, IAppState> {
     this.state = {
       mainMenuOpen: false,
       aboutDialogOpen: false,
-      currentPage: EAppPage.StoryboardModePage,
+      currentPage: EAppPage.DashboardPage,
       storyboard: CStoryboard.CreateFromJson(BStoryboard.GetStoryboard2())
     };
   }
