@@ -69,7 +69,7 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
             onChange={this.onTextToSendChanged} value={this.state.textToSend} />
           <div>
             <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }} >
-              <Button style={{ margin: "10px" }} variant="fab" onClick={this.sendText}>
+              <Button style={{ margin: "10px" }} variant="fab" mini onClick={this.sendText}>
                 <ImportExportOutlined />
               </Button>
               <Button style={{ margin: "10px" }} onClick={this.toggleLed}>toggle_led</Button>
@@ -86,15 +86,9 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
               <Button style={{ margin: "10px" }} onClick={this.writeFile}>write_file</Button>
             </div>
             <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }} >
-              <Button style={{ margin: "10px" }} variant="fab" onClick={this.playStoryboard}>
-                <PlayArrow />
-              </Button>
-              <Button style={{ margin: "10px" }} variant="fab" onClick={this.pauseStoryboard}>
-                <Pause />
-              </Button>
-              <Button style={{ margin: "10px" }} variant="fab" onClick={this.stopStoryboard}>
-                <Stop />
-              </Button>
+              <Button style={{ margin: "10px" }} variant="fab" mini onClick={this.playStoryboard}><PlayArrow /></Button>
+              <Button style={{ margin: "10px" }} variant="fab" mini onClick={this.pauseStoryboard}><Pause /></Button>
+              <Button style={{ margin: "10px" }} variant="fab" mini onClick={this.stopStoryboard}><Stop /></Button>
             </div>
           </div>
           <TextField variant={"outlined"} label="Text received" multiline value={this.state.receivedText} />
@@ -182,7 +176,7 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
 
   private loadFile = async () => {
     // TODO
-    await this.mHost.loadFile("sd\\storyboard_2.json");
+    await this.mHost.loadFile("/sd/storyboard.json");
   }
   private uploadFile = async () => {
     await this.mHost.uploadFile();
@@ -192,16 +186,19 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
   }
   private openFile = async () => {
     // TODO
-    await this.mHost.openFile("sd\\storyboard_2.json", "w+");
+    await this.mHost.openFile("/sd/storyboard.json", "w+");
   }
   private closeFile = async () => {
     await this.mHost.closeFile();
   }
   private writeFile = async () => {
-    // TODO
-    // Send timeline as base64
-    // await this.mHost.writeFile(btoa(this.props.storyboard.ExportToJson()));
-    await this.mHost.writeFile("");
+    // Send timeline as base64    
+    const maxCharsToSend = 183;
+    const tlStr = JSON.stringify(this.props.storyboard.ExportToJson());
+    for (let i = 0; i < tlStr.length; i = i + maxCharsToSend) {
+      // btoa: string->base64
+      await this.mHost.writeFile(btoa(tlStr.substring(i, i + maxCharsToSend)));
+    }
   }
 
   private playStoryboard = async () => {

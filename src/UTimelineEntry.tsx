@@ -52,14 +52,14 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
         }
         {this.props.outputType === EOutputType.Analog && (
           <TextField id="duration" label="Duration" placeholder="Duration" value={this.props.entry.Duration}
-            onChange={this.onFieldChanged('duration')} type="number" margin="normal" fullWidth={true} />
+            onChange={this.onFieldChanged('duration')} type="number" margin="normal" fullWidth />
         )}
         <div style={{ display: "flex", flexDirection: "row" }} >
-          <Button style={{ margin: "5px" }} mini={true} color="secondary"
+          <Button style={{ margin: "5px" }} mini color="secondary"
             variant="fab" onClick={this.removeEntry}>
             <Remove />
           </Button>
-          <Button style={{ margin: "5px" }} mini={true} color="secondary"
+          <Button style={{ margin: "5px" }} mini color="secondary"
             variant="fab" onClick={this.addEntryAfterMe}>
             <ControlPointDuplicateOutlined />
           </Button>
@@ -74,7 +74,7 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
       switch (fieldName) {
         // operator '+' convert any object to number          
         case 'time': this.props.entry.Time = +newValue; break;
-        case 'digitalValue': e.target.checked ? this.props.entry.Value = 100 : this.props.entry.Value = 0; break;
+        case 'digitalValue': e.target.checked ? this.props.entry.Value = CTimelineEntry.MaxValue : this.props.entry.Value = 0; break;
         case 'duration': this.props.entry.Duration = +newValue; break;
       }
       this.props.onUpdate();

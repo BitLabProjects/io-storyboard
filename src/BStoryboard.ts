@@ -6,11 +6,12 @@ class BStoryboard {
 
   public static GetStoryboard0(): IStoryboardJson {
     return {
+      "duration": 179000,
       "timelinesCount": 40,
       "timelines": [
         {
           "name": "analog1",
-          "hwId": "370054",
+          "outputHardwareId": 3604564,
           "outputId": 1,
           "outputType": 0,
           "entriesCount": 3,
@@ -34,7 +35,7 @@ class BStoryboard {
         },
         {
           "name": "analog2",
-          "hwId": "66BFF33",
+          "outputHardwareId": 107740979,
           "outputId": 1,
           "outputType": 0,
           "entriesCount": 4,
@@ -63,7 +64,7 @@ class BStoryboard {
         },
         {
           "name": "analog3",
-          "hwId": "66BFF33",
+          "outputHardwareId": 107740979,
           "outputId": 2,
           "outputType": 0,
           "entriesCount": 4,
@@ -97,11 +98,12 @@ class BStoryboard {
   // values normalized to [0-4095]
   public static GetStoryboard2(): IStoryboardJson {
     return ({
+      "duration": 240000,
       "timelinesCount": 40,
       "timelines": [
         {
           "name": "analog1",
-          "hwId": "AABBCCDD", "outputId": 1,
+          "outputHardwareId": 2864434397, "outputId": 1,
           "outputType": 0,
           "entriesCount": 3,
           "entries": [
@@ -124,7 +126,7 @@ class BStoryboard {
         },
         {
           "name": "analog2",
-          "hwId": "AABBCCDD", "outputId": 2,
+          "outputHardwareId": 2864434397, "outputId": 2,
           "outputType": 0,
           "entriesCount": 4,
           "entries": [
@@ -152,7 +154,7 @@ class BStoryboard {
         },
         {
           "name": "analog3",
-          "hwId": "AABBCCDD", "outputId": 3,
+          "outputHardwareId": 2864434397, "outputId": 3,
           "outputType": 0,
           "entriesCount": 4,
           "entries": [
@@ -180,7 +182,7 @@ class BStoryboard {
         },
         {
           "name": "analog4",
-          "hwId": "AABBCCDD", "outputId": 4,
+          "outputHardwareId": 2864434397, "outputId": 4,
           "outputType": 0,
           "entriesCount": 3,
           "entries": [
@@ -203,7 +205,7 @@ class BStoryboard {
         },
         {
           "name": "analog5",
-          "hwId": "AABBCCDD", "outputId": 5,
+          "outputHardwareId": 2864434397, "outputId": 5,
           "outputType": 0,
           "entriesCount": 4,
           "entries": [
@@ -231,7 +233,7 @@ class BStoryboard {
         },
         {
           "name": "analog6",
-          "hwId": "AABBCCDD", "outputId": 6,
+          "outputHardwareId": 2864434397, "outputId": 6,
           "outputType": 0,
           "entriesCount": 4,
           "entries": [
@@ -259,7 +261,7 @@ class BStoryboard {
         },
         {
           "name": "analog7",
-          "hwId": "AABBCCDD", "outputId": 7,
+          "outputHardwareId": 2864434397, "outputId": 7,
           "outputType": 0,
           "entriesCount": 4,
           "entries": [
@@ -287,7 +289,7 @@ class BStoryboard {
         },
         {
           "name": "analog8",
-          "hwId": "AABBCCDD", "outputId": 8,
+          "outputHardwareId": 2864434397, "outputId": 8,
           "outputType": 0,
           "entriesCount": 4,
           "entries": [
@@ -315,14 +317,14 @@ class BStoryboard {
         },
         {
           "name": "digital1",
-          "hwId": "AABBCCDD", "outputId": 9,
+          "outputHardwareId": 2864434397, "outputId": 9,
           "outputType": 1,
           "entriesCount": 0,
           "entries": []
         },
         {
           "name": "digital2",
-          "hwId": "AABBCCDD", "outputId": 10,
+          "outputHardwareId": 2864434397, "outputId": 10,
           "outputType": 1,
           "entriesCount": 4,
           "entries": [
@@ -350,14 +352,14 @@ class BStoryboard {
         },
         {
           "name": "digital3",
-          "hwId": "AABBCCDD", "outputId": 11,
+          "outputHardwareId": 2864434397, "outputId": 11,
           "outputType": 1,
           "entriesCount": 0,
           "entries": []
         },
         {
           "name": "digital4",
-          "hwId": "AABBCCDD", "outputId": 12,
+          "outputHardwareId": 2864434397, "outputId": 12,
           "outputType": 1,
           "entriesCount": 4,
           "entries": [
@@ -385,7 +387,7 @@ class BStoryboard {
         },
         {
           "name": "digital5",
-          "hwId": "AABBCCDD", "outputId": 13,
+          "outputHardwareId": 2864434397, "outputId": 13,
           "outputType": 1,
           "entriesCount": 4,
           "entries": [
@@ -413,7 +415,7 @@ class BStoryboard {
         },
         {
           "name": "digital6",
-          "hwId": "AABBCCDD", "outputId": 14,
+          "outputHardwareId": 2864434397, "outputId": 14,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -431,7 +433,7 @@ class BStoryboard {
         },
         {
           "name": "digital7",
-          "hwId": "AABBCCDD", "outputId": 15,
+          "outputHardwareId": 2864434397, "outputId": 15,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -449,7 +451,7 @@ class BStoryboard {
         },
         {
           "name": "digital8",
-          "hwId": "AABBCCDD", "outputId": 16,
+          "outputHardwareId": 2864434397, "outputId": 16,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -467,7 +469,7 @@ class BStoryboard {
         },
         {
           "name": "digital9",
-          "hwId": "AABBCCDD", "outputId": 17,
+          "outputHardwareId": 2864434397, "outputId": 17,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -485,7 +487,7 @@ class BStoryboard {
         },
         {
           "name": "digital10",
-          "hwId": "AABBCCDD", "outputId": 18,
+          "outputHardwareId": 2864434397, "outputId": 18,
           "outputType": 1,
           "entriesCount": 4,
           "entries": [
@@ -513,7 +515,7 @@ class BStoryboard {
         },
         {
           "name": "digital11",
-          "hwId": "AABBCCDD", "outputId": 19,
+          "outputHardwareId": 2864434397, "outputId": 19,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -531,7 +533,7 @@ class BStoryboard {
         },
         {
           "name": "digital12",
-          "hwId": "AABBCCDD", "outputId": 20,
+          "outputHardwareId": 2864434397, "outputId": 20,
           "outputType": 1,
           "entriesCount": 4,
           "entries": [
@@ -559,7 +561,7 @@ class BStoryboard {
         },
         {
           "name": "digital13",
-          "hwId": "AABBCCDD", "outputId": 21,
+          "outputHardwareId": 2864434397, "outputId": 21,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -577,7 +579,7 @@ class BStoryboard {
         },
         {
           "name": "digital14",
-          "hwId": "AABBCCDD", "outputId": 22,
+          "outputHardwareId": 2864434397, "outputId": 22,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -595,7 +597,7 @@ class BStoryboard {
         },
         {
           "name": "digital15",
-          "hwId": "AABBCCDD", "outputId": 23,
+          "outputHardwareId": 2864434397, "outputId": 23,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -613,7 +615,7 @@ class BStoryboard {
         },
         {
           "name": "digital16",
-          "hwId": "AABBCCDD", "outputId": 24,
+          "outputHardwareId": 2864434397, "outputId": 24,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -631,14 +633,14 @@ class BStoryboard {
         },
         {
           "name": "digital17",
-          "hwId": "AABBCCDD", "outputId": 25,
+          "outputHardwareId": 2864434397, "outputId": 25,
           "outputType": 1,
           "entriesCount": 0,
           "entries": []
         },
         {
           "name": "digital18",
-          "hwId": "AABBCCDD", "outputId": 26,
+          "outputHardwareId": 2864434397, "outputId": 26,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -656,7 +658,7 @@ class BStoryboard {
         },
         {
           "name": "digital19",
-          "hwId": "AABBCCDD", "outputId": 27,
+          "outputHardwareId": 2864434397, "outputId": 27,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -674,7 +676,7 @@ class BStoryboard {
         },
         {
           "name": "digital20",
-          "hwId": "AABBCCDD", "outputId": 28,
+          "outputHardwareId": 2864434397, "outputId": 28,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -692,7 +694,7 @@ class BStoryboard {
         },
         {
           "name": "digital21",
-          "hwId": "AABBCCDD", "outputId": 29,
+          "outputHardwareId": 2864434397, "outputId": 29,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -710,14 +712,14 @@ class BStoryboard {
         },
         {
           "name": "digital22",
-          "hwId": "AABBCCDD", "outputId": 30,
+          "outputHardwareId": 2864434397, "outputId": 30,
           "outputType": 1,
           "entriesCount": 0,
           "entries": []
         },
         {
           "name": "digital23",
-          "hwId": "AABBCCDD", "outputId": 31,
+          "outputHardwareId": 2864434397, "outputId": 31,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -735,21 +737,21 @@ class BStoryboard {
         },
         {
           "name": "digital24",
-          "hwId": "AABBCCDD", "outputId": 32,
+          "outputHardwareId": 2864434397, "outputId": 32,
           "outputType": 1,
           "entriesCount": 0,
           "entries": []
         },
         {
           "name": "digital25",
-          "hwId": "AABBCCDD", "outputId": 33,
+          "outputHardwareId": 2864434397, "outputId": 33,
           "outputType": 1,
           "entriesCount": 0,
           "entries": []
         },
         {
           "name": "digital26",
-          "hwId": "AABBCCDD", "outputId": 34,
+          "outputHardwareId": 2864434397, "outputId": 34,
           "outputType": 1,
           "entriesCount": 4,
           "entries": [
@@ -777,7 +779,7 @@ class BStoryboard {
         },
         {
           "name": "digital27",
-          "hwId": "AABBCCDD", "outputId": 35,
+          "outputHardwareId": 2864434397, "outputId": 35,
           "outputType": 1,
           "entriesCount": 8,
           "entries": [
@@ -825,14 +827,14 @@ class BStoryboard {
         },
         {
           "name": "digital28",
-          "hwId": "AABBCCDD", "outputId": 36,
+          "outputHardwareId": 2864434397, "outputId": 36,
           "outputType": 1,
           "entriesCount": 0,
           "entries": []
         },
         {
           "name": "digital29",
-          "hwId": "AABBCCDD", "outputId": 37,
+          "outputHardwareId": 2864434397, "outputId": 37,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -850,7 +852,7 @@ class BStoryboard {
         },
         {
           "name": "digital30",
-          "hwId": "AABBCCDD", "outputId": 38,
+          "outputHardwareId": 2864434397, "outputId": 38,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -868,7 +870,7 @@ class BStoryboard {
         },
         {
           "name": "digital31",
-          "hwId": "AABBCCDD", "outputId": 39,
+          "outputHardwareId": 2864434397, "outputId": 39,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [
@@ -886,7 +888,7 @@ class BStoryboard {
         },
         {
           "name": "digital32",
-          "hwId": "AABBCCDD", "outputId": 40,
+          "outputHardwareId": 2864434397, "outputId": 40,
           "outputType": 1,
           "entriesCount": 2,
           "entries": [

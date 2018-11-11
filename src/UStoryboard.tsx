@@ -23,20 +23,15 @@ interface IStoryboardState {
 // Inheriting from PureComponent, so Render is triggered only by shallow comparison
 class UStoryboard extends React.PureComponent<IStoryboardProps, IStoryboardState> {
 
-  private mMaxTime: number;
-
   constructor(props: IStoryboardProps) {
     super(props);
-    this.mMaxTime = this.props.storyboard.MaxTime;
     this.state = {
-      zoomRange: [0, this.mMaxTime],
+      zoomRange: [0, this.props.storyboard.MaxTime],
       timelinesVisibility: Array<boolean>(this.props.storyboard.Timelines.length).fill(true)
     };
   }
 
   public render() {
-    this.mMaxTime = this.props.storyboard.MaxTime;
-
     const timelines: JSX.Element[] = [];
 
     for (let i = 0; i < this.props.storyboard.Timelines.length; i++) {
@@ -128,7 +123,7 @@ class UStoryboard extends React.PureComponent<IStoryboardProps, IStoryboardState
   }
 
   private exportStoryboard = () => {
-    const text = this.props.storyboard.ExportToJson();
+    const text = JSON.stringify(this.props.storyboard.ExportToJson());
     // download file json
     const element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));

@@ -45,7 +45,7 @@ class CTimeline {
 
   constructor(
     public Name: string,
-    public HardwareId: string,
+    public HardwareId: string, // base16
     public OutputId: number,
     public OutputType: EOutputType
   ) {

@@ -8,7 +8,7 @@ export interface ITimelineEntryJson {
 
 export interface ITimelineJson {
   name: string;
-  hwId: string;
+  outputHardwareId: number; // base10
   outputId: number;
   outputType: number;
   entriesCount: number;
@@ -16,6 +16,7 @@ export interface ITimelineJson {
 }
 
 export interface IStoryboardJson {
+  duration: number;
   timelinesCount: number;
   timelines: ITimelineJson[];
 }
@@ -27,15 +28,11 @@ class CStoryboard {
     const newStoryboard = new CStoryboard();
     for (const tl of sb.timelines) {
       if (tl.name) {
-        const newTimeline = new CTimeline(tl.name, tl.hwId, tl.outputId, tl.outputType);
+        const newTimeline = new CTimeline(tl.name, tl.outputHardwareId.toString(16), tl.outputId, tl.outputType);
         for (const tle of tl.entries) {
           // convert time values from milliseconds to seconds
           // convert value [0-4095] -> [0-100]
           newTimeline.AddEntry(tle.value / 40.95, tle.duration / 1000, tle.time / 1000);
-        }
-        if (tl.entries.length === 0) {
-          // at least one empty entry
-          newTimeline.AddEntry(0, 0, 0);
         }
         newStoryboard.Timelines.push(newTimeline);
       }
@@ -84,7 +81,7 @@ class CStoryboard {
     return newStoryboard;
   }
 
-  public ExportToJson(): string {
+  public ExportToJson(): IStoryboardJson {
     const timelinesObj: ITimelineJson[] = [];
     for (const tl of this.Timelines) {
       const entriesObj: ITimelineEntryJson[] = [];
@@ -100,17 +97,18 @@ class CStoryboard {
       // Additional reduntant entry with count of array entries in exported json
       timelinesObj.push({
         name: tl.Name,
-        hwId: tl.HardwareId,
+        outputHardwareId: parseInt(tl.HardwareId, 16),
         outputId: tl.OutputId,
         outputType: tl.OutputType,
         entriesCount: entriesObj.length,
         entries: entriesObj
       });
     }
-    return JSON.stringify({
+    return {
+      duration: this.MaxTime * 1000,
       timelinesCount: timelinesObj.length,
       timelines: timelinesObj
-    });
+    };
   }
 
 }

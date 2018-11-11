@@ -3,7 +3,7 @@ import * as React from "react";
 import { CTimeline, EOutputType } from "./CTimeline";
 import UTimelineEntry from "./UTimelineEntry";
 
-import { Remove } from '@material-ui/icons';
+import { Add, Remove } from '@material-ui/icons';
 
 import { Dialog, DialogActions, DialogContent, DialogContentText, MenuItem, Paper, TextField, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
 
@@ -90,6 +90,11 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
             </div>
             {removeDialog}
             <div style={{ display: "flex", flexDirection: "row", overflowX: "auto", overflowY: "hidden" }} >
+              {this.props.timeline.Entries.length === 0 &&
+                <Button style={{ margin: "5px" }} mini color="secondary"
+                  variant="fab" onClick={this.addEntry}>
+                  <Add />
+                </Button>}
               {this.props.timeline.Entries.map((entry, index) =>
                 (<Paper key={entry.key} style={{ width: "100px", margin: "5px", padding: "10px" }} >
                   <UTimelineEntry
@@ -119,6 +124,11 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
       data.push(entryEnd);
     }
     return data;
+  }
+
+  private addEntry = () => {
+    this.props.timeline.AddEntry(0,0,0);
+    this.onUpdate();
   }
 
   private removeEntry = (key: number) => {
