@@ -7,6 +7,7 @@ import CStoryboard from './CStoryboard';
 import UOutput from './UOutput';
 import { BitLabHost, INetworkState } from './BitLabHost';
 import { CTimeline } from './CTimeline';
+import { Format } from './Utils/Format';
 
 
 interface IDashboardProps {
@@ -71,9 +72,9 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
               <Button style={{ margin: "10px" }} onClick={this.getState}>get_state</Button>
             </div>
             <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }} >
-              <Button style={{ margin: "10px" }} onClick={this.loadFile}>load_file</Button>
-              <Button style={{ margin: "10px" }} onClick={this.uploadFile}>upload_file</Button>
-              <Button style={{ margin: "10px" }} onClick={this.checkFile}>check_file</Button>
+              <Button style={{ margin: "10px" }} onClick={this.loadStoryboard}>load_storyboard</Button>
+              <Button style={{ margin: "10px" }} onClick={this.uploadStoryboard}>upload_storyboard</Button>
+              <Button style={{ margin: "10px" }} onClick={this.checkStoryboard}>check_storyboard</Button>
             </div>
             <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }} >
               <Button style={{ margin: "10px" }} onClick={this.openFile}>open_file</Button>
@@ -107,7 +108,8 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
               <TableRow>
                 <TableCell numeric>Address</TableCell>
                 <TableCell numeric>hwId</TableCell>
-                <TableCell numeric>crc</TableCell>
+                <TableCell numeric>crc (from device)</TableCell>
+                <TableCell numeric>crc (computed)</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -116,6 +118,8 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
                   <TableCell numeric>{device.address.toString(10).toUpperCase()}</TableCell>
                   <TableCell numeric>{device.hwId}</TableCell>
                   <TableCell numeric>{device.crc}</TableCell>
+                  <TableCell numeric>{Format.numberUInt32ToHex(index === 0 ? this.props.storyboard.calcCrc32(null, 0)
+                                                                           : this.props.storyboard.calcCrc32(device.hwId, 0))}</TableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -163,15 +167,15 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
     await this.perform(() => this.mHost.setOutput(tl.HardwareId, tl.OutputId, value));
   }
 
-  private loadFile = async () => {
+  private loadStoryboard = async () => {
     // TODO
-    await this.perform(() => this.mHost.loadFile("/sd/storyboard.json"));
+    await this.perform(() => this.mHost.loadStoryboard("/sd/storyboard.json"));
   }
-  private uploadFile = async () => {
-    await this.perform(() => this.mHost.uploadFile());
+  private uploadStoryboard = async () => {
+    await this.perform(() => this.mHost.uploadStoryboard());
   }
-  private checkFile = async () => {
-    await this.perform(() => this.mHost.checkFile());
+  private checkStoryboard = async () => {
+    await this.perform(() => this.mHost.checkStoryboards());
   }
   private openFile = async () => {
     // TODO

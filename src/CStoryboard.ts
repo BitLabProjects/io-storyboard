@@ -1,4 +1,5 @@
 import { CTimeline, EOutputType } from "./CTimeline";
+import { Crc32 } from "./Utils/Crc32";
 
 export interface ITimelineEntryJson {
   time: number;
@@ -46,6 +47,9 @@ class CStoryboard {
     this.Timelines = [];
   }
 
+  public get Duration(): number {
+    return this.MaxTime * 1000;
+  }
   public get MaxTime(): number {
     let maxValue: number = 0;
     for (const timeline of this.Timelines) {
@@ -105,12 +109,26 @@ class CStoryboard {
       });
     }
     return {
-      duration: this.MaxTime * 1000,
+      duration: this.Duration,
       timelinesCount: timelinesObj.length,
       timelines: timelinesObj
     };
   }
 
+  public calcCrc32(hardwareIdOrNullForall: string | null, initialCrc: number): number {
+    let crc32 = initialCrc;
+    crc32 = Crc32.crc32_UInt8(123, crc32);
+
+    const timelinesForHardwareId = this.Timelines.filter((timeline) => {
+      return (hardwareIdOrNullForall === null || timeline.isForHardwareId(hardwareIdOrNullForall));
+    });
+    crc32 = Crc32.crc32_UInt8(timelinesForHardwareId.length, crc32);
+    crc32 = Crc32.crc32_Int32(this.Duration, crc32);
+    timelinesForHardwareId.forEach((timeline) => {
+      crc32 = timeline.calcCrc32(crc32);
+    });
+    return crc32;
+  }
 }
 
 export default CStoryboard;

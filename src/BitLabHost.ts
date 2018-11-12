@@ -92,13 +92,13 @@ export class BitLabHost {
     await this.mSerialInterface.sendAndGetResponse(`writeFile ${contentAsBase64}\n`);
   }
 
-  public async loadFile(fileName: string) {
+  public async loadStoryboard(fileName: string) {
     await this.mSerialInterface.sendAndGetResponse(`load ${fileName}\n`);
   }
-  public async uploadFile() {
+  public async uploadStoryboard() {
     await this.mSerialInterface.sendAndGetResponse(`upload\n`);
   }
-  public async checkFile() {
+  public async checkStoryboards() {
     await this.mSerialInterface.sendAndGetResponse(`check\n`);
   }
   public async playStoryboard() {

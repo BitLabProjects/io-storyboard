@@ -1,3 +1,5 @@
+import { Crc32 } from "./Utils/Crc32";
+
 enum EOutputType {
   Analog,
   Digital
@@ -52,6 +54,10 @@ class CTimeline {
     this.Entries = [];
     this.key = CTimeline.nextKey;
     CTimeline.nextKey += 1;    
+  }
+
+  public isForHardwareId(hardwareId: string): boolean {
+    return parseInt(hardwareId, 16) === parseInt(this.HardwareId, 16);
   }
 
   public AddEntry(value: number, duration: number, time?: number): CTimelineEntry {
@@ -124,6 +130,20 @@ class CTimeline {
     return 0;
   }
 
+  public calcCrc32(initialCrc: number): number {
+    let crc32 = initialCrc;
+    crc32 = Crc32.crc32_UInt32(parseInt(this.HardwareId, 16), crc32);
+    crc32 = Crc32.crc32_Int32(this.OutputId, crc32);
+    crc32 = Crc32.crc32_UInt8(this.Entries.length, crc32);
+    this.Entries.forEach((entry) => {
+      crc32 = Crc32.crc32_Int32(entry.Time, crc32);
+      crc32 = Crc32.crc32_Int32(entry.Value, crc32);
+      crc32 = Crc32.crc32_Int32(entry.Duration, crc32);
+    });
+
+    return crc32;
+  }
+
   // calc start time based on entry position
   private mGetNextStartTime(): number {
     let nextTime = 0;
@@ -133,7 +153,6 @@ class CTimeline {
     }
     return nextTime;
   }
-
 }
 
 export { EOutputType, CTimelineEntry, CTimeline };
