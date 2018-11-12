@@ -114,8 +114,8 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
               {this.state.networkState.EnumeratedDevice.map((device, index) =>
                 <TableRow key={index}>
                   <TableCell numeric>{device.address.toString(10).toUpperCase()}</TableCell>
-                  <TableCell numeric>{device.hwId.toString(16).toUpperCase()}</TableCell>
-                  <TableCell numeric>{device.crc.toString(16).toUpperCase()}</TableCell>
+                  <TableCell numeric>{device.hwId}</TableCell>
+                  <TableCell numeric>{device.crc}</TableCell>
                 </TableRow>
               )}
             </TableBody>

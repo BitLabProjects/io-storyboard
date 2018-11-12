@@ -2,8 +2,8 @@ import * as SocketIOClient from 'socket.io-client';
 
 export interface IDevice {
   address: number;
-  hwId: number;
-  crc: number;
+  hwId: string;
+  crc: string;
 }
 export interface INetworkState {
   UpTime: number;
@@ -58,8 +58,8 @@ export class BitLabHost {
         while (match) {
           devices.push({
             address: parseInt(match[1].trim(), 10),
-            hwId: parseInt(match[2].trim(), 16),
-            crc: parseInt(match[3].trim(), 16)
+            hwId: match[2].trim(),
+            crc: match[3].trim()
           });
           match = expr.exec(devicesArray);
         }
