@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Button, Paper, TextField, Typography, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
-import { ImportExportOutlined, PlayArrow, Pause, Stop } from '@material-ui/icons';
+import { PlayArrow, Pause, Stop } from '@material-ui/icons';
 
 import CStoryboard from './CStoryboard';
 import UOutput from './UOutput';
@@ -13,8 +13,8 @@ interface IDashboardProps {
   storyboard: CStoryboard;
 }
 interface IDashboardState {
-  textToSend: string;
   receivedText: string;
+  isWaitingResponse: boolean;
   networkState: INetworkState;
 }
 
@@ -24,8 +24,8 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
     super(props);
 
     this.state = {
-      textToSend: "",
       receivedText: "",
+      isWaitingResponse: false,
       networkState: {
         UpTime: 0,
         FreePackets: 0,
@@ -64,14 +64,9 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
           display: "flex", flexDirection: "column",
           margin: "5px", padding: "5px"
         }} >
-          <Typography style={{ margin: "20px 0px" }} variant="h6" >Command line</Typography>
-          <TextField variant={"outlined"} label="Text to send" multiline
-            onChange={this.onTextToSendChanged} value={this.state.textToSend} />
+          <Typography style={{ margin: "20px 0px" }} variant="h6" >Command line {this.state.isWaitingResponse ? "(busy)" : ""}</Typography>
           <div>
             <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }} >
-              <Button style={{ margin: "10px" }} variant="fab" mini onClick={this.sendText}>
-                <ImportExportOutlined />
-              </Button>
               <Button style={{ margin: "10px" }} onClick={this.toggleLed}>toggle_led</Button>
               <Button style={{ margin: "10px" }} onClick={this.getState}>get_state</Button>
             </div>
@@ -154,63 +149,64 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
     this.setState({ receivedText: this.mHost.LastResponse });
   }
 
-  private onTextToSendChanged = (event: any) => {
-    this.setState({ textToSend: event.target.value });
-  }
-
-  private sendText = async () => {
-    await this.mHost.sendText(this.state.textToSend);
-  }
-
   private toggleLed = async () => {
-    await this.mHost.toggleLed();
+    await this.perform(() => this.mHost.toggleLed());
   }
   private getState = async () => {
-    this.setState({
-      networkState: await this.mHost.getState()
-    })
+    await this.perform(async () => {
+      this.setState({
+        networkState: await this.mHost.getState()
+      });
+    });
   }
   private setOutput = (tl: CTimeline) => async (value: number) => {
-    await this.mHost.setOutput(tl.HardwareId, tl.OutputId, value);
+    await this.perform(() => this.mHost.setOutput(tl.HardwareId, tl.OutputId, value));
   }
 
   private loadFile = async () => {
     // TODO
-    await this.mHost.loadFile("/sd/storyboard.json");
+    await this.perform(() => this.mHost.loadFile("/sd/storyboard.json"));
   }
   private uploadFile = async () => {
-    await this.mHost.uploadFile();
+    await this.perform(() => this.mHost.uploadFile());
   }
   private checkFile = async () => {
-    await this.mHost.checkFile();
+    await this.perform(() => this.mHost.checkFile());
   }
   private openFile = async () => {
     // TODO
-    await this.mHost.openFile("/sd/storyboard.json", "w+");
+    await this.perform(() => this.mHost.openFile("/sd/storyboard.json", "w+"));
   }
   private closeFile = async () => {
-    await this.mHost.closeFile();
+    await this.perform(() => this.mHost.closeFile());
   }
   private writeFile = async () => {
-    // Send timeline as base64    
-    const maxCharsToSend = 183;
-    const tlStr = JSON.stringify(this.props.storyboard.ExportToJson());
-    for (let i = 0; i < tlStr.length; i = i + maxCharsToSend) {
-      // btoa: string->base64
-      await this.mHost.writeFile(btoa(tlStr.substring(i, i + maxCharsToSend)));
-    }
+    await this.perform(async () => {
+      // Send timeline as base64    
+      const maxCharsToSend = 183;
+      const tlStr = JSON.stringify(this.props.storyboard.ExportToJson());
+      for (let i = 0; i < tlStr.length; i = i + maxCharsToSend) {
+        // btoa: string->base64
+        await this.mHost.writeFile(btoa(tlStr.substring(i, i + maxCharsToSend)));
+      }
+    });
   }
 
   private playStoryboard = async () => {
-    await this.mHost.playStoryboard();
+    await this.perform(() => this.mHost.playStoryboard());
   }
   private pauseStoryboard = async () => {
-    await this.mHost.pauseStoryboard();
+    await this.perform(() => this.mHost.pauseStoryboard());
   }
   private stopStoryboard = async () => {
-    await this.mHost.stopStoryboard();
+    await this.perform(() => this.mHost.stopStoryboard());
   }
 
+  private perform = async(action: () => Promise<any>) => {
+    this.setState({isWaitingResponse: true});
+    await action();
+    this.setState({isWaitingResponse: false});
+  }
 }
 
 export default UDashboard;
