@@ -19,7 +19,7 @@ class UOutput extends React.Component<UOutputProps, UOutputState> {
 
   public render() {
     return (
-      <div style={{ display: "flex", margin: "20px 10px" }}>
+      <div style={{ display: "flex", margin: "10px" }}>
         <USlider min={0} max={CTimelineEntry.MaxValue} step={1} defaultValue={this.state.currValue}
           vertical onChange={this.onChange} label={this.props.timeline.Name} />
       </div>

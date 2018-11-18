@@ -29,7 +29,7 @@ export class BitLabHost {
   }
 
   public async toggleLed() {
-    await this.mSerialInterface.sendAndGetResponse("toggleLed\n");
+    return this.mSerialInterface.sendAndGetResponse("toggleLed\n");
   }
   public async getState(): Promise<INetworkState> {
     return new Promise<INetworkState>(async (resolve, reject) => {
@@ -83,32 +83,32 @@ export class BitLabHost {
   }
 
   public async openFile(filePath: string, mode: "r" | "w" | "a" | "r+" | "w+" | "a+") {
-    await this.mSerialInterface.sendAndGetResponse(`openFile ${filePath} ${mode}\n`);
+    return this.mSerialInterface.sendAndGetResponse(`openFile ${filePath} ${mode}\n`);
   }
   public async closeFile() {
-    await this.mSerialInterface.sendAndGetResponse(`closeFile\n`);
+    return this.mSerialInterface.sendAndGetResponse(`closeFile\n`);
   }
   public async writeFile(contentAsBase64: string) {
-    await this.mSerialInterface.sendAndGetResponse(`writeFile ${contentAsBase64}\n`);
+    return this.mSerialInterface.sendAndGetResponse(`writeFile ${contentAsBase64}\n`);
   }
 
   public async loadFile(fileName: string) {
-    await this.mSerialInterface.sendAndGetResponse(`load ${fileName}\n`);
+    return this.mSerialInterface.sendAndGetResponse(`load ${fileName}\n`);
   }
   public async uploadFile() {
-    await this.mSerialInterface.sendAndGetResponse(`upload\n`);
+    return this.mSerialInterface.sendAndGetResponse(`upload\n`);
   }
   public async checkFile() {
-    await this.mSerialInterface.sendAndGetResponse(`check\n`);
+    return this.mSerialInterface.sendAndGetResponse(`check\n`);
   }
   public async playStoryboard() {
-    await this.mSerialInterface.sendAndGetResponse(`play\n`);
+    return this.mSerialInterface.sendAndGetResponse(`play\n`);
   }
   public async pauseStoryboard() {
-    await this.mSerialInterface.sendAndGetResponse(`pause\n`);
+    return this.mSerialInterface.sendAndGetResponse(`pause\n`);
   }
   public async stopStoryboard() {
-    await this.mSerialInterface.sendAndGetResponse(`stop\n`);
+    return this.mSerialInterface.sendAndGetResponse(`stop\n`);
   }
 
 }
