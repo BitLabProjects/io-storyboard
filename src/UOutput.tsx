@@ -6,6 +6,7 @@ import USlider from "./USlider";
 class UOutputProps {
   public timeline: CTimeline;
   public onChange: (value: number) => void;
+  public disabled?: boolean;
 }
 class UOutputState {
   public currValue: number;
@@ -21,7 +22,8 @@ class UOutput extends React.Component<UOutputProps, UOutputState> {
     return (
       <div style={{ display: "flex", margin: "10px" }}>
         <USlider min={0} max={CTimelineEntry.MaxValue} step={1} defaultValue={this.state.currValue}
-          vertical onChange={this.onChange} label={this.props.timeline.Name} />
+          vertical onChange={this.onChange} label={this.props.timeline.Name}
+          disabled={this.props.disabled} />
       </div>
     );
   }

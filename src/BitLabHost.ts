@@ -77,14 +77,14 @@ export class BitLabHost {
     });
   }
 
-  public async setOutput(hwId: string, outputId: number, value: number) {
-    await this.mSerialInterface.sendAndGetResponseDelayed(
+  public async setOutput(hwId: string, outputId: number, value: number): Promise<string[]> {
+    return await this.mSerialInterface.sendAndGetResponseDelayed(
       `setOutput ${hwId} ${outputId} ${value}\n`
     );
   }
 
   public async openFile(filePath: string, mode: "r" | "w" | "a" | "r+" | "w+" | "a+") {
-    return this.mSerialInterface.sendAndGetResponse(`openFile ${filePath} ${mode}\n`);
+    return await this.mSerialInterface.sendAndGetResponse(`openFile ${filePath} ${mode}\n`);
   }
   public async closeFile(): Promise<string[]> {
     return await this.mSerialInterface.sendAndGetResponse(`closeFile\n`);

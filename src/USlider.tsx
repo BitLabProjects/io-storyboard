@@ -26,6 +26,7 @@ interface ISliderProps extends WithStyles<typeof styles> {
   vertical?: boolean;
   onChange?: (newValue: number) => void;
   onValueApplied?: (newValue: number) => void;
+  disabled?: boolean;
 }
 interface ISliderState {
   currValue: number;
@@ -52,7 +53,7 @@ class USlider extends React.Component<ISliderProps, ISliderState> {
         <Typography>{label}</Typography>
         <Typography style={{ paddingBottom: "5px" }} >({this.state.currValue.toFixed(1)})</Typography>
         <div style={{ width: this.props.vertical ? "auto" : "100%", height: "100%", display: "flex" }}>
-          <Slider vertical={this.props.vertical}
+          <Slider vertical={this.props.vertical} disabled={this.props.disabled}
             classes={{ container: (this.props.vertical ? classes.verticalSlider : classes.slider) }}
             min={this.props.min} max={this.props.max} step={this.props.step}
             value={this.state.currValue} onChange={this.onChange} onDragEnd={this.onValueApplied} />

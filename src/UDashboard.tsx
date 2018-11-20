@@ -37,7 +37,7 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
 
     this.mHost = new BitLabHost();
 
-    setInterval(this.onInterval, 1000);
+    // setInterval(this.onInterval, 1000);
   }
 
   public render() {
@@ -63,7 +63,7 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
             display: "flex", flexDirection: "column",
             margin: "5px", padding: "5px"
           }} >
-            <Typography style={{ margin: "20px 0px" }} variant="h6" >Command line</Typography>
+            <Typography style={{ margin: "20px 0px" }} variant="h6" >Command line {this.state.isWaitingResponse ? '(Busy)' : ''}</Typography>
             {/* <TextField variant={"outlined"} label="Text to send" multiline
               onChange={this.onTextToSendChanged} value={this.state.textToSend} /> */}
             <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", alignItems: "center" }} >
@@ -71,17 +71,17 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
                 <Button style={{ margin: "10px" }} variant="fab" mini onClick={this.sendText}><Send /></Button>
               </Tooltip> */}
               <Tooltip title="Toggle LED">
-                <Button style={{ margin: "10px" }} variant="fab" mini onClick={this.toggleLed}><Highlight /></Button>
+                <Button style={{ margin: "10px" }} variant="fab" mini onClick={this.toggleLed} disabled={this.state.isWaitingResponse}><Highlight /></Button>
               </Tooltip>
               <Tooltip title="Upload storyboard">
-                <Button style={{ margin: "10px" }} variant="fab" onClick={this.uploadStoryboard}><KeyboardArrowRight /><DeveloperBoard /></Button>
+                <Button style={{ margin: "10px" }} variant="fab" onClick={this.uploadStoryboard} disabled={this.state.isWaitingResponse}><KeyboardArrowRight /><DeveloperBoard /></Button>
               </Tooltip>
               <Tooltip title="Get state">
-                <Button style={{ margin: "10px" }} variant="fab" onClick={this.getState}><List /></Button>
+                <Button style={{ margin: "10px" }} variant="fab" onClick={this.getState} disabled={this.state.isWaitingResponse}><List /></Button>
               </Tooltip>
-              <Button style={{ margin: "10px" }} variant="fab" mini onClick={this.playStoryboard}><PlayArrow /></Button>
-              <Button style={{ margin: "10px" }} variant="fab" mini onClick={this.pauseStoryboard}><Pause /></Button>
-              <Button style={{ margin: "10px" }} variant="fab" mini onClick={this.stopStoryboard}><Stop /></Button>
+              <Button style={{ margin: "10px" }} variant="fab" mini onClick={this.playStoryboard} disabled={this.state.isWaitingResponse}><PlayArrow /></Button>
+              <Button style={{ margin: "10px" }} variant="fab" mini onClick={this.pauseStoryboard} disabled={this.state.isWaitingResponse}><Pause /></Button>
+              <Button style={{ margin: "10px" }} variant="fab" mini onClick={this.stopStoryboard} disabled={this.state.isWaitingResponse}><Stop /></Button>
             </div>
             <TextField variant={"outlined"} label="Text received" multiline value={this.state.receivedText} error={this.state.commandError} />
           </Paper>
@@ -135,7 +135,8 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
                   display: "flex", flexDirection: "row"
                 }} >
                   {timelinesByHwId[hwId].map((tl, index) => (
-                    <UOutput key={index} timeline={tl} onChange={this.setOutput(tl)} />
+                    <UOutput key={index} timeline={tl} onChange={this.setOutput(tl)}
+                      disabled={this.state.isWaitingResponse} />
                   ))}
                 </div>
               </div>
@@ -146,12 +147,14 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
     );
   }
 
+  /*
   private onInterval = () => {
     this.setState({ receivedText: this.mHost.LastResponse });
   }
+  */
 
   private toggleLed = async () => {
-    await this.perform(() => this.mHost.toggleLed());
+    return this.performCommandAndCheck("toggleLet", () => this.mHost.toggleLed());
   }
   private getState = async () => {
     await this.perform(async () => {
@@ -160,66 +163,61 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
       });
     });
   }
-  private setOutput = (tl: CTimeline) => async (value: number) => {
-    await this.perform(() => this.mHost.setOutput(tl.HardwareId, tl.OutputId, value));
+  private setOutput = (tl: CTimeline) => {
+    return async (value: number) => {
+      return this.performCommandAndCheck("setOutput", () => this.mHost.setOutput(tl.HardwareId, tl.OutputId, value));
+    }
   }
 
   private uploadStoryboard = async () => {
-    if (!await this.tryCommand("closeFile", () => this.mHost.closeFile())) { return; } 
-    if (!await this.tryCommand("openFile", () => this.mHost.openFile("/sd/storyboard.json", "w+"))) { return; }
+    return this.perform(async () => {
+      if (!await this.tryCommand("closeFile", () => this.mHost.closeFile())) { return; }
+      if (!await this.tryCommand("openFile", () => this.mHost.openFile("/sd/storyboard.json", "w+"))) { return; }
 
-    // Send timeline as base64    
-    const maxCharsToSend = 150; // 183;
-    const tlStr = JSON.stringify(this.props.storyboard.ExportToJson());
-    for (let i = 0; i < tlStr.length; i = i + maxCharsToSend) {
-      // btoa: string->base64
-      if (!await this.tryCommand("writeFile", () => this.mHost.writeFile(btoa(tlStr.substring(i, i + maxCharsToSend))))) { return; }
-    }
-    if (!await this.tryCommand("closeFile", () => this.mHost.closeFile())) { return; }
+      // Send timeline as base64    
+      const maxCharsToSend = 150; // 183;
+      const tlStr = JSON.stringify(this.props.storyboard.ExportToJson());
+      for (let i = 0; i < tlStr.length; i = i + maxCharsToSend) {
+        // btoa: string->base64
+        if (!await this.tryCommand("writeFile", () => this.mHost.writeFile(btoa(tlStr.substring(i, i + maxCharsToSend))))) { return; }
+      }
+      if (!await this.tryCommand("closeFile", () => this.mHost.closeFile())) { return; }
 
-    if (!await this.tryCommand("loadStoryboard", () => this.mHost.loadStoryboard("/sd/storyboard.json"))) { return; }
-    if (!await this.tryCommand("uploadStoryboard", () => this.mHost.uploadStoryboard())) { return; }
-    if (!await this.tryCommand("checkStoryboards", () => this.mHost.checkStoryboards())) { return; }
+      if (!await this.tryCommand("loadStoryboard", () => this.mHost.loadStoryboard("/sd/storyboard.json"))) { return; }
+      if (!await this.tryCommand("uploadStoryboard", () => this.mHost.uploadStoryboard())) { return; }
+      if (!await this.tryCommand("checkStoryboards", () => this.mHost.checkStoryboards())) { return; }
 
-    this.setState({ receivedText: "Storyboard uploaded to master board!", commandError: false });
+      this.setState({ receivedText: "Storyboard uploaded to master board!", commandError: false });
+    });
   }
 
   private playStoryboard = async () => {
-    if ((await this.mHost.playStoryboard())[0] !== "Ok") {
-      this.setState({ receivedText: "Storyboard playing!", commandError: false });
-    }
-    else {
-      this.setState({ receivedText: "Error on storyboard playing", commandError: true });
-    }
+    await this.performCommandAndCheck("play", () => this.mHost.playStoryboard());
   }
   private pauseStoryboard = async () => {
-    if ((await this.mHost.pauseStoryboard())[0] !== "Ok") {
-      this.setState({ receivedText: "Storyboard playing!", commandError: false });
-    }
-    else {
-      this.setState({ receivedText: "Error on storyboard playing", commandError: true });
-    }
+    await this.performCommandAndCheck("pause", () => this.mHost.pauseStoryboard());
   }
   private stopStoryboard = async () => {
-    if ((await this.mHost.stopStoryboard())[0] !== "Ok") {
-      this.setState({ receivedText: "Storyboard playing!", commandError: false });
-    }
-    else {
-      this.setState({ receivedText: "Error on storyboard playing", commandError: true });
-    }
+    await this.performCommandAndCheck("stop", () => this.mHost.stopStoryboard());
   }
 
-  private perform = async(action: () => Promise<any>) => {
-    this.setState({isWaitingResponse: true});
+  private perform = async (action: () => Promise<any>) => {
+    this.setState({ isWaitingResponse: true });
     await action();
-    this.setState({isWaitingResponse: false});
+    this.setState({ isWaitingResponse: false });
   }
-  private tryCommand = async(commandName: string, action: () => Promise<string[]>): Promise<boolean> => {
+  private performCommandAndCheck = async (commandName: string, action: () => Promise<string[]>) => {
+    return this.perform(async () => {
+      await this.tryCommand(commandName, action);
+    });
+  }
+  private tryCommand = async (commandName: string, action: () => Promise<string[]>): Promise<boolean> => {
     const result = await action();
-    if (result[result.length-1] !== "Ok") {
+    if (result[result.length - 1] !== "Ok") {
       this.setState({ receivedText: `Error on command '${commandName}'`, commandError: true });
-       return false;
+      return false;
     }
+    this.setState({ receivedText: `Executed '${commandName}'`, commandError: false });
     return true;
   }
 }
