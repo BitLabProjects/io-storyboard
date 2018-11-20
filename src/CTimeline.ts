@@ -133,12 +133,12 @@ class CTimeline {
   public calcCrc32(initialCrc: number): number {
     let crc32 = initialCrc;
     crc32 = Crc32.crc32_UInt32(parseInt(this.HardwareId, 16), crc32);
-    crc32 = Crc32.crc32_Int32(this.OutputId, crc32);
+    crc32 = Crc32.crc32_UInt8(this.OutputId, crc32);
     crc32 = Crc32.crc32_UInt8(this.Entries.length, crc32);
     this.Entries.forEach((entry) => {
-      crc32 = Crc32.crc32_Int32(entry.Time, crc32);
-      crc32 = Crc32.crc32_Int32(entry.Value, crc32);
-      crc32 = Crc32.crc32_Int32(entry.Duration, crc32);
+      crc32 = Crc32.crc32_Int32(entry.Time * 1000, crc32);
+      crc32 = Crc32.crc32_Int32(entry.Value * 40.95, crc32);
+      crc32 = Crc32.crc32_Int32(entry.Duration * 1000, crc32);
     });
 
     return crc32;

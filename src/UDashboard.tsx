@@ -7,6 +7,7 @@ import CStoryboard from './CStoryboard';
 import UOutput from './UOutput';
 import { BitLabHost, INetworkState } from './BitLabHost';
 import { CTimeline } from './CTimeline';
+import { Format } from './Utils/Format';
 
 interface IDashboardProps {
   storyboard: CStoryboard;
@@ -106,7 +107,8 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
                 <TableRow>
                   <TableCell numeric>Address</TableCell>
                   <TableCell numeric>hwId</TableCell>
-                  <TableCell numeric>crc</TableCell>
+                  <TableCell numeric>crc (from device)</TableCell>
+                  <TableCell numeric>crc (expected)</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -115,6 +117,7 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
                     <TableCell numeric>{device.address.toString(10).toUpperCase()}</TableCell>
                     <TableCell numeric>{device.hwId.toUpperCase()}</TableCell>
                     <TableCell numeric>{device.crc.toUpperCase()}</TableCell>
+                    <TableCell numeric>{Format.numberUInt32ToHex(this.props.storyboard.calcCrc32(device.hwId, 0)).toUpperCase()}</TableCell>
                   </TableRow>
                 )}
               </TableBody>
@@ -126,10 +129,9 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
             display: "flex", flexDirection: "column",
             margin: "5px", padding: "5px"
           }} >
-            <Typography style={{ margin: "10px 0px" }} variant="h6" >Output</Typography>
             {hwIds.map((hwId, i) =>
               <div key={i} >
-                <Typography>Board: {hwId}</Typography>
+                <Typography style={{ margin: "10px" }} variant="h6">Board: {hwId.toUpperCase()}</Typography>
                 <div style={{
                   height: "200px", overflowX: "auto", overflowY: "hidden",
                   display: "flex", flexDirection: "row"
