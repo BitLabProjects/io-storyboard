@@ -53,7 +53,7 @@ export class BitLabHost {
 
       const devices: IDevice[] = [];
       const expr = /addr:([\d]+); hwId:([\dA-F]+); crc:([\dA-F]+)/g;
-      if (upTime && freePackets && netState && devicesArray) {
+      if (upTime != null && freePackets != null && netState != null && devicesArray != null) {
         match = expr.exec(devicesArray);
         while (match) {
           devices.push({
