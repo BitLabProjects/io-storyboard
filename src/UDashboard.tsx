@@ -1,14 +1,12 @@
 import * as React from 'react';
 
-import { Button, Paper, TextField, Typography, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
-import { PlayArrow, Pause, Stop } from '@material-ui/icons';
+import { Button, Paper, TextField, Typography, Table, TableHead, TableRow, TableCell, TableBody, Grid, Tooltip } from '@material-ui/core';
+import { PlayArrow, Pause, Stop, Highlight, List, KeyboardArrowRight, DeveloperBoard } from '@material-ui/icons';
 
 import CStoryboard from './CStoryboard';
 import UOutput from './UOutput';
 import { BitLabHost, INetworkState } from './BitLabHost';
 import { CTimeline } from './CTimeline';
-import { Format } from './Utils/Format';
-
 
 interface IDashboardProps {
   storyboard: CStoryboard;
@@ -17,6 +15,7 @@ interface IDashboardState {
   receivedText: string;
   isWaitingResponse: boolean;
   networkState: INetworkState;
+  commandError: boolean;
 }
 
 class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
@@ -32,7 +31,8 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
         FreePackets: 0,
         NetState: "unknown",
         EnumeratedDevice: [],
-      }
+      },
+      commandError: false
     };
 
     this.mHost = new BitLabHost();
@@ -57,95 +57,92 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
     }
 
     return (
-      <div style={{
-        marginLeft: "5px", marginRight: "5px",
-        display: "flex", flexDirection: "column"
-      }}>
-        <Paper style={{
-          display: "flex", flexDirection: "column",
-          margin: "5px", padding: "5px"
-        }} >
-          <Typography style={{ margin: "20px 0px" }} variant="h6" >Command line {this.state.isWaitingResponse ? "(busy)" : ""}</Typography>
-          <div>
-            <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }} >
-              <Button style={{ margin: "10px" }} onClick={this.toggleLed}>toggle_led</Button>
-              <Button style={{ margin: "10px" }} onClick={this.getState}>get_state</Button>
-            </div>
-            <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }} >
-              <Button style={{ margin: "10px" }} onClick={this.loadStoryboard}>load_storyboard</Button>
-              <Button style={{ margin: "10px" }} onClick={this.uploadStoryboard}>upload_storyboard</Button>
-              <Button style={{ margin: "10px" }} onClick={this.checkStoryboard}>check_storyboard</Button>
-            </div>
-            <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }} >
-              <Button style={{ margin: "10px" }} onClick={this.openFile}>open_file</Button>
-              <Button style={{ margin: "10px" }} onClick={this.closeFile}>close_file</Button>
-              <Button style={{ margin: "10px" }} onClick={this.writeFile}>write_file</Button>
-            </div>
-            <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }} >
+      <Grid container spacing={8} >
+        <Grid item xs={12} sm={6} >
+          <Paper style={{
+            display: "flex", flexDirection: "column",
+            margin: "5px", padding: "5px"
+          }} >
+            <Typography style={{ margin: "20px 0px" }} variant="h6" >Command line</Typography>
+            {/* <TextField variant={"outlined"} label="Text to send" multiline
+              onChange={this.onTextToSendChanged} value={this.state.textToSend} /> */}
+            <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", alignItems: "center" }} >
+              {/* <Tooltip title="Send text">
+                <Button style={{ margin: "10px" }} variant="fab" mini onClick={this.sendText}><Send /></Button>
+              </Tooltip> */}
+              <Tooltip title="Toggle LED">
+                <Button style={{ margin: "10px" }} variant="fab" mini onClick={this.toggleLed}><Highlight /></Button>
+              </Tooltip>
+              <Tooltip title="Upload storyboard">
+                <Button style={{ margin: "10px" }} variant="fab" onClick={this.uploadStoryboard}><KeyboardArrowRight /><DeveloperBoard /></Button>
+              </Tooltip>
+              <Tooltip title="Get state">
+                <Button style={{ margin: "10px" }} variant="fab" onClick={this.getState}><List /></Button>
+              </Tooltip>
               <Button style={{ margin: "10px" }} variant="fab" mini onClick={this.playStoryboard}><PlayArrow /></Button>
               <Button style={{ margin: "10px" }} variant="fab" mini onClick={this.pauseStoryboard}><Pause /></Button>
               <Button style={{ margin: "10px" }} variant="fab" mini onClick={this.stopStoryboard}><Stop /></Button>
             </div>
-          </div>
-          <TextField variant={"outlined"} label="Text received" multiline value={this.state.receivedText} />
-        </Paper>
-        <Paper style={{
-          display: "flex", flexDirection: "column",
-          margin: "5px", padding: "5px"
-        }} >
-          <Typography style={{ margin: "20px 0px" }} variant="h6" >Network state</Typography>
-          <div style={{ display: "flex", flexDirection: "row" }} >
-            <TextField label="Uptime" InputProps={{ readOnly: true }} style={textFieldStyle}
-              value={this.state.networkState.UpTime} />
-            <TextField label="Free Packets" InputProps={{ readOnly: true }} style={textFieldStyle}
-              value={this.state.networkState.FreePackets} />
-            <TextField label="Net State" InputProps={{ readOnly: true }} style={textFieldStyle}
-              value={this.state.networkState.NetState} />
-          </div>
-          <Typography style={{ margin: "10px" }} >Devices</Typography>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell numeric>Address</TableCell>
-                <TableCell numeric>hwId</TableCell>
-                <TableCell numeric>crc (from device)</TableCell>
-                <TableCell numeric>crc (computed)</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {this.state.networkState.EnumeratedDevice.map((device, index) =>
-                <TableRow key={index}>
-                  <TableCell numeric>{device.address.toString(10).toUpperCase()}</TableCell>
-                  <TableCell numeric>{device.hwId}</TableCell>
-                  <TableCell numeric>{device.crc}</TableCell>
-                  <TableCell numeric>{Format.numberUInt32ToHex(index === 0 ? this.props.storyboard.calcCrc32(null, 0)
-                                                                           : this.props.storyboard.calcCrc32(device.hwId, 0))}</TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </Paper>
-
-        <Paper style={{
-          display: "flex", flexDirection: "column",
-          margin: "5px", padding: "5px"
-        }} >
-          <Typography style={{ margin: "10px 0px" }} variant="h6" >Output</Typography>
-          {hwIds.map((hwId, i) =>
-            <div key={i} >
-              <Typography style={{ margin: "5px 0px" }} >Board: {hwId}</Typography>
-              <div style={{
-                margin: "5px", height: "400px",
-                display: "flex", flexDirection: "row", overflowX: "auto", overflowY: "hidden"
-              }} >
-                {timelinesByHwId[hwId].map((tl, index) => (
-                  <UOutput key={index} timeline={tl} onChange={this.setOutput(tl)} />
-                ))}
-              </div>
+            <TextField variant={"outlined"} label="Text received" multiline value={this.state.receivedText} error={this.state.commandError} />
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Paper style={{
+            display: "flex", flexDirection: "column",
+            margin: "5px", padding: "5px"
+          }} >
+            <Typography style={{ margin: "20px 0px" }} variant="h6" >Network state</Typography>
+            <div style={{ display: "flex", flexDirection: "row" }} >
+              <TextField label="Uptime" InputProps={{ readOnly: true }} style={textFieldStyle}
+                value={this.state.networkState.UpTime} />
+              <TextField label="Free Packets" InputProps={{ readOnly: true }} style={textFieldStyle}
+                value={this.state.networkState.FreePackets} />
+              <TextField label="Net State" InputProps={{ readOnly: true }} style={textFieldStyle}
+                value={this.state.networkState.NetState} />
             </div>
-          )}
-        </Paper>
-      </div>
+            <Typography style={{ margin: "10px" }} >Devices</Typography>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell numeric>Address</TableCell>
+                  <TableCell numeric>hwId</TableCell>
+                  <TableCell numeric>crc</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {this.state.networkState.EnumeratedDevice.map((device, index) =>
+                  <TableRow key={index}>
+                    <TableCell numeric>{device.address.toString(10).toUpperCase()}</TableCell>
+                    <TableCell numeric>{device.hwId.toUpperCase()}</TableCell>
+                    <TableCell numeric>{device.crc.toUpperCase()}</TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper style={{
+            display: "flex", flexDirection: "column",
+            margin: "5px", padding: "5px"
+          }} >
+            <Typography style={{ margin: "10px 0px" }} variant="h6" >Output</Typography>
+            {hwIds.map((hwId, i) =>
+              <div key={i} >
+                <Typography>Board: {hwId}</Typography>
+                <div style={{
+                  height: "200px", overflowX: "auto", overflowY: "hidden",
+                  display: "flex", flexDirection: "row"
+                }} >
+                  {timelinesByHwId[hwId].map((tl, index) => (
+                    <UOutput key={index} timeline={tl} onChange={this.setOutput(tl)} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </Paper>
+        </Grid>
+      </Grid>
     );
   }
 
@@ -167,49 +164,63 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
     await this.perform(() => this.mHost.setOutput(tl.HardwareId, tl.OutputId, value));
   }
 
-  private loadStoryboard = async () => {
-    // TODO
-    await this.perform(() => this.mHost.loadStoryboard("/sd/storyboard.json"));
-  }
   private uploadStoryboard = async () => {
-    await this.perform(() => this.mHost.uploadStoryboard());
-  }
-  private checkStoryboard = async () => {
-    await this.perform(() => this.mHost.checkStoryboards());
-  }
-  private openFile = async () => {
-    // TODO
-    await this.perform(() => this.mHost.openFile("/sd/storyboard.json", "w+"));
-  }
-  private closeFile = async () => {
-    await this.perform(() => this.mHost.closeFile());
-  }
-  private writeFile = async () => {
-    await this.perform(async () => {
-      // Send timeline as base64    
-      const maxCharsToSend = 183;
-      const tlStr = JSON.stringify(this.props.storyboard.ExportToJson());
-      for (let i = 0; i < tlStr.length; i = i + maxCharsToSend) {
-        // btoa: string->base64
-        await this.mHost.writeFile(btoa(tlStr.substring(i, i + maxCharsToSend)));
-      }
-    });
+    if (!await this.tryCommand("closeFile", () => this.mHost.closeFile())) { return; } 
+    if (!await this.tryCommand("openFile", () => this.mHost.openFile("/sd/storyboard.json", "w+"))) { return; }
+
+    // Send timeline as base64    
+    const maxCharsToSend = 150; // 183;
+    const tlStr = JSON.stringify(this.props.storyboard.ExportToJson());
+    for (let i = 0; i < tlStr.length; i = i + maxCharsToSend) {
+      // btoa: string->base64
+      if (!await this.tryCommand("writeFile", () => this.mHost.writeFile(btoa(tlStr.substring(i, i + maxCharsToSend))))) { return; }
+    }
+    if (!await this.tryCommand("closeFile", () => this.mHost.closeFile())) { return; }
+
+    if (!await this.tryCommand("loadStoryboard", () => this.mHost.loadStoryboard("/sd/storyboard.json"))) { return; }
+    if (!await this.tryCommand("uploadStoryboard", () => this.mHost.uploadStoryboard())) { return; }
+    if (!await this.tryCommand("checkStoryboards", () => this.mHost.checkStoryboards())) { return; }
+
+    this.setState({ receivedText: "Storyboard uploaded to master board!", commandError: false });
   }
 
   private playStoryboard = async () => {
-    await this.perform(() => this.mHost.playStoryboard());
+    if ((await this.mHost.playStoryboard())[0] !== "Ok") {
+      this.setState({ receivedText: "Storyboard playing!", commandError: false });
+    }
+    else {
+      this.setState({ receivedText: "Error on storyboard playing", commandError: true });
+    }
   }
   private pauseStoryboard = async () => {
-    await this.perform(() => this.mHost.pauseStoryboard());
+    if ((await this.mHost.pauseStoryboard())[0] !== "Ok") {
+      this.setState({ receivedText: "Storyboard playing!", commandError: false });
+    }
+    else {
+      this.setState({ receivedText: "Error on storyboard playing", commandError: true });
+    }
   }
   private stopStoryboard = async () => {
-    await this.perform(() => this.mHost.stopStoryboard());
+    if ((await this.mHost.stopStoryboard())[0] !== "Ok") {
+      this.setState({ receivedText: "Storyboard playing!", commandError: false });
+    }
+    else {
+      this.setState({ receivedText: "Error on storyboard playing", commandError: true });
+    }
   }
 
   private perform = async(action: () => Promise<any>) => {
     this.setState({isWaitingResponse: true});
     await action();
     this.setState({isWaitingResponse: false});
+  }
+  private tryCommand = async(commandName: string, action: () => Promise<string[]>): Promise<boolean> => {
+    const result = await action();
+    if (result[result.length-1] !== "Ok") {
+      this.setState({ receivedText: `Error on command '${commandName}'`, commandError: true });
+       return false;
+    }
+    return true;
   }
 }
 

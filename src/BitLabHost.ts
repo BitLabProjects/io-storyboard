@@ -1,4 +1,5 @@
 import * as SocketIOClient from 'socket.io-client';
+import { Timer } from './Utils/Timer';
 
 export interface IDevice {
   address: number;
@@ -29,12 +30,12 @@ export class BitLabHost {
   }
 
   public async toggleLed() {
-    await this.mSerialInterface.sendAndGetResponse("toggleLed\n");
+    return this.mSerialInterface.sendAndGetResponse("toggleLed\n");
   }
   public async getState(): Promise<INetworkState> {
     return new Promise<INetworkState>(async (resolve, reject) => {
       const stateStr = await this.mSerialInterface.sendAndGetResponse("state\n");
-      if (stateStr.length !== 4) {
+      if (stateStr.length !== 5) {
         reject();
         return;
       }
@@ -77,38 +78,38 @@ export class BitLabHost {
   }
 
   public async setOutput(hwId: string, outputId: number, value: number) {
-    await this.mSerialInterface.sendAndGetResponse(
+    await this.mSerialInterface.sendAndGetResponseDelayed(
       `setOutput ${hwId} ${outputId} ${value}\n`
     );
   }
 
   public async openFile(filePath: string, mode: "r" | "w" | "a" | "r+" | "w+" | "a+") {
-    await this.mSerialInterface.sendAndGetResponse(`openFile ${filePath} ${mode}\n`);
+    return this.mSerialInterface.sendAndGetResponse(`openFile ${filePath} ${mode}\n`);
   }
-  public async closeFile() {
-    await this.mSerialInterface.sendAndGetResponse(`closeFile\n`);
+  public async closeFile(): Promise<string[]> {
+    return await this.mSerialInterface.sendAndGetResponse(`closeFile\n`);
   }
-  public async writeFile(contentAsBase64: string) {
-    await this.mSerialInterface.sendAndGetResponse(`writeFile ${contentAsBase64}\n`);
+  public async writeFile(contentAsBase64: string): Promise<string[]> {
+    return await this.mSerialInterface.sendAndGetResponse(`writeFile ${contentAsBase64}\n`);
   }
 
-  public async loadStoryboard(fileName: string) {
-    await this.mSerialInterface.sendAndGetResponse(`load ${fileName}\n`);
+  public async loadStoryboard(fileName: string): Promise<string[]> {
+    return await this.mSerialInterface.sendAndGetResponse(`load ${fileName}\n`);
   }
-  public async uploadStoryboard() {
-    await this.mSerialInterface.sendAndGetResponse(`upload\n`);
+  public async uploadStoryboard(): Promise<string[]> {
+    return await this.mSerialInterface.sendAndGetResponseDelayed(`upload\n`);
   }
-  public async checkStoryboards() {
-    await this.mSerialInterface.sendAndGetResponse(`check\n`);
+  public async checkStoryboards(): Promise<string[]> {
+    return await this.mSerialInterface.sendAndGetResponseDelayed(`check\n`);
   }
-  public async playStoryboard() {
-    await this.mSerialInterface.sendAndGetResponse(`play\n`);
+  public async playStoryboard(): Promise<string[]> {
+    return await this.mSerialInterface.sendAndGetResponseDelayed(`play\n`);
   }
-  public async pauseStoryboard() {
-    await this.mSerialInterface.sendAndGetResponse(`pause\n`);
+  public async pauseStoryboard(): Promise<string[]> {
+    return await this.mSerialInterface.sendAndGetResponseDelayed(`pause\n`);
   }
-  public async stopStoryboard() {
-    await this.mSerialInterface.sendAndGetResponse(`stop\n`);
+  public async stopStoryboard(): Promise<string[]> {
+    return await this.mSerialInterface.sendAndGetResponseDelayed(`stop\n`);
   }
 
 }
@@ -139,15 +140,21 @@ class SerialInterface {
       const uint8array = enc.encode(cmd);
       const lines: string[] = [];
       this.mCurrentPromise = (line: string) => {
+        lines.push(line);
         if (line === "Ok" || line === "Error") {
           this.mCurrentPromise = null;
-          this.LastResponse = lines.concat(line);
+          this.LastResponse = lines;
           resolve(lines);
-        } else {
-          lines.push(line);
         }
       }
       this.mSocket.emit('toCOM', uint8array.buffer.slice(uint8array.byteOffset, uint8array.byteLength));
     });
+  }
+
+  public async sendAndGetResponseDelayed(cmd: string): Promise<string[]> {
+    const result = await this.sendAndGetResponse(cmd);
+    // Delay because the master board returns ok before it has completed the command
+    await Timer.delay(1000);
+    return result;
   }
 }

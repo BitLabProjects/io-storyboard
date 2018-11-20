@@ -49,7 +49,8 @@ class USlider extends React.Component<ISliderProps, ISliderState> {
     const label = this.props.label ? this.props.label + " " : "";
     return (
       <div className={classes.root} >
-        <Typography style={{ padding: "10px 0" }} >{label}({this.state.currValue.toFixed(1)})</Typography>
+        <Typography>{label}</Typography>
+        <Typography style={{ paddingBottom: "5px" }} >({this.state.currValue.toFixed(1)})</Typography>
         <div style={{ width: this.props.vertical ? "auto" : "100%", height: "100%", display: "flex" }}>
           <Slider vertical={this.props.vertical}
             classes={{ container: (this.props.vertical ? classes.verticalSlider : classes.slider) }}
