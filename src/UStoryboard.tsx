@@ -26,7 +26,7 @@ class UStoryboard extends React.PureComponent<IStoryboardProps, IStoryboardState
   constructor(props: IStoryboardProps) {
     super(props);
     this.state = {
-      zoomRange: [0, this.props.storyboard.MaxTime],
+      zoomRange: [0, this.props.storyboard.MaxTime + 1],
       timelinesVisibility: Array<boolean>(this.props.storyboard.Timelines.length).fill(true)
     };
   }

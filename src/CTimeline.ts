@@ -45,15 +45,32 @@ class CTimeline {
 
   public Entries: CTimelineEntry[];
 
+  private mOutputType: EOutputType;
+
   constructor(
     public Name: string,
     public HardwareId: string, // base16
     public OutputId: number,
-    public OutputType: EOutputType
+    OutputType: EOutputType
   ) {
     this.Entries = [];
     this.key = CTimeline.nextKey;
-    CTimeline.nextKey += 1;    
+    CTimeline.nextKey += 1;
+    this.OutputType = OutputType;
+  }
+
+  public get OutputType() {
+    return this.mOutputType;
+  }
+  public set OutputType(value: EOutputType) {
+    this.mOutputType = value;
+    if (value === EOutputType.Digital) {
+      for (const entry of this.Entries) {
+        // all digital entry are instant
+        entry.Duration = 0;
+        entry.Value = entry.Value <= 50 ? 0 : 100;
+      }
+    }
   }
 
   public isForHardwareId(hardwareId: string): boolean {

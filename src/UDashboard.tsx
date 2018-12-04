@@ -138,7 +138,7 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
                 }} >
                   {timelinesByHwId[hwId].map((tl, index) => (
                     <UOutput key={index} timeline={tl} onChange={this.setOutput(tl)}
-                      disabled={this.state.isWaitingResponse} />
+                      disabled={this.state.isWaitingResponse && false} />
                   ))}
                 </div>
               </div>
@@ -167,7 +167,7 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
   }
   private setOutput = (tl: CTimeline) => {
     return async (value: number) => {
-      return this.performCommandAndCheck("setOutput", () => this.mHost.setOutput(tl.HardwareId, tl.OutputId, value));
+      return this.performCommandAndCheck("setOutput", () => this.mHost.setOutput(tl.HardwareId, tl.OutputId, Math.floor(value / 100 * 4095)));
     }
   }
 
