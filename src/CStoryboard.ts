@@ -1,4 +1,4 @@
-import { CTimeline, EOutputType } from "./CTimeline";
+import { CTimeline, EOutputType, CTimelineEntry } from "./CTimeline";
 import { Crc32 } from "./Utils/Crc32";
 
 export interface ITimelineEntryJson {
@@ -14,6 +14,7 @@ export interface ITimelineJson {
   outputType: number;
   entriesCount: number;
   entries: ITimelineEntryJson[];
+  reversed?: boolean;
 }
 
 export interface IStoryboardJson {
@@ -29,11 +30,13 @@ class CStoryboard {
     const newStoryboard = new CStoryboard();
     for (const tl of sb.timelines) {
       if (tl.name) {
-        const newTimeline = new CTimeline(tl.name, tl.outputHardwareId.toString(16), tl.outputId, tl.outputType);
+        const reversed = tl.reversed || false;
+        const newTimeline = new CTimeline(tl.name, tl.outputHardwareId.toString(16), tl.outputId, reversed, tl.outputType);
         for (const tle of tl.entries) {
           // convert time values from milliseconds to seconds
           // convert value [0-4095] -> [0-100]
-          newTimeline.AddEntry(tle.value / 40.95, tle.duration / 1000, tle.time / 1000);
+          const value = reversed ? 4095 - tle.value : tle.value;
+          newTimeline.AddEntry(value / 40.95, tle.duration / 1000, tle.time / 1000);
         }
         newStoryboard.Timelines.push(newTimeline);
       }
@@ -64,7 +67,7 @@ class CStoryboard {
   }
 
   public AddTimeline() {
-    const newTL = new CTimeline("new timeline", "AABBCCDD", 99, EOutputType.Analog);
+    const newTL = new CTimeline("new timeline", "AABBCCDD", 99, false, EOutputType.Analog);
     // at least one empty entry
     newTL.AddEntry(0, 0, 0);
     this.Timelines.push(newTL);
@@ -92,9 +95,10 @@ class CStoryboard {
       for (const tle of tl.Entries) {
         // convert back time values from seconds to milliseconds
         // convert back value [0-100] -> [0-4095]
+        const value = tl.Reversed ? CTimelineEntry.MaxValue - tle.Value : tle.Value;
         entriesObj.push({
           time: tle.Time * 1000,
-          value: +(tle.Value * 40.95).toFixed(0),
+          value: +(value * 40.95).toFixed(0),
           duration: tle.Duration * 1000
         });
       }
@@ -105,7 +109,8 @@ class CStoryboard {
         outputId: tl.OutputId,
         outputType: tl.OutputType,
         entriesCount: entriesObj.length,
-        entries: entriesObj
+        entries: entriesObj,
+        reversed: tl.Reversed,
       });
     }
     return {

@@ -45,18 +45,22 @@ class CTimeline {
 
   public Entries: CTimelineEntry[];
 
+  public ManualModeValue: number;
+
   private mOutputType: EOutputType;
 
   constructor(
     public Name: string,
     public HardwareId: string, // base16
     public OutputId: number,
+    public Reversed: boolean,
     OutputType: EOutputType
   ) {
     this.Entries = [];
     this.key = CTimeline.nextKey;
     CTimeline.nextKey += 1;
     this.OutputType = OutputType;
+    this.ManualModeValue = 0;
   }
 
   public get OutputType() {
@@ -119,7 +123,7 @@ class CTimeline {
   }
 
   public clone(): CTimeline {
-    const newTimeline = new CTimeline(this.Name, this.HardwareId, this.OutputId, this.OutputType);
+    const newTimeline = new CTimeline(this.Name, this.HardwareId, this.OutputId, this.Reversed, this.OutputType);
     newTimeline.Entries = this.Entries.map((entry) => {
       return entry.clone();
     });

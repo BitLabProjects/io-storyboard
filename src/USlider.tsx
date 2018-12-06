@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Typography, WithStyles, createStyles, withStyles } from "@material-ui/core";
+import { Typography, WithStyles, createStyles, withStyles, Button } from "@material-ui/core";
 import { Slider } from "@material-ui/lab";
 
 const styles = createStyles({
@@ -19,13 +19,12 @@ const styles = createStyles({
 
 interface ISliderProps extends WithStyles<typeof styles> {
   label?: string;
-  min?: number;
+  min: number;
   max: number;
   step?: number;
   defaultValue: number;
   vertical?: boolean;
   onChange?: (newValue: number) => void;
-  onValueApplied?: (newValue: number) => void;
   disabled?: boolean;
 }
 interface ISliderState {
@@ -52,26 +51,32 @@ class USlider extends React.Component<ISliderProps, ISliderState> {
       <div className={classes.root} >
         <Typography>{label}</Typography>
         <Typography style={{ paddingBottom: "5px" }} >({this.state.currValue.toFixed(1)})</Typography>
-        <div style={{ width: this.props.vertical ? "auto" : "100%", height: "100%", display: "flex" }}>
+        <Button style={{ margin: "5px", minHeight: "20px" }} variant="fab" mini onClick={this.setMaxValue}>100</Button>
+        <div style={{ width: this.props.vertical ? "auto" : "100%", height: "100%", display: "flex", flexDirection: "column" }}>
           <Slider vertical={this.props.vertical} disabled={this.props.disabled}
             classes={{ container: (this.props.vertical ? classes.verticalSlider : classes.slider) }}
-            min={this.props.min} max={this.props.max} step={this.props.step}
-            value={this.state.currValue} onChange={this.onChange} onDragEnd={this.onValueApplied} />
+            min={this.props.min} max={this.props.max} step={this.props.step} value={this.state.currValue}
+            onChange={this.onChange} />
         </div>
+        <Button style={{ margin: "5px", minHeight: "20px" }} variant="fab" mini onClick={this.setMinValue}>0</Button>
       </div>
     );
   }
 
+  private setMinValue = () => {
+    this.onUpdateValue(this.props.min);    
+  }
+  private setMaxValue = () => {
+    this.onUpdateValue(this.props.max);    
+  }
   private onChange = (event: React.ChangeEvent<{}>, value: number) => {
-    if (this.props.onChange) {
-      this.props.onChange(this.state.currValue);
-    }
-    this.setState({ currValue: value });
+    this.onUpdateValue(value);
   }
 
-  private onValueApplied = () => {
-    if (this.props.onValueApplied) {
-      this.props.onValueApplied(this.state.currValue);
+  private onUpdateValue = (newValue: number) => {
+    this.setState({ currValue: newValue });
+    if (this.props.onChange) {
+      this.props.onChange(newValue);
     }
   }
 

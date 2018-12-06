@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Button, Paper, TextField, Typography, Table, TableHead, TableRow, TableCell, TableBody, Grid, Tooltip } from '@material-ui/core';
-import { PlayArrow, Pause, Stop, Highlight, List, KeyboardArrowRight, DeveloperBoard } from '@material-ui/icons';
+import { PlayArrow, Pause, Stop, Highlight, List, KeyboardArrowRight, DeveloperBoard, ExposureZero } from '@material-ui/icons';
 
 import CStoryboard from './CStoryboard';
 import UOutput from './UOutput';
@@ -33,7 +33,7 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
         NetState: "unknown",
         EnumeratedDevice: [],
       },
-      commandError: false
+      commandError: false,
     };
 
     this.mHost = new BitLabHost();
@@ -131,7 +131,13 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
           }} >
             {hwIds.map((hwId, i) =>
               <div key={i} >
-                <Typography style={{ margin: "10px" }} variant="h6">Board: {hwId.toUpperCase()}</Typography>
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  <Typography style={{ margin: "10px" }} variant="h6">Board: {hwId.toUpperCase()}</Typography>
+                  <Button style={{ margin: "5px" }} variant="fab" mini onClick={this.setAllToZero(i)}>
+                    <KeyboardArrowRight />
+                    <ExposureZero />
+                  </Button>
+                </div>
                 <div style={{
                   height: "200px", overflowX: "auto", overflowY: "hidden",
                   display: "flex", flexDirection: "row"
@@ -167,8 +173,18 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
   }
   private setOutput = (tl: CTimeline) => {
     return async (value: number) => {
+      tl.ManualModeValue = value;
+      this.setState({});
       return this.performCommandAndCheck("setOutput", () => this.mHost.setOutput(tl.HardwareId, tl.OutputId, Math.floor(value / 100 * 4095)));
     }
+  }
+
+  private setAllToZero = (i: number) => async () => {
+    for (const tl of this.props.storyboard.Timelines) {
+      tl.ManualModeValue = 0;
+      await this.performCommandAndCheck("setOutput", () => this.mHost.setOutput(tl.HardwareId, tl.OutputId, 0))
+    }
+    this.setState({});
   }
 
   private uploadStoryboard = async () => {

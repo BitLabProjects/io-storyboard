@@ -7,7 +7,7 @@ const port = 3030
 const Server = http.createServer(app)
 const io = require('socket.io').listen(Server)
 
-const portName = "COM4";
+const portName = "COM5";
 
 app.use(express.static(__dirname))
 

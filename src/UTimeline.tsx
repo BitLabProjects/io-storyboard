@@ -5,7 +5,7 @@ import UTimelineEntry from "./UTimelineEntry";
 
 import { Add, Remove } from '@material-ui/icons';
 
-import { Dialog, DialogActions, DialogContent, DialogContentText, MenuItem, Paper, TextField, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
+import { Dialog, DialogActions, DialogContent, DialogContentText, MenuItem, Paper, TextField, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails, Checkbox, FormControlLabel } from "@material-ui/core";
 
 import { ExpandMore } from "@material-ui/icons";
 import { AreaChart, XAxis, YAxis, Area, Tooltip, ResponsiveContainer } from "recharts";
@@ -58,12 +58,12 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
           <Typography>{this.props.timeline.Name}</Typography>
           <div style={{ width: "calc(100vw - 200px)" }} >
             <ResponsiveContainer width="100%" height={100}>
-              <AreaChart data={this.mCalcDataForGraph()}
+              <AreaChart data={this.mCalcDataForGraph()} 
                 margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <XAxis dataKey="time" type="number" tickCount={10} domain={this.props.zoomRange} allowDataOverflow />
                 <YAxis type="number" domain={[0, 100]} />
                 <Tooltip />
-                <Area type="linear" dataKey="value" stroke="#8884d8" />
+                <Area type="linear" dataKey="value" stroke="#8884d8" isAnimationActive={false} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -78,6 +78,12 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
               <TextField id="outputId" label="OutputId" placeholder="OutputId"
                 value={this.props.timeline.OutputId} margin="normal" style={textFieldStyle}
                 onChange={this.onFieldChanged('output')} type="number" />
+              <FormControlLabel
+                control={
+                  <Checkbox checked={this.props.timeline.Reversed} onChange={this.onFieldChanged('reversed')} />
+                }
+                label="Reversed"
+              />
               <TextField id="outputType" label="Output Type" placeholder="Output Type" value={this.props.timeline.OutputType}
                 onChange={this.onFieldChanged('outputType')} select={true} margin="normal" style={textFieldStyle} >
                 <MenuItem key={EOutputType.Analog} value={EOutputType.Analog}>Analog</MenuItem>
@@ -127,7 +133,7 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
   }
 
   private addEntry = () => {
-    this.props.timeline.AddEntry(0,0,0);
+    this.props.timeline.AddEntry(0, 0, 0);
     this.onUpdate();
   }
 
@@ -161,6 +167,7 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
         // TODO: add base 16 field validation
         case 'hwId': this.props.timeline.HardwareId = newValue; break;
         case 'output': this.props.timeline.OutputId = +newValue; break;
+        case 'reversed': this.props.timeline.Reversed = e.target.checked; break;
         case 'outputType': this.props.timeline.OutputType = +newValue; break;
       }
       this.onUpdate();

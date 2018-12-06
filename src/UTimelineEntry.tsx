@@ -7,7 +7,8 @@ import { CTimelineEntry, EOutputType } from "./CTimeline";
 import Switch from "@material-ui/core/Switch";
 import { ControlPointDuplicateOutlined, Remove } from '@material-ui/icons';
 import USlider from "./USlider";
-// import BStyles from "./BStyles";
+import { Timer } from "./Utils/Timer";
+
 
 class CTimelineEntryProps {
   public entry: CTimelineEntry;
@@ -24,10 +25,6 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
     super(props);
   }
 
-  // public shouldComponentUpdate(nextProps: CTimelineEntryProps, nextState: UTimelineEntryState): boolean {
-  //   return (this.props.entry.compareTo(nextProps.entry) !== 0);
-  // }
-
   public render() {
     return (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -39,7 +36,7 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
           <div style={{ height: "200px", margin: "10px", display: "flex" }}>
             <USlider vertical step={1}
               min={0} max={CTimelineEntry.MaxValue} defaultValue={this.props.entry.Value}
-              onChange={this.onSliderChanged} />
+              onChange={Timer.debounce(this.onSliderChanged, 250)} />
           </div>
           :
           <div style={{ margin: "10px", display: "flex" }}>
@@ -74,7 +71,7 @@ class UTimelineEntry extends React.Component<CTimelineEntryProps, UTimelineEntry
       switch (fieldName) {
         // operator '+' convert any object to number          
         case 'time': this.props.entry.Time = +newValue; break;
-        case 'digitalValue': e.target.checked ? this.props.entry.Value = CTimelineEntry.MaxValue : this.props.entry.Value = 0; break;
+        case 'digitalValue': this.props.entry.Value = (e.target.checked ? CTimelineEntry.MaxValue : 0); break;
         case 'duration': this.props.entry.Duration = +newValue; break;
       }
       this.props.onUpdate();
