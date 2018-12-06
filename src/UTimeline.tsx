@@ -55,10 +55,10 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
     return (
       <ExpansionPanel key={this.props.timeline.key} style={{ width: "100%" }}>
         <ExpansionPanelSummary expandIcon={<ExpandMore />}>
-          <Typography>{this.props.timeline.Name}</Typography>
+          <Typography style={{ width: "75px" }} >{this.props.timeline.Name}</Typography>
           <div style={{ width: "calc(100vw - 200px)" }} >
             <ResponsiveContainer width="100%" height={100}>
-              <AreaChart data={this.mCalcDataForGraph()} 
+              <AreaChart data={this.mCalcDataForGraph()}
                 margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <XAxis dataKey="time" type="number" tickCount={10} domain={this.props.zoomRange} allowDataOverflow />
                 <YAxis type="number" domain={[0, 100]} />

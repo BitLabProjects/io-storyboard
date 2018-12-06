@@ -37,17 +37,24 @@ class CStoryboard {
           // convert value [0-4095] -> [0-100]
           const value = reversed ? 4095 - tle.value : tle.value;
           newTimeline.AddEntry(value / 40.95, tle.duration / 1000, tle.time / 1000);
+
         }
         newStoryboard.Timelines.push(newTimeline);
       }
     }
+    // update time range    
+    newStoryboard.ExportTimeRange[1] = newStoryboard.MaxTime;
     return newStoryboard;
   }
 
   public Timelines: CTimeline[];
 
+  // export sub-storyboard within the range [startTime, endTime] 
+  public ExportTimeRange: [number, number];
+
   constructor() {
     this.Timelines = [];
+    this.ExportTimeRange = [0, Number.POSITIVE_INFINITY];
   }
 
   public get Duration(): number {
@@ -93,14 +100,19 @@ class CStoryboard {
     for (const tl of this.Timelines) {
       const entriesObj: ITimelineEntryJson[] = [];
       for (const tle of tl.Entries) {
-        // convert back time values from seconds to milliseconds
-        // convert back value [0-100] -> [0-4095]
-        const value = tl.Reversed ? CTimelineEntry.MaxValue - tle.Value : tle.Value;
-        entriesObj.push({
-          time: tle.Time * 1000,
-          value: +(value * 40.95).toFixed(0),
-          duration: tle.Duration * 1000
-        });
+        if ((tle.Time >= this.ExportTimeRange[0]) && (tle.Time + tle.Duration <= this.ExportTimeRange[1])) {
+          // entry within range
+          // convert back time values from seconds to milliseconds
+          // convert back value [0-100] -> [0-4095]
+          const value = tl.Reversed ? CTimelineEntry.MaxValue - tle.Value : tle.Value;
+          // push back the start time to 0
+          const time = tle.Time - this.ExportTimeRange[0];
+          entriesObj.push({
+            time: time * 1000,
+            value: +(value * 40.95).toFixed(0),
+            duration: tle.Duration * 1000
+          });
+        }
       }
       // Additional reduntant entry with count of array entries in exported json
       timelinesObj.push({

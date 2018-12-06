@@ -11,8 +11,7 @@ import { SortableContainer, SortableElement, SortableHandle, SortEnd, SortEvent,
 import { Timer } from "./Utils/Timer";
 
 interface IWorkspaceProps {
-  storyboard: CStoryboard;
-  zoomRange: [number, number];
+  storyboard: CStoryboard;  
   timelinesVisibility: boolean[];
   onZoomChange: (field: string) => (newValue: number) => void;
   onWorkspaceApplied: () => void;
@@ -46,9 +45,9 @@ class UWorkspace extends React.Component<IWorkspaceProps, {}> {
     return (
       <div style={{ width: "100%" }}>
         <USlider label="Zoom start" min={0} max={this.props.storyboard.MaxTime} step={1}
-          defaultValue={this.props.zoomRange[0]} onChange={Timer.debounce(this.props.onZoomChange("start"), 250)} />
+          defaultValue={this.props.storyboard.ExportTimeRange[0]} onChange={Timer.debounce(this.props.onZoomChange("start"), 250)} />
         <USlider label="Zoom end" min={0} max={this.props.storyboard.MaxTime} step={1}
-          defaultValue={this.props.zoomRange[1]} onChange={Timer.debounce(this.props.onZoomChange("end"), 250)} />
+          defaultValue={this.props.storyboard.ExportTimeRange[1]} onChange={Timer.debounce(this.props.onZoomChange("end"), 250)} />
         <Divider />
         <SortableList axis="xy" lockAxis="xy" useDragHandle
           items={this.props.storyboard.Timelines} onSortEnd={this.onSortEnd} />

@@ -17,7 +17,6 @@ interface IStoryboardProps {
 }
 
 interface IStoryboardState {
-  zoomRange: [number, number];
   timelinesVisibility: boolean[];
 }
 // Inheriting from PureComponent, so Render is triggered only by shallow comparison
@@ -26,7 +25,6 @@ class UStoryboard extends React.PureComponent<IStoryboardProps, IStoryboardState
   constructor(props: IStoryboardProps) {
     super(props);
     this.state = {
-      zoomRange: [0, this.props.storyboard.MaxTime + 1],
       timelinesVisibility: Array<boolean>(this.props.storyboard.Timelines.length).fill(true)
     };
   }
@@ -36,12 +34,15 @@ class UStoryboard extends React.PureComponent<IStoryboardProps, IStoryboardState
 
     for (let i = 0; i < this.props.storyboard.Timelines.length; i++) {
       const tl = this.props.storyboard.Timelines[i];
+      if (this.state.timelinesVisibility.length <= i) {
+        this.state.timelinesVisibility.push(true);
+      }
       if (this.state.timelinesVisibility[i]) {
         timelines.push(
           <UTimeline key={tl.key}
             onUpdate={this.onUpdate}
             timeline={tl}
-            zoomRange={this.state.zoomRange}
+            zoomRange={this.props.storyboard.ExportTimeRange}
             onRemove={this.removeTimeline} />
         );
       }
@@ -56,7 +57,6 @@ class UStoryboard extends React.PureComponent<IStoryboardProps, IStoryboardState
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <UWorkspace storyboard={this.props.storyboard}
-              zoomRange={this.state.zoomRange}
               timelinesVisibility={this.state.timelinesVisibility}
               onZoomChange={this.onZoomChange}
               onWorkspaceApplied={this.onWorkspaceApplied}
@@ -86,12 +86,13 @@ class UStoryboard extends React.PureComponent<IStoryboardProps, IStoryboardState
 
   private onZoomChange = (field: string) =>
     (value: number) => {
-      let [start, end] = this.state.zoomRange;
+      let [start, end] = this.props.storyboard.ExportTimeRange;
       switch (field) {
         case "start": start = value; break;
         case "end": end = value; break;
       }
-      this.setState({ zoomRange: [start, end] });
+      this.props.storyboard.ExportTimeRange = [start, end];
+      this.forceUpdate();
     }
 
   private onWorkspaceApplied = () => {

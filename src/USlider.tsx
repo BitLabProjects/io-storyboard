@@ -51,14 +51,14 @@ class USlider extends React.Component<ISliderProps, ISliderState> {
       <div className={classes.root} >
         <Typography>{label}</Typography>
         <Typography style={{ paddingBottom: "5px" }} >({this.state.currValue.toFixed(1)})</Typography>
-        <Button style={{ margin: "5px", minHeight: "20px" }} variant="fab" mini onClick={this.setMaxValue}>100</Button>
+        <Button style={{ margin: "5px", minHeight: "20px" }} variant="fab" mini onClick={this.setMaxValue}>MAX</Button>
         <div style={{ width: this.props.vertical ? "auto" : "100%", height: "100%", display: "flex", flexDirection: "column" }}>
           <Slider vertical={this.props.vertical} disabled={this.props.disabled}
             classes={{ container: (this.props.vertical ? classes.verticalSlider : classes.slider) }}
             min={this.props.min} max={this.props.max} step={this.props.step} value={this.state.currValue}
             onChange={this.onChange} />
         </div>
-        <Button style={{ margin: "5px", minHeight: "20px" }} variant="fab" mini onClick={this.setMinValue}>0</Button>
+        <Button style={{ margin: "5px", minHeight: "20px" }} variant="fab" mini onClick={this.setMinValue}>MIN</Button>
       </div>
     );
   }
