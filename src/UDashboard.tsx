@@ -50,11 +50,12 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
     const timelinesByHwId: { [hwId: string]: CTimeline[] } = {};
     const hwIds: string[] = [];
     for (const tl of this.props.storyboard.Timelines) {
-      if (!timelinesByHwId[tl.HardwareId]) {
-        timelinesByHwId[tl.HardwareId] = [];
-        hwIds.push(tl.HardwareId);
+      const hwIdUppered = tl.HardwareId.toUpperCase();
+      if (!timelinesByHwId[hwIdUppered]) {
+        timelinesByHwId[hwIdUppered] = [];
+        hwIds.push(hwIdUppered);
       }
-      timelinesByHwId[tl.HardwareId].push(tl);
+      timelinesByHwId[hwIdUppered].push(tl);
     }
 
     return (
@@ -137,6 +138,9 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
                     <KeyboardArrowRight />
                     <ExposureZero />
                   </Button>
+                  {/* <TextField label="Trim (ms)" style={textFieldStyle} 
+                             value={this.props.storyboard.getTrimIntervalByHardwareId(hwId)}
+                             onChange={this.getOnTrimChangedHandler(hwId)} /> */}
                 </div>
                 <div style={{
                   height: "200px", overflowX: "auto", overflowY: "hidden",
@@ -160,6 +164,17 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
     this.setState({ receivedText: this.mHost.LastResponse });
   }
   */
+
+  // private getOnTrimChangedHandler = (hwId: string) => {
+  //   return (event: any) => {
+  //     const newValue: number = parseInt(event.target.value, 10);
+  //     this.props.storyboard.setTrimIntervalByHardwareId(hwId, newValue);
+  //     this.onUpdate();
+  //   };
+  // }
+  // private onUpdate = () => {
+  //   this.setState({});
+  // }
 
   private toggleLed = async () => {
     return this.performCommandAndCheck("toggleLet", () => this.mHost.toggleLed());
@@ -194,7 +209,7 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
 
       // Send timeline as base64    
       const maxCharsToSend = 150; // 183;
-      const tlStr = JSON.stringify(this.props.storyboard.ExportToJson());
+      const tlStr = JSON.stringify(this.props.storyboard.ExportToJson(true));
       for (let i = 0; i < tlStr.length; i = i + maxCharsToSend) {
         // btoa: string->base64
         if (!await this.tryCommand("writeFile", () => this.mHost.writeFile(btoa(tlStr.substring(i, i + maxCharsToSend))))) { return; }

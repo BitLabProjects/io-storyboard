@@ -17,10 +17,26 @@ export interface ITimelineJson {
   reversed?: boolean;
 }
 
+export interface IOutputBoardJson {
+  hardwareId: number; // base10
+  trimInterval: number;
+}
+
 export interface IStoryboardJson {
   duration: number;
+  outputBoards?: IOutputBoardJson[],
   timelinesCount: number;
   timelines: ITimelineJson[];
+}
+
+export class COutputBoard {
+  constructor(public HardwareId: string,
+    public TrimInterval: number) {
+  }
+
+  public isForHardwareId(hardwareId: string): boolean {
+    return parseInt(hardwareId, 16) === parseInt(this.HardwareId, 16);
+  }
 }
 
 class CStoryboard {
@@ -31,7 +47,7 @@ class CStoryboard {
     for (const tl of sb.timelines) {
       if (tl.name) {
         const reversed = tl.reversed || false;
-        const newTimeline = new CTimeline(tl.name, tl.outputHardwareId.toString(16), tl.outputId, reversed, tl.outputType);
+        const newTimeline = new CTimeline(tl.name, tl.outputHardwareId.toString(16).toUpperCase(), tl.outputId, reversed, tl.outputType);
         for (const tle of tl.entries) {
           // convert time values from milliseconds to seconds
           // convert value [0-4095] -> [0-100]
@@ -48,12 +64,14 @@ class CStoryboard {
   }
 
   public Timelines: CTimeline[];
+  public OutputBoards: COutputBoard[];
 
   // export sub-storyboard within the range [startTime, endTime] 
   public ExportTimeRange: [number, number];
 
   constructor() {
     this.Timelines = [];
+    this.OutputBoards = [];
     this.ExportTimeRange = [0, Number.POSITIVE_INFINITY];
   }
 
@@ -70,7 +88,7 @@ class CStoryboard {
         }
       }
     }
-    return maxValue
+    return maxValue;
   }
 
   public AddTimeline() {
@@ -95,7 +113,7 @@ class CStoryboard {
     return newStoryboard;
   }
 
-  public ExportToJson(): IStoryboardJson {
+  public ExportToJson(skipEmptyEntries: boolean = false): IStoryboardJson {
     const timelinesObj: ITimelineJson[] = [];
     for (const tl of this.Timelines) {
       const entriesObj: ITimelineEntryJson[] = [];
@@ -114,22 +132,45 @@ class CStoryboard {
           });
         }
       }
-      // Additional reduntant entry with count of array entries in exported json
-      timelinesObj.push({
-        name: tl.Name,
-        outputHardwareId: parseInt(tl.HardwareId, 16),
-        outputId: tl.OutputId,
-        outputType: tl.OutputType,
-        entriesCount: entriesObj.length,
-        entries: entriesObj,
-        reversed: tl.Reversed,
-      });
+      if (entriesObj.length === 0 && skipEmptyEntries) {
+        // Don't export
+      } else {
+        // Additional reduntant entry with count of array entries in exported json
+        timelinesObj.push({
+          name: tl.Name,
+          outputHardwareId: parseInt(tl.HardwareId, 16),
+          outputId: tl.OutputId,
+          outputType: tl.OutputType,
+          entriesCount: entriesObj.length,
+          entries: entriesObj,
+          reversed: tl.Reversed,
+        });
+      }
     }
-    return {
-      duration: this.Duration,
-      timelinesCount: timelinesObj.length,
-      timelines: timelinesObj
-    };
+
+    const outputBoardsObj: IOutputBoardJson[] = [];
+    for (const ob of this.OutputBoards) {
+      outputBoardsObj.push({
+        hardwareId: parseInt(ob.HardwareId, 10),
+        trimInterval: ob.TrimInterval
+      })
+    }
+
+    // Do not output empty arrays as the current parser has bugs with them
+    if (outputBoardsObj.length > 0) {
+      return {
+        duration: this.Duration,
+        outputBoards: outputBoardsObj,
+        timelinesCount: timelinesObj.length,
+        timelines: timelinesObj
+      };
+    } else {
+      return {
+        duration: this.Duration,
+        timelinesCount: timelinesObj.length,
+        timelines: timelinesObj
+      };
+    }
   }
 
   public calcCrc32(hardwareIdOrNullForall: string | null, initialCrc: number): number {
@@ -145,6 +186,25 @@ class CStoryboard {
       crc32 = timeline.calcCrc32(crc32);
     });
     return crc32;
+  }
+
+  public getTrimIntervalByHardwareId(hardwareId: string): number {
+    for (const outputBoard of this.OutputBoards) {
+      if (outputBoard.isForHardwareId(hardwareId)) {
+        return outputBoard.TrimInterval;
+      }
+    }
+    return 0;
+  }
+
+  public setTrimIntervalByHardwareId(hardwareId: string, value: number) {
+    for (const outputBoard of this.OutputBoards) {
+      if (outputBoard.isForHardwareId(hardwareId)) {
+        outputBoard.TrimInterval = value;
+        return;
+      }
+    }
+    this.OutputBoards.push(new COutputBoard(hardwareId, value));
   }
 }
 

@@ -55,7 +55,10 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
     return (
       <ExpansionPanel key={this.props.timeline.key} style={{ width: "100%" }}>
         <ExpansionPanelSummary expandIcon={<ExpandMore />}>
-          <Typography style={{ width: "75px" }} >{this.props.timeline.Name}</Typography>
+          <div style={{ width: "75px" }}>
+            <Typography style={{ width: "75px" }} >{this.props.timeline.Name}</Typography>
+            <Typography variant="caption" style={{ width: "75px" }} >{this.props.timeline.HardwareId}.{this.props.timeline.OutputId}</Typography>
+          </div>
           <div style={{ width: "calc(100vw - 200px)" }} >
             <ResponsiveContainer width="100%" height={100}>
               <AreaChart data={this.mCalcDataForGraph()}

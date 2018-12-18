@@ -18,6 +18,7 @@ export class BitLabHost {
   private mSerialInterface: SerialInterface;
 
   constructor() {
+    // this.mSerialInterface = new SerialInterface("http://192.168.43.217:3030");
     this.mSerialInterface = new SerialInterface("http://localhost:3030");
   }
 
