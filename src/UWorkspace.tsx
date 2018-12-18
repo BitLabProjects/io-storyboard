@@ -23,7 +23,7 @@ class UWorkspace extends React.Component<IWorkspaceProps, {}> {
 
     const DragHandle = SortableHandle(() => <SortOutlined style={{ margin: "5px" }} />);
     const SortableItem = SortableElement<{ value: CTimeline, sortIndex: number }>(({ value, sortIndex }) =>
-      <div style={{ display: "flex", alignItems: "center" }} key={value.key}>
+      <div style={{ display: "flex", alignItems: "center", margin: "0px 15px 0px 0px" }} key={value.key}>
         <DragHandle />
         <UWorkspaceTimeline
           timeline={value} visible={this.props.timelinesVisibility[sortIndex]}
