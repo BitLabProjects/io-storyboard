@@ -39,8 +39,11 @@ class CTimelineEntry {
 }
 
 class CTimeline {
+  
+  public static CopiedTimeline : CTimeline;
 
   private static nextKey: number = 0;
+  
   public readonly key: number;
 
   public Entries: CTimelineEntry[];
@@ -48,6 +51,7 @@ class CTimeline {
   public ManualModeValue: number;
 
   private mOutputType: EOutputType;
+
 
   constructor(
     public Name: string,

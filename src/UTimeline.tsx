@@ -7,7 +7,7 @@ import { Add, Remove } from '@material-ui/icons';
 
 import { Dialog, DialogActions, DialogContent, DialogContentText, MenuItem, Paper, TextField, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails, Checkbox, FormControlLabel } from "@material-ui/core";
 
-import { ExpandMore } from "@material-ui/icons";
+import { Assignment, ExpandMore, FileCopy } from "@material-ui/icons";
 import { AreaChart, XAxis, YAxis, Area, Tooltip, ResponsiveContainer } from "recharts";
 // import BStyles from "./BStyles";
 
@@ -58,6 +58,8 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
           <div style={{ width: "75px" }}>
             <Typography style={{ width: "75px" }} >{this.props.timeline.Name}</Typography>
             <Typography variant="caption" style={{ width: "75px" }} >{this.props.timeline.HardwareId}.{this.props.timeline.OutputId}</Typography>
+            <Button color="secondary" mini onClick={this.copyEntries}><FileCopy /></Button>
+            <Button color="secondary" mini onClick={this.pasteEntries}><Assignment /></Button>
           </div>
           <div style={{ width: "calc(100vw - 200px)" }} >
             <ResponsiveContainer width="100%" height={100}>
@@ -178,6 +180,23 @@ class UTimeline extends React.Component<CTimelineProps, CTimelineState> {
 
   private onUpdate = () => {
     this.setState({});
+  }
+
+  private copyEntries = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    CTimeline.CopiedTimeline = this.props.timeline;
+  }
+
+  private pasteEntries = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    if (!CTimeline.CopiedTimeline) {
+      return;
+    }
+    this.props.timeline.Entries.splice(0);
+    for (const entry of CTimeline.CopiedTimeline.Entries) {
+      this.props.timeline.AddEntry(entry.Value, entry.Duration, entry.Time);
+    }
+    this.onUpdate();
   }
 
 }
