@@ -113,7 +113,7 @@ class CStoryboard {
     return newStoryboard;
   }
 
-  public ExportToJson(skipEmptyEntries: boolean = false): IStoryboardJson {
+  public ExportToJson(skipEmptyEntries: boolean = false, appendResetEntries: boolean = false): IStoryboardJson {
     const timelinesObj: ITimelineJson[] = [];
     for (const tl of this.Timelines) {
       const entriesObj: ITimelineEntryJson[] = [];
@@ -132,9 +132,29 @@ class CStoryboard {
           });
         }
       }
+
       if (entriesObj.length === 0 && skipEmptyEntries) {
         // Don't export
       } else {
+        if (appendResetEntries && (entriesObj.length > 8)) {
+          // hardware support 10 entries/timeline
+          alert(`More than 8 entries for ${tl.Name}`)
+        }
+        if (appendResetEntries && (entriesObj.length > 0)) {
+          // ensure reset entries for hardware
+          const maxTime = entriesObj[entriesObj.length - 1].time + entriesObj[entriesObj.length - 1].duration;
+          entriesObj.push({
+            time: (maxTime + 1000),
+            value: 0,
+            duration: 0
+          });
+          entriesObj.push({
+            time: (maxTime + 2000),
+            value: 0,
+            duration: 0
+          });
+        }
+
         // Additional reduntant entry with count of array entries in exported json
         timelinesObj.push({
           name: tl.Name,
@@ -156,17 +176,19 @@ class CStoryboard {
       })
     }
 
+    const timeGapForResetEntries = appendResetEntries ? 3000 : 0;
+
     // Do not output empty arrays as the current parser has bugs with them
     if (outputBoardsObj.length > 0) {
       return {
-        duration: this.Duration,
+        duration: this.Duration + timeGapForResetEntries,
         outputBoards: outputBoardsObj,
         timelinesCount: timelinesObj.length,
         timelines: timelinesObj
       };
     } else {
       return {
-        duration: this.Duration,
+        duration: this.Duration + timeGapForResetEntries,
         timelinesCount: timelinesObj.length,
         timelines: timelinesObj
       };

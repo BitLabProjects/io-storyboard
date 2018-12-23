@@ -46,6 +46,12 @@ class App extends React.Component<any, IAppState> {
       currentPage: EAppPage.DashboardPage,
       storyboard: CStoryboard.CreateFromJson(BStoryboard.GetStoryboard0())
     };
+
+    // prevent page leave
+    window.onbeforeunload = () => {
+      return "";
+    }
+
   }
 
   public render() {

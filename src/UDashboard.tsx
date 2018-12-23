@@ -209,7 +209,7 @@ class UDashboard extends React.Component<IDashboardProps, IDashboardState> {
 
       // Send timeline as base64    
       const maxCharsToSend = 150; // 183;
-      const tlStr = JSON.stringify(this.props.storyboard.ExportToJson(true));
+      const tlStr = JSON.stringify(this.props.storyboard.ExportToJson(true, true));
       for (let i = 0; i < tlStr.length; i = i + maxCharsToSend) {
         // btoa: string->base64
         if (!await this.tryCommand("writeFile", () => this.mHost.writeFile(btoa(tlStr.substring(i, i + maxCharsToSend))))) { return; }
